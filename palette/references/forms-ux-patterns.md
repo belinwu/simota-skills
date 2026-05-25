@@ -1,16 +1,32 @@
 # Forms UX Patterns Reference
 
-Purpose: Design forms that minimize user effort, fail gracefully, and cooperate with browser autofill and password managers. Forms are the highest-friction surface in most products; a 10% completion-rate lift on a signup form often beats any other UX win.
+Purpose: Design forms that minimize user effort, fail gracefully, and cooperate with browser autofill and password managers. Choose the right field order, validation timing, error display, step flow, defaults, and submission feedback. Forms are the highest-friction surface in most products; a 10% completion-rate lift on a signup form often beats any other UX win.
 
 ## Scope Boundary
 
-- **Palette `forms`**: field order rationale, inline vs submit-time validation, error-message voice direction, required-field indication, progressive disclosure, multi-step flows, autofill cooperation, password-manager handshake.
+- **Palette `forms`**: field order rationale, inline vs submit-time validation, error-message voice direction, required-field indication, progressive disclosure, multi-step flows, autofill cooperation, password-manager handshake, submission feedback, unsaved-changes handling.
 - **Palette `a11y` (elsewhere)**: WCAG 2.2 SC 3.3.x (error identification, suggestion, prevention), SC 1.3.5 (autocomplete identification), SC 3.3.8 (accessible authentication) conformance.
 - **Flow (elsewhere)**: error-shake animation, success-check motion, step-transition easing.
 - **Prose (elsewhere)**: exact error-message wording, label copy, help-text tone — Palette sets the **voice direction** (blame-free, specific, recovery-focused) and Prose writes the strings.
 - **Artisan (elsewhere)**: React Hook Form / Formik / VeeValidate / SwiftUI Form production wiring, Zod / Yup schema, server-round-trip error handling.
 
 If the question is "what is the right field order and validation timing?" → `forms`. If it's "what exact words for this error?" → Prose. If it's "how do I wire this in React Hook Form?" → Artisan.
+
+## Contents
+
+- Field-order rationale
+- Validation timing
+- Error display and voice
+- Required-field indication
+- Progressive disclosure
+- Multi-step forms
+- Defaults
+- Submission and unsaved changes
+- Autofill and password-manager cooperation
+- Passkeys and modern authentication
+- Accessible authentication (WCAG 2.2 SC 3.3.8)
+- Anti-patterns
+- Accessibility checklist
 
 ## Field-Order Rationale
 
@@ -32,15 +48,19 @@ Anti-pattern: alphabetical order, database-column order, or "however the backend
 |----------|----------|----------|
 | Inline on blur | Most text fields (email, name, URL) | Don't validate on every keystroke — premature error |
 | Inline on input, after first blur | Password strength, confirm-password match | Track "touched" state per field |
-| Submit-time only | Short forms (<4 fields), confirmation dialogs | Jarring if many fields fail at once |
+| Real-time | format-specific fields such as email, URL, phone, password strength | immediate help, but can interrupt typing |
+| Submit-time only | Short forms (<4 fields), confirmation dialogs, cross-field or complex validation | Jarring if many fields fail at once |
 | Async on blur (debounced) | "Username available?", "email already registered?" | Show loading state; never race server |
 
 Rules:
 - Never validate a field the user has not yet touched. "Please enter your email" shown before the user types once is noise.
 - Inline success (green check) only when the validation was non-trivial (password rules, async uniqueness). Every-field success checkmarks become noise.
 - On submit, if multiple fields fail: scroll to and focus the first failed field. Show an error summary above the form with links to each failed field (WCAG 2.2 SC 3.3.1 pattern).
+- Use `aria-invalid` on invalid fields.
+- Connect errors with `aria-describedby`.
+- Announce blocking errors via `role="alert"` or `aria-live`.
 
-## Error-Message Voice (Direction)
+## Error Display and Voice
 
 Palette sets the **direction**; Prose writes the exact copy.
 
@@ -55,6 +75,17 @@ Palette sets the **direction**; Prose writes the exact copy.
 Direction examples (Palette → Prose):
 - ❌ Palette says "Make it friendlier" → Prose writes "Oops! We need a valid email :)" (wrong — cheerful trivializes a block)
 - ✅ Palette says "Specific + recovery" → Prose writes "Email must include a domain (e.g., name@example.com)."
+
+Display rules:
+- Keep field-level errors specific and actionable.
+- Use an error summary when submit-time validation returns multiple errors.
+- Provide recovery actions for non-field failures.
+
+Preferred field-error pattern:
+
+1. Identify the field or action
+2. Explain what is wrong
+3. Tell the user how to fix it
 
 ## Required-Field Indication
 
@@ -80,7 +111,7 @@ Rules:
 - Never hide required fields behind unrelated toggles — users will not find them and will abandon.
 - Conditional sections should animate in at ≤200ms with a `prefers-reduced-motion` fallback to instant.
 
-## Multi-Step Form Flows
+## Multi-Step Forms
 
 | Rule | Why |
 |------|-----|
@@ -92,6 +123,25 @@ Rules:
 | Keep steps to 3–5 when possible | 7+ steps signals "break into separate forms or save drafts" |
 
 Use URL-based routing for steps (`/signup/step-2`) so back button, refresh, and link-sharing work.
+
+Additional affordances:
+- Use real labels; placeholder is not a label.
+- Add helper text when the format is non-obvious.
+- Use character counters only when limits matter.
+- Use tooltips for optional help, not critical instructions.
+
+## Defaults
+
+- Prefer smart defaults when confidence is high.
+- Make defaults easy to inspect and change.
+- Never hide risky auto-filled values.
+
+## Submission and Unsaved Changes
+
+- Submit buttons need idle, loading, success, and error states.
+- Disable duplicate submission while the request is active.
+- Warn before discarding unsaved changes.
+- For destructive form actions, prefer confirm or undo patterns.
 
 ## Autofill and Password-Manager Cooperation
 
@@ -119,6 +169,50 @@ Autofill failures are silent — users get a worse experience and you never see 
 <p id="email-help">We'll send a verification link.</p>
 ```
 
+## Passkeys and Modern Authentication
+
+Prefer passwordless flows when the platform supports them.
+
+| Flow | Trigger | Notes |
+|------|---------|-------|
+| Passkey creation | registration or settings | use `navigator.credentials.create()` with WebAuthn |
+| Passkey sign-in | login page | use `navigator.credentials.get()` with conditional UI |
+| Magic link | fallback for unsupported devices | send to email, expire after single use |
+| OTP fallback | SMS or TOTP app | add `autocomplete="one-time-code"` to the input |
+
+Identifier-first flow: collect email or username on step 1, then determine the best credential method on step 2. Do not reveal whether an account exists during step 1 (prevents account enumeration).
+
+WebAuthn Conditional UI (autofill-based passkey prompt):
+
+```typescript
+if (
+  window.PublicKeyCredential &&
+  PublicKeyCredential.isConditionalMediationAvailable
+) {
+  const available = await PublicKeyCredential.isConditionalMediationAvailable();
+  if (available) {
+    // Add autocomplete="username webauthn" to the username input
+    // Then call get() with mediation: 'conditional'
+    const credential = await navigator.credentials.get({
+      publicKey: {
+        challenge: serverChallenge,
+        rpId: window.location.hostname,
+        userVerification: 'preferred',
+        allowCredentials: [],
+      },
+      mediation: 'conditional',
+    });
+  }
+}
+```
+
+UX rules:
+
+- Always offer a visible alternative (password or magic link) alongside passkeys.
+- Do not block password-manager autofill — use standard `autocomplete` attributes.
+- Show clear error messages when biometric verification fails, with a retry path.
+- Never require the user to remember a passkey ID — device handles it.
+
 ## Accessible Authentication (WCAG 2.2 SC 3.3.8)
 
 - Do not require cognitive function tests (memorized passwords, CAPTCHAs relying on recognition) as the only path. Offer passkeys, magic links, OAuth, or paste-from-password-manager.
@@ -137,6 +231,14 @@ Autofill failures are silent — users get a worse experience and you never see 
 - ❌ Asking for the same data twice across a multi-step flow (email → "confirm email") without a reason — SC 3.3.7 violation.
 - ❌ Using `type="text"` for passwords without `autocomplete="current-password" / "new-password"` — blocks password managers.
 - ❌ Red asterisk as the only required indicator — WCAG 1.4.1 (use of color) fail.
+
+## Accessibility Checklist
+
+- Labels and grouping are explicit.
+- Errors are announced.
+- Tab order is logical.
+- Instructions remain visible.
+- The form works with keyboard only.
 
 ## Handoff
 

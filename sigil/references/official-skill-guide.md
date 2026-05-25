@@ -46,7 +46,7 @@ description: What it does and when to use it. Include specific trigger phrases.
 - 具体的なトリガーフレーズを含める
 - 関連するファイルタイプがあれば言及
 
-> **Note**: エコシステム内部の `skill-templates.md` では description 100文字制限を設けているが、公式仕様の上限は 1024文字。エコシステム制限はコンテキスト効率の観点による追加ガードレールであり、公式仕様を超えるものではない。
+> **Note**: エコシステム内部の [`skill-templates.md`](skill-templates.md#frontmatter-rules) では description を「one Japanese sentence」に制限しているが、公式仕様の上限は 1024文字。エコシステム制限はコンテキスト効率とルーティング判定のための追加ガードレールであり、公式仕様を超えるものではない。
 
 ### Optional Fields
 

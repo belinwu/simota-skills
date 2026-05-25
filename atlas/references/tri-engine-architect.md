@@ -1,28 +1,26 @@
-# Tri-Engine Architecture Deliberation
+# Tri-Engine Architecture Deliberation (Atlas Delta)
 
 Default flow for `/atlas multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to produce architectural assessments and ADR drafts, integrate results across two axes (concurrence + divergence), and deliver a **consensus ADR with explicit dissenting options** so the trade-off matrix becomes exhaustive rather than the single-engine narrow.
 
-**Pattern type:** H (Hybrid — concurrence calibrates confidence, divergence enriches the Options section).
+**Pattern type:** H (Hybrid — concurrence calibrates confidence on smells, divergence enriches the Options section).
 
 **Why three engines for architecture (different from Judge or Spark):** Judge optimizes for *agreement on a single defect* — concurrence is the quality signal. Spark optimizes for *creative recombination of existing data/logic* — divergence is the breakthrough. Atlas sits between the two: an ADR is a **decision document**, so concurrence on the *problem framing* and *forces at play* raises confidence, while divergence on the *recommended option* exposes architectural-style trade-offs that a single engine would silently flatten. Codex carries GitHub-heavy OSS architecture priors (layered, hexagonal, Spring/Rails canon), Antigravity carries Google-product priors (microservices, event-driven, scale-first), Claude carries Anthropic-curated priors (DDD, modular monolith, evolutionary architecture). Surfacing all three as named Options inside one ADR delivers a richer trade-off matrix than the canonical "1 recommendation + 2 strawman alternatives" template ever produces.
 
-**Adapted from `_common/MULTI_ENGINE_RECIPE.md` Pattern H.** Re-uses PREFLIGHT, FAN-OUT, NORMALIZE, CLUSTER stages from `judge/references/tri-engine-review.md §2-3` and divergence-preserving SYNTHESIZE from `spark/references/tri-engine-proposal.md §8`. The differential below covers Atlas-specific schema, clustering, scoring, grounding, and merge rules.
+**This file specifies Atlas-specific deltas only.** Read `_common/MULTI_ENGINE_RECIPE.md` first for shared mechanics:
+
+- `§Pattern H Deep Dive` — confidence axis, perspective axis, GROUND verdicts, per-cluster recording, engine-attribution + perspective tag tables, "DIVERGENT is not a failure" rule
+- `§Canonical Flow` — SCOPE → PREFLIGHT → FAN-OUT → NORMALIZE → CLUSTER → SCORE → GROUND/CALIBRATE → SYNTHESIZE → DELIVER skeleton
+- `§PREFLIGHT` — engine availability probe (run in Atlas main context only)
+- `§FAN-OUT` — Agent tool dispatch, loose-prompt rule, runtime-failure detection (`agy` silent-failure pattern)
+- `§Degraded Modes` — baseline fallback table; Atlas-specific overrides below
 
 ---
 
-## Flow
+## Atlas Deltas (what differs from `_common/MULTI_ENGINE_RECIPE.md`)
 
-```
-SCOPE → PREFLIGHT → FAN-OUT (parallel subagents) → NORMALIZE → CLUSTER → SCORE (confidence + perspective) → GROUND/CALIBRATE → SYNTHESIZE (consensus ADR + dissenting options) → PRESENT
-```
+### 1. SCOPE — architecture-specific inputs
 
-PREFLIGHT and the engine availability matrix are identical to `_common/MULTI_ENGINE_RECIPE.md §PREFLIGHT`. Do not duplicate detection logic — call the canonical probe from Atlas main context.
-
----
-
-## 1. SCOPE
-
-Define the architecture target once. All three subagents share the same scope; differences come from training-data priors, not from prompt variation.
+All three subagents share:
 
 - System / module / boundary under analysis (with concrete file or package references when available)
 - Architectural concern: greenfield design / structural bottleneck / debt remediation / modernization / boundary redesign
@@ -30,23 +28,21 @@ Define the architecture target once. All three subagents share the same scope; d
 - Existing artifacts: prior ADRs, current dependency graph, coupling metrics, fitness functions in place
 - Constraint anchors: must-keep contracts, banned dependencies, language/runtime fences, headcount realities
 
----
+Do NOT pass MADR templates, ISO/IEC/IEEE 42010 framing, Vertical-Slice/Modular-Monolith defaults, or fitness-function lists — those defaults are Atlas-main-context conventions and applied at SYNTHESIZE.
 
-## 2. FAN-OUT — parallel subagents
+### 2. FAN-OUT — Atlas subagent names
 
-Spawn **three Agent calls in a single message** so they run concurrently. Each subagent has an independent context and produces an **architecture assessment + draft ADR option** independently.
+| Subagent | Engine |
+|----------|--------|
+| `architect-codex` | Codex CLI (`codex exec --full-auto`) |
+| `architect-agy` | Antigravity CLI (`agy -p` + silent-failure detection per `_common/MULTI_ENGINE_RECIPE.md §3.5`) |
+| `architect-claude` | Claude Code subagent (Agent tool, `subagent_type: general-purpose`) |
 
-| Subagent | Engine | Baseline command |
-|----------|--------|------------------|
-| `architect-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `architect-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
-| `architect-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
+Recommended per-engine output volume: 2-3 smells, 1-2 ADR options. Encourage focus — exhaustiveness comes from cross-engine union, not per-engine flood.
 
-**Loose prompt rule (per `_common/MULTI_ENGINE_RECIPE.md`):** pass only Role + Target + Output format. Do NOT pass MADR templates, ISO/IEC/IEEE 42010 framing, Vertical-Slice/Modular-Monolith defaults, or fitness-function lists — those defaults are Atlas-main-context conventions and applied at SYNTHESIZE. Letting each engine reach for its own architectural-style prior is the entire point of the recipe.
+### 3. JSON output schema (Atlas-specific — two output streams)
 
-### Required JSON output schema
-
-Every subagent returns one JSON object matching this exact schema (no commentary outside the JSON):
+Atlas's distinguishing feature: subagents return both *architectural smells* (problem identification) and *ADR options* (proposed interventions). The two streams cluster, score, and merge differently downstream.
 
 ```json
 {
@@ -81,29 +77,21 @@ Every subagent returns one JSON object matching this exact schema (no commentary
 }
 ```
 
-Recommended per-engine output volume: 2-3 smells, 1-2 ADR options. Encourage focus — exhaustiveness comes from cross-engine union, not per-engine flood.
+If an engine returns Markdown, ask its subagent to re-emit JSON before integrating.
 
-If an engine returns Markdown, ask its subagent to re-emit JSON before integrating. Engines genuinely unavailable per PREFLIGHT are dropped and noted; runtime errors are surfaced.
+### 4. CLUSTER — Atlas identity rules (two streams)
 
----
+Atlas clusters the two output streams separately because they merge differently downstream.
 
-## 3. CLUSTER — Atlas identity rules
-
-Atlas clusters two output streams separately because they merge differently downstream.
-
-### 3a. Architectural-smell clustering (concurrence-primary)
-
-Group `architectural_smells` from different engines that describe the same concern. Two smells match when **all three** hold:
+**4a. Architectural-smell clustering (concurrence-primary).** Group `architectural_smells` from different engines that describe the same concern. Two smells match when **all three** hold:
 
 - Same primary subject — same module, same boundary pair, same dependency cycle (file/package overlap, not necessarily identical names)
 - Same `concern_class`
 - Semantic overlap in the `smell` statement (e.g., "Auth ↔ Billing cycle" matches "circular import between authentication and billing" — same SCC, different wording)
 
-Record the engine set per cluster. Smells benefit from concurrence (3/3 = high-confidence problem identification).
+Smells benefit from concurrence (3/3 = high-confidence problem identification).
 
-### 3b. ADR-option clustering — DIVERGENT BY DESIGN (critical Atlas rule)
-
-**Do NOT merge options across engines just because they target the same problem.** Two options match for clustering only when **all three** hold:
+**4b. ADR-option clustering — DIVERGENT BY DESIGN (critical Atlas rule).** **Do NOT merge options across engines just because they target the same problem.** Two options match for clustering only when **all three** hold:
 
 - Same `architectural_style`
 - Same primary intervention (e.g., both extract a shared module + apply DIP; both introduce an event bus)
@@ -111,65 +99,49 @@ Record the engine set per cluster. Smells benefit from concurrence (3/3 = high-c
 
 If two engines target the same smell but propose **different architectural styles** (e.g., Codex says "extract shared Identity module" while Antigravity says "split into separate services via event bus"), they are **divergent options on the same problem** — keep both as separate clusters. This is the entire reason Atlas runs `multi`: a single engine would silently pick one style and lose the other as a trade-off lens. The Options section of the consensus ADR will preserve both.
 
-Record per cluster:
-- The engine set that proposed it
-- Which smell-cluster(s) it addresses (link by cluster id)
+Record per option cluster: engine set, and which smell-cluster(s) it addresses (link by cluster id).
 
----
+### 5. SCORE — Pattern H applied to two streams
 
-## 4. SCORE — Pattern H (two axes)
+Inherits the two-axis rubric from `_common/MULTI_ENGINE_RECIPE.md §Pattern H Deep Dive`. Atlas applies them to streams differently:
 
-Atlas uses both confidence and perspective axes from `_common/MULTI_ENGINE_RECIPE.md §Pattern H`.
+**5a. Smell scoring uses the confidence axis** (`CONFIRMED` 3/3 → `LIKELY` 2/3 → `CANDIDATE` 1/3). A `CANDIDATE` smell that fails grounding may be hallucinated.
 
-### 4a. Smell scoring (confidence axis)
-
-| Engines in cluster | Confidence label | Action |
-|--------------------|------------------|--------|
-| 3 / 3 | `CONFIRMED` | Ship as a confirmed problem in the ADR Context. Light grounding (read the cited evidence). |
-| 2 / 3 | `LIKELY` | Ship with the dissenting engine's silence noted. Standard grounding. |
-| 1 / 3 | `CANDIDATE` | Must pass strict grounding (step 5) to survive. May be a hallucinated smell. |
-
-### 4b. Option scoring (perspective axis)
+**5b. Option scoring uses the perspective axis** with Atlas-specific labels:
 
 | Engines in cluster | Perspective label | Action |
 |--------------------|-------------------|--------|
-| 3 / 3 (same style + same intervention + same migration class) | `CONVERGENT` | Strong signal that this is the canonical answer. Promote to the **Recommended Option** position. |
+| 3 / 3 (same style + same intervention + same migration class) | `CONVERGENT` | Strong signal of canonical answer. Promote to **Recommended Option**. |
 | 2 / 3 | `CONVERGENT-PARTIAL` | Two engines agree; the dissenter's alternative goes into the Options section as a documented trade-off. |
-| 1 / 3 | `DIVERGENT-{style}` | Single-engine option. Preserved in Options section as `Option-B` / `Option-C` so the ADR carries 2-3 styles instead of 1. NOT auto-low-value — the dissent is the value-add. |
+| 1 / 3 | `DIVERGENT-{style}` | Single-engine option. Preserved as `Option-B`/`Option-C` so the ADR carries 2-3 styles instead of 1. NOT auto-low-value — the dissent is the value-add. |
 
 **Critical Atlas rule:** Architectural style is reversibility-asymmetric. A `CONVERGENT` recommendation should still be paired with at least one `DIVERGENT` option in the ADR Options section, because architecture decisions are TYPE-1 (one-way door) more often than TYPE-2. Documenting the dissent in the ADR itself is what makes future supersession defensible.
 
----
+### 6. GROUND/CALIBRATE — Atlas-specific checks (main context, never delegated)
 
-## 5. GROUND or CALIBRATE — Atlas main context, never delegated
+Read the actual code/system. Subagents can hallucinate modules, metrics, or dependencies — Atlas main context verifies before any option ships in the final ADR. Use the shared verdict labels from `_common/MULTI_ENGINE_RECIPE.md §Pattern H Deep Dive → GROUND verdicts`.
 
-Read the actual code/system. Subagents can hallucinate modules, metrics, or dependencies — Atlas main context verifies before any option ships in the final ADR.
-
-For every **smell cluster**:
-1. **Existence check** — does the cited module / dependency / SCC actually exist in the repo? (Read tool against the cited path; or run a coupling probe.)
-2. **Mitigation check** — is the smell already addressed by an existing ADR, fitness function, or recent refactor? If so, mark `REJECTED-MITIGATED` (do not waste the new ADR on a closed concern).
+**For every smell cluster:**
+1. **Existence check** — does the cited module / dependency / SCC actually exist? (Read tool against the cited path; or run a coupling probe.)
+2. **Mitigation check** — already addressed by an existing ADR, fitness function, or recent refactor? → `REJECTED-MITIGATED`.
 3. **Severity calibration** — re-rate severity against `architecture-health-metrics.md` thresholds; engines tend to inflate severity in greenfield/abstract scopes.
 4. Mark `VERIFIED` / `LIKELY-VERIFIED` / `REJECTED-{reason}` / `NEEDS-INFO`.
 
-For every **option cluster**:
+**For every option cluster:**
 1. **Feasibility check** — does the proposed style actually fit the existing constraints (language runtime, team topology, deployment surface)? An event-driven option in a synchronous-required low-latency context is `REJECTED-INFEASIBLE`.
 2. **Reversibility check** — re-classify TYPE-1 / TYPE-2 against the actual blast radius (data migrations, public-API breaks → TYPE-1).
-3. **Anti-pattern scan** — apply Atlas anti-patterns:
+3. **Anti-pattern scan** — apply Atlas anti-patterns from `architecture-decision-anti-patterns.md`:
    - **Fairy Tale ADR** (only pros, no cons) — force trade-offs both ways
-   - **Tunnel Vision ADR** (no downstream-consumer or ops perspective) — verify cross-cutting concerns are addressed
+   - **Tunnel Vision ADR** (no downstream-consumer or ops perspective) — verify cross-cutting concerns
    - **Resume-Driven Development** — flag if the option imports a fashionable style without a force-at-play justification
    - **Distributed Monolith** trap — flag if microservices/event-driven options retain synchronous request-chains
 4. Mark `VERIFIED` / `REJECTED-{reason}` / `NEEDS-TRADE-OFF` (option survives but trade-offs need Atlas-supplied augmentation).
 
 For `CONFIRMED` smells and `CONVERGENT` options, perform a lightweight spot-check only — three engines rarely hallucinate the same module simultaneously, but they may all reach for the same trending architectural style without justification (the "everyone picked microservices" failure mode).
 
----
+### 7. SYNTHESIZE — Consensus ADR + Dissenting Options (extended MADR 4.0)
 
-## 6. SYNTHESIZE — Consensus ADR + Dissenting Options
-
-Atlas's distinctive merge: emit **one ADR document** structured as `Consensus core + Dissenting options as named alternatives`. This is richer than the canonical MADR 4.0 template's "Considered Options" because each Option section here is an entire engine's independently-reasoned recommendation, not a strawman written by the recommendation's author.
-
-### Output document — extended MADR 4.0 structure
+Atlas's distinctive merge: emit **one ADR document** structured as `Consensus core + Dissenting options as named alternatives`. Richer than canonical MADR 4.0's "Considered Options" because each Option section here is an entire engine's independently-reasoned recommendation, not a strawman written by the recommendation's author.
 
 ```markdown
 ---
@@ -245,24 +217,9 @@ Chosen option: **{Recommended option name}**, because {justification — referen
 - Rejected during grounding: {count by category — hallucinated module / already mitigated / infeasible / anti-pattern}
 ```
 
-### Why "Consensus + Dissenting Options" beats "single-engine ADR"
+**Why "Consensus + Dissenting Options" beats "single-engine ADR":** A normal ADR's "Considered Options" section is written by the author of the recommendation, so the alternatives are strawmen — present to satisfy the "≥2 alternatives" rule, not to genuinely compete. Atlas `multi` replaces those strawmen with **three independently-reasoned options from non-overlapping training data**. The trade-off matrix becomes load-bearing instead of decorative, and future supersession ADRs can reference the rejected options directly rather than re-discovering them.
 
-A normal ADR's "Considered Options" section is written by the author of the recommendation, so the alternatives are strawmen — present to satisfy the "≥2 alternatives" rule, not to genuinely compete. Atlas `multi` replaces those strawmen with **three independently-reasoned options from non-overlapping training data**. The trade-off matrix becomes load-bearing instead of decorative, and future supersession ADRs can reference the rejected options directly rather than re-discovering them.
-
-### Engine-attribution tag conventions
-
-Every shipped Option and Smell carries a tag. Atlas Pattern H uses both concurrence and perspective tags:
-
-| Engines in cluster | Tag (smell) | Tag (option) |
-|--------------------|-------------|--------------|
-| 3 / 3 | `[codex+agy+claude] [CONFIRMED]` | `[codex+agy+claude] [CONVERGENT]` |
-| 2 / 3 | `[codex+agy] [LIKELY]` (etc.) | `[codex+claude] [CONVERGENT-PARTIAL]` (etc.) |
-| 1 / 3 verified | `[codex-verified] [VERIFIED-CANDIDATE]` | `[agy-verified] [DIVERGENT-{style}]` |
-| 1 / 3 rejected | (not shipped) | (not shipped) |
-
----
-
-## 7. PRESENT
+### 8. PRESENT
 
 Default output: a single ADR file at `docs/architecture/decisions/ADR-NNNN-{slug}.md` matching the extended MADR structure above. If the user asked for an RFC instead, swap to the RFC template from `references/adr-rfc-templates.md` and keep the same Consensus + Dissenting Options spine.
 
@@ -278,7 +235,7 @@ Do not include rejected smells/options in the main flow. Do not surface engine-r
 
 ---
 
-## Parallel Subagent Prompt Skeleton
+## Atlas Subagent Prompt Skeleton
 
 Use the Agent tool three times **in the same message**. Each subagent prompt:
 
@@ -298,7 +255,7 @@ Produce an architectural assessment and 1-2 draft ADR options for the target bel
 # Output format
 Return ONLY JSON matching this exact schema (no commentary outside the JSON):
 
-{JSON schema from §2}
+{JSON schema from §3}
 
 # Constraints
 - Each ADR option must name a specific architectural_style (do not write style-agnostic recommendations)
@@ -313,33 +270,25 @@ The three subagents return JSON; Atlas main context handles NORMALIZE through PR
 
 ---
 
-## Degraded Modes
+## Atlas-Specific Degraded-Mode Overrides
 
-| Situation | Behavior |
-|-----------|----------|
-| 1 engine binary missing | Run the other two; note reduced architectural-style diversity; `DIVERGENT` options from the single surviving engine require stricter grounding |
+Inherits the base table from `_common/MULTI_ENGINE_RECIPE.md §Degraded Modes`. Atlas overrides:
+
+| Situation | Atlas behavior |
+|-----------|----------------|
+| 1 engine binary missing | Note reduced architectural-style diversity; `DIVERGENT` options from the single surviving engine require stricter grounding |
 | 2 engines fail | Single-engine ADR with reduced confidence and only one Option section; flag "tri-engine degraded — consider re-running" in front matter |
-| All 3 fail | Abort `multi` flow; degrade to standard `adr` Recipe in Atlas main context |
-| User explicitly requests single engine | Skip fan-out; use standard `adr` / `analyze` Recipe |
+| All 3 fail | Degrade to standard `adr` Recipe |
 | Scope obviously trivial (e.g., "should this private helper be a class or function") | Skip multi; recommend `analyze` or `zen` instead |
-
----
-
-## Why This Works for Architecture (Pattern H specifics)
-
-- **Concurrence on smells calibrates the Context section.** When all three engines independently flag the same SCC or boundary leak, the ADR Context section can assert the problem without hedging — and future readers can audit the convergence.
-- **Divergence on options enriches the Considered Options section.** Each engine's training-data prior surfaces a different architectural-style angle. Forcing all three into the same ADR makes the trade-off matrix exhaustive in a way the canonical MADR template cannot achieve solo.
-- **The Consensus + Dissenting Options structure is supersession-friendly.** When the chosen option ages out, the next architect can revisit the dissenting options in the same document instead of re-discovering them from scratch — preserving the historical rationale that Atlas's ADR-immutability rule depends on.
-- **Trade-off-matrix as load-bearing artifact.** In single-engine ADRs the matrix is often filled by the author's imagination of "what someone else might say." Here it's filled by what someone else *did* say, independently. The signal-to-noise ratio of trade-off content rises sharply.
 
 ---
 
 ## Cross-References
 
-- `_common/MULTI_ENGINE_RECIPE.md` — base protocol; Pattern H details, PREFLIGHT, FAN-OUT mechanics, degraded modes
-- `_common/SUBAGENT.md` — MULTI_ENGINE engine dispatch table, loose prompt rules
-- `judge/references/tri-engine-review.md` — canonical Pattern C (concurrence-primary) implementation; PREFLIGHT logic mirrored here
-- `spark/references/tri-engine-proposal.md` — canonical Pattern D (divergence-primary) implementation; divergence-preserving SYNTHESIZE adapted here
+- `_common/MULTI_ENGINE_RECIPE.md` — base protocol; **Pattern H Deep Dive** carries the shared confidence/perspective/GROUND-verdict/tagging mechanics this file extends
+- `_common/SUBAGENT.md §MULTI_ENGINE` — engine dispatch table, loose-prompt rule, fallback rules
+- `judge/references/tri-engine-review.md` — canonical Pattern C (concurrence-primary) implementation
+- `spark/references/tri-engine-proposal.md` — canonical Pattern D (divergence-primary) implementation
 - `atlas/references/adr-rfc-templates.md` — MADR 4.0 base template that the Consensus + Dissenting Options structure extends
 - `atlas/references/architecture-decision-anti-patterns.md` — Fairy Tale / Sprint / Mega / Tunnel-Vision ADR checks applied at GROUND
 - `atlas/references/architecture-health-metrics.md` — thresholds used to calibrate smell severity during grounding

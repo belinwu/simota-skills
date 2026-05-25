@@ -2,6 +2,8 @@
 
 Purpose: define the canonical handoff headers and minimum packets Spark uses with partner agents.
 
+Related: for the proposal document structure these handoffs produce or consume, and for user-facing interaction question templates, see `references/proposal-templates.md`.
+
 ## Contents
 - Pattern map
 - Input handoffs to Spark

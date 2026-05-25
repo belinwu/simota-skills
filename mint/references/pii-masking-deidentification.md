@@ -1,6 +1,7 @@
 # PII Masking / De-identification for Test Data
 
 **Purpose:** Transform production-flavored data into test-safe datasets through deterministic or randomized tokenization, format-preserving encryption (FPE), and statistical privacy guarantees (k-anonymity / l-diversity / t-closeness / differential privacy). Mint owns the test-data-shaped output; Cloak owns the production-system privacy architecture that produced the raw source.
+**Pair with:** `anonymization.md` for the hands-on Faker-based replacement pipeline (locale-aware names, format-preserving masks, production-scrub workflow). This file is the formal de-id taxonomy and scope boundaries; the other is the day-to-day Faker recipe set.
 
 ## Scope Boundary
 

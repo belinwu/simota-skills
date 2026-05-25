@@ -2,6 +2,7 @@
 
 **Purpose:** Interpretation method for ambiguous user requests.
 **Read when:** The request is vague and routing depends on resolving intent first.
+**See also:** After resolving intent, see `routing-explanation.md` for how to present the chosen chain (and alternatives) back to the user.
 
 Methodology for decoding ambiguous user intent before agent routing. Previously a standalone agent (Cipher), now integrated as a Nexus capability.
 

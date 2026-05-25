@@ -11,8 +11,8 @@ Each visible trait in the prompt MUST cite at least one input attribute. No inve
 | Attribute | Source ref | Visual surface |
 |-----------|-----------|----------------|
 | `class` | `class-system.md` | Job archetype — silhouette, gear, profession cues |
-| `stat tier` (`STR`/`DEX`/`INT`/`WIS`/`CHA`/`CON`) | `stat-calculation.md` | Build, posture, gear emphasis (NOT raw numerical display) |
-| `rank` | `rank-xp-system.md` | Costume grade, insignia, ornamentation density |
+| `stat tier` (`STR`/`DEX`/`INT`/`WIS`/`CHA`/`CON`) | `character-progression.md` (Stats section) | Build, posture, gear emphasis (NOT raw numerical display) |
+| `rank` | `character-progression.md` (Rank & XP section) | Costume grade, insignia, ornamentation density |
 | `badges` | `badge-catalog.md` | Emblems, accessories, flair (density per rarity) |
 | `department` | `organization-map.md` | Background motif, allegiance markers |
 | `active quest` | `quest-mapping.md` | Pose, held tool / weapon, environmental cue |
@@ -20,7 +20,7 @@ Each visible trait in the prompt MUST cite at least one input attribute. No inve
 ## Mapping Rules
 
 1. **1 trait = 1 citation.** Every armor piece, badge, accessory, pose detail, or background element traces back to a Realm-tracked attribute. Citations are listed alongside the prompt in the handoff packet.
-2. **Stat tier governs body/posture, not numerical display.** Use the tier thresholds in `stat-calculation.md`; do not write "STR 12" into the prompt. Tier-1 STR ≠ "weak"; calibrate against the rubric.
+2. **Stat tier governs body/posture, not numerical display.** Use the tier thresholds in `character-progression.md` (Stats section); do not write "STR 12" into the prompt. Tier-1 STR ≠ "weak"; calibrate against the rubric.
 3. **Rank governs costume density and ornamentation, not pose dominance.** Avoid implying superiority through aggressive postures across ranks — keep all agents in dignified, character-sheet posture.
 4. **Badge density follows rarity tier, not visual real estate.** Common badges = subtle pin / brooch. Rare = visible emblem. Legendary = central focal element. Never fill the canvas with badges to "look impressive."
 5. **Class wins ties.** When two attributes suggest conflicting visual cues (e.g., heavy-armor class + low STR tier), class anchors the silhouette; stat tier modulates posture and weight inside that silhouette.
@@ -191,7 +191,7 @@ Beyond the core caption block (`name` / `role · category`), three optional elem
 | Supplement | Source | Include when | Visualization |
 |-----------|--------|-------------|---------------|
 | `tagline` | **Agent's own `tagline` field (preferred)** from agent directory data; **fall back to `class-system.md` Flavor column** when agent tagline is missing or > 60 chars | Always available; include when ≤ 60 chars | Single italic line, smaller than secondary caption, placed directly under the caption block |
-| `rank_pill` | `rank-xp-system.md` Title column (e.g. `Apprentice`, `Veteran`, `Champion`) | Rank is **not** cold-start | Small color-coded pill/badge tucked below or beside the caption block; pill color = rank `Badge Color` from `rank-xp-system.md` (Veteran=Purple, Elite=Gold, Champion=Orange, Legend=Red, etc.) |
+| `rank_pill` | `character-progression.md` Rank Thresholds → Title column (e.g. `Apprentice`, `Veteran`, `Champion`) | Rank is **not** cold-start | Small color-coded pill/badge tucked below or beside the caption block; pill color = rank `Badge Color` from `character-progression.md` (Veteran=Purple, Elite=Gold, Champion=Orange, Legend=Red, etc.) |
 | `affinity_icons` | Agent's `PROJECT_AFFINITY` from its SKILL.md frontmatter | Always available; show only entries marked `(H)` High; max 3 icons | Small abstract icon strip in a corner (no text labels). Standard symbols: SaaS=stacked cards, E-commerce=shopping bag, Mobile=smartphone, Dashboard=gauge, Marketing=megaphone, Game=controller |
 
 #### Supplement rules
@@ -323,7 +323,7 @@ REALM_TO_SKETCH_PORTRAIT:
         text: "<verbatim string, ≤ 60 chars; null to omit>"
         source: "agent.tagline (preferred) | class-system.md Flavor column (fallback when agent tagline missing or > 60 chars)"
       rank_pill:
-        title: "<rank title from rank-xp-system.md; null under cold-start>"
+        title: "<rank title from character-progression.md; null under cold-start>"
         color: "<rank Badge Color, e.g., Purple, Gold, Orange>"
       affinity_icons:
         items: ["<abstract symbol descriptor>", "..."]   # max 3, e.g. ["stacked cards (SaaS)", "shopping bag (E-commerce)", "smartphone (Mobile)"]
@@ -355,7 +355,7 @@ Before emitting the handoff packet, verify:
 - [ ] No mythic-curse, eldritch, or grotesque-distortion imagery is present in any variant.
 - [ ] No PII, customer / competitor / partner names, internal URLs, repo paths, secrets, or source code identifiers appear in the prompt.
 - [ ] No real-person or named-individual references; no direct trademark brand names.
-- [ ] Stat-tier → body / posture mapping calibrated per `stat-calculation.md` (not gut feel; not numerical display).
+- [ ] Stat-tier → body / posture mapping calibrated per `character-progression.md` Stats section (not gut feel; not numerical display).
 - [ ] Rank ornamentation density matches rank tier; pose dominance does NOT scale with rank.
 - [ ] Badge density follows rarity tier, not canvas real estate.
 - [ ] Class anchors the silhouette when attributes conflict.

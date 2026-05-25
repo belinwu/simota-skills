@@ -4,11 +4,16 @@ Purpose: Static review of LLM integration code — prompt injection surfaces, ja
 
 ## Scope Boundary
 
-- **Sentinel `aisec`**: static audit of the integration code — prompt assembly, retrieval pipeline, tool allowlist, output rendering, PII scrubbing, rate/cost limits.
-- **Breach (elsewhere)**: adversarial red-team validation — actually crafting jailbreaks, running DAN-style payloads, chaining indirect injections through attacker-controlled documents, model extraction probes.
-- **Oracle (elsewhere)**: AI/ML application design — prompt strategy, RAG retrieval quality, eval harness, model selection. Design belongs to Oracle; hardened implementation is reviewed here.
+- **This file (`ai-security.md`)** — AI-as-**integration** risk: static audit of the integration code in the product — prompt assembly, retrieval pipeline, tool allowlist, output rendering, PII scrubbing, rate/cost limits. Maps to OWASP LLM Top 10 2025.
+- **Sibling `ai-code-security.md`** — AI-as-**author** risk: source-level flaws in AI-generated code (slopsquatting, hallucinated packages, XSS/SQLi rate stats), threats against the developer's AI tooling (Rules File Backdoor, IDEsaster, MCP supply-chain poisoning), and the modern SAST landscape.
+- **Breach (elsewhere)** — adversarial red-team validation: actually crafting jailbreaks, running DAN-style payloads, chaining indirect injections through attacker-controlled documents, model extraction probes.
+- **Oracle (elsewhere)** — AI/ML application design: prompt strategy, RAG retrieval quality, eval harness, model selection. Design belongs to Oracle; hardened implementation is reviewed here.
 
-Rule of thumb: if the finding is "this code path can be exploited statically (missing escape / missing allowlist / leak pipe)" → `aisec`. If it is "does this model actually get jailbroken?" → `Breach`. If it is "what prompt should we use?" → `Oracle`.
+Rule of thumb:
+- "This code path can be exploited statically (missing escape / missing allowlist / PII leak pipe at the LLM boundary)" → here (`ai-security.md`).
+- "An AI wrote this code; is the source itself vulnerable?" → `ai-code-security.md`.
+- "Does this model actually get jailbroken?" → `Breach`.
+- "What prompt should we use?" → `Oracle`.
 
 ## Workflow
 

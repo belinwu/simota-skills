@@ -1,15 +1,16 @@
 # Forge Builder Integration
 
 > Purpose: define the minimum artifact set and handoff contract required when a Forge prototype moves to Builder.
+>
+> Lifecycle (Throwaway vs Evolutionary), L0–L3 quality ladder, handoff pitfalls, and the canonical `.agents/forge-insights.md` template live in `references/prototype-to-production.md`. This file covers only the artifact-set specifics: directory layout, type/error code templates, the `BUILDER_HANDOFF` block, and the production-conversion checklist.
 
 ## Contents
 
 - Required output structure
 - `types.ts` template
 - `errors.ts` template
-- `.agents/forge-insights.md` template
-- `BUILDER_HANDOFF`
-- Production checklist
+- `BUILDER_HANDOFF` block
+- Prototype-to-production checklist
 
 ## Required Output Structure
 
@@ -25,7 +26,7 @@ mocks/
 └── errors.ts            # required error cases
 
 .agents/
-└── forge-insights.md    # required domain and decision record
+└── forge-insights.md    # required — see prototype-to-production.md for the canonical template
 ```
 
 ## `types.ts` Template
@@ -121,39 +122,9 @@ export const errorHandlers = [
 ];
 ```
 
-## `.agents/forge-insights.md` Template
+## `.agents/forge-insights.md`
 
-```markdown
-# Forge Insights: [Feature Name]
-
-## Verified Rules
-- [ ] Email addresses must be unique
-- [ ] Passwords must meet minimum policy requirements
-- [ ] Only admins can delete users
-
-## Assumed Rules To Confirm
-- [ ] Is email change rate-limited?
-- [ ] Is user deletion soft delete or hard delete?
-
-## Confirmed UI Behavior
-### Success
-- Submit -> loading -> success message -> redirect
-
-### Failure
-- Validation errors under fields
-- Server errors shown as toast with retry
-- Network errors show offline state
-
-## Performance Notes
-- Tested with roughly 50 list items
-- Virtualization may be needed above 1000 items
-- Upload UI currently assumes a 5 MB limit
-
-## Open Questions
-1. What is the session lifetime?
-2. How are concurrent edits resolved?
-3. Is destructive confirmation required?
-```
+Canonical template lives in `references/prototype-to-production.md` under "`.agents/forge-insights.md` Template (canonical)". Builder consumers should read that single source — do not duplicate the structure here.
 
 ## Builder Handoff Template
 

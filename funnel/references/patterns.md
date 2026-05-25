@@ -3,13 +3,15 @@
 **Purpose:** LP structure and layout patterns by LP type and section.
 **Read when:** Selecting LP structure, choosing section-level design patterns.
 
+> **Headline formulas** (PAS / BAB / 4U / 4Ps) referenced below are defined in `copy-lp-authoring.md` (sections "Headline Formulas" and "Formula Selection by Audience State"). This file specifies which formula fits each LP type and the section flow around it — not the formula mechanics.
+
 ---
 
 ## LP Type Patterns
 
 ### 1. SaaS Product LP
 
-**Framework:** AIDA (first-time visitors) or PAS (problem-aware audience)
+**Framework:** AIDA (first-time visitors) or PAS (problem-aware audience) — see `copy-lp-authoring.md#headline-formulas`
 **Hero layout:** Pattern A (left text + right screenshot)
 **CTA:** "Start free" / "14-day free trial"
 
@@ -27,7 +29,7 @@
 
 ### 2. Lead Generation LP
 
-**Framework:** PAS (Problem → Agitate → Solution)
+**Framework:** PAS — see `copy-lp-authoring.md#pas--problem--agitate--solution`
 **Hero layout:** Pattern D (split with form)
 **CTA:** "Download free guide"
 **Form:** 2–3 fields maximum
@@ -43,7 +45,7 @@
 
 ### 3. Event / Webinar LP
 
-**Framework:** 4Ps (Promise → Picture → Proof → Push)
+**Framework:** 4Ps (Promise → Picture → Proof → Push) — 4Ps is event-LP-specific; for general formula selection see `copy-lp-authoring.md#formula-selection-by-audience-state`
 **Urgency elements:** countdown timer + remaining seats
 **CTA:** "Register free" / "Reserve your seat"
 
@@ -58,7 +60,7 @@
 
 ### 4. E-commerce Product LP
 
-**Framework:** BAB (Before → After → Bridge)
+**Framework:** BAB — see `copy-lp-authoring.md#bab--before--after--bridge`
 **Trust:** money-back guarantee badge required
 **CTA:** "Buy now" / "Add to cart"
 

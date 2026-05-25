@@ -334,5 +334,5 @@ The three subagents return JSON; Magi main context handles NORMALIZE through DEL
 - `magi/references/deliberation-framework.md` — three-viewpoint heuristics applied inside each cell's reasoning
 - `magi/references/voting-mechanics.md` — confidence calibration, consensus patterns, escalation rules
 - `magi/references/decision-domains.md` — domain-specific viewpoint focus matrices applied at SYNTHESIZE
-- `magi/references/engine-deliberation-guide.md` — Engine Mode (single-engine three-viewpoint) sibling; multi mode supersedes it when 3 engines are available
+- `magi/references/engine-deliberation-guide.md` — Engine Mode sibling for Simple-Mode Recipes (`decide` / `tradeoff` / `arbitrate` / `strategic`); each engine emits ONE integrated YAML position (not 3 viewpoints) and the result is a 3-engine vote, not a 9-cell matrix. `multi` Recipe supersedes it when tri-engine 9-cell deliberation is required.
 - `magi/references/devils-advocate.md` — DA challenge protocol invoked when 9-cell matrix is unanimous

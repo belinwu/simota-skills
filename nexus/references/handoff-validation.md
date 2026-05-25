@@ -2,6 +2,7 @@
 
 **Purpose:** Validation requirements for structured handoffs.
 **Read when:** A handoff needs integrity checks, confidence checks, or required-field validation.
+**See also:** This file **prevents** divergence at handoff time. To **resolve** conflicts that still occurred after parallel branches merged, see `conflict-resolution.md`.
 
 ## Contents
 - Overview

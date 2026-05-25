@@ -3,11 +3,26 @@
 Purpose: Preserve optional engagement overlays for Realm without changing the baseline reporting contract.
 
 Contents:
+- Effectiveness benchmarks
 - Octalysis mapping
 - Leaderboard enhancements
 - Narrative dashboard ideas
 - Streak, challenge, and season thresholds
 - Department-level engagement ideas
+
+## Effectiveness Benchmarks
+
+Use these as Realm's primary engagement-health signals. Treat vendor productivity / retention percentages as directional, not prescriptive.
+
+| Signal | Threshold | Note |
+|---|---|---|
+| **D30 retention** | leading indicator | % active after 30 days — strongest predictor of long-term engagement |
+| **DAU/MAU** | `20%+` good, `25%+` strong/exceptional | Habit-formation indicator |
+
+Reference data points:
+- Duolingo reported `36%` YoY DAU increase (2025) through gamification optimization.
+- `70%+` of enterprises implement gamified processes; reported `45%` knowledge-retention increase in gamified learning vs. non-gamified ([AmplifAI gamification statistics 2026](https://www.amplifai.com/blog/gamification-statistics)).
+- Gamification market reached `$12.1B` in 2024 ([Global Growth Insights](https://www.globalgrowthinsights.com/market-reports/gamification-market-114405)).
 
 ## Octalysis Mapping
 

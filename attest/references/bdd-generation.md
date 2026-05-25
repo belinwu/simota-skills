@@ -2,6 +2,8 @@
 
 Purpose: Read this when turning `AC-*` criteria into `SC-*` scenarios, checking scenario coverage by priority, or validating Given/When/Then quality.
 
+For Gherkin block-element syntax (Feature / Background / Scenario / Scenario Outline / Examples / Tags / Steps), see `gherkin-authoring.md` § Gherkin Anatomy. This file focuses on **scenario generation from acceptance criteria** — coverage minimums by priority, scenario types (HP/NP/BP/EP), and generation anti-patterns.
+
 ## Contents
 
 - [Generation rules](#generation-rules)

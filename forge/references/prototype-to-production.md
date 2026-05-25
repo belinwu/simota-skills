@@ -55,7 +55,9 @@ Recommended status tags:
 - `🧪 EXPERIMENT`
 - `🔁 ITERATE`
 
-## `.agents/forge-insights.md` Template
+## `.agents/forge-insights.md` Template (canonical)
+
+This is the canonical structure for `.agents/forge-insights.md` — used both as the Forge decision/debt log and the Builder handoff brief. Builder-integration consumers reference this template; do not redefine it elsewhere.
 
 ```markdown
 # Forge Insights: [Feature Name]
@@ -64,8 +66,18 @@ Recommended status tags:
 - [ ] [Hypothesis]
 - Result: `CONFIRMED` / `REJECTED` / `NEEDS_MORE_DATA`
 
+## Verified Rules
+- [ ] [Domain rule confirmed during prototype, e.g. "Email addresses must be unique"]
+
+## Assumed Rules To Confirm
+- [ ] [Rule used during the prototype but not yet verified, e.g. "Is email change rate-limited?"]
+
 ## Decision Log
 - [Date] [Decision] — Reason: [why]
+
+## Confirmed UI Behavior
+- Success: [observed happy-path flow]
+- Failure: [observed validation / server / network error handling]
 
 ## Tech Debt
 - [ ] [file:line] [shortcut] — Reason: [why temporary] · Recommended fix: [next step]
@@ -73,12 +85,18 @@ Recommended status tags:
 ## Known Edge Cases
 - [Case]: [impact and current gap]
 
+## Performance Notes
+- [Scale tested]: [observed behavior, virtualization / pagination thresholds]
+
 ## Test Strategy
 - Unit: [what should be covered]
 - Integration: [what flow should be covered]
 
 ## UI Rationale
 - [Decision]: [reason]
+
+## Open Questions
+1. [Question for Builder / stakeholder]
 ```
 
 ## `L0-L3` Quality Ladder

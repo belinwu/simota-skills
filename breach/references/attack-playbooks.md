@@ -2,6 +2,7 @@
 
 **Purpose:** Structured attack playbooks for application, infrastructure, and supply chain domains.
 **Read when:** Designing attack scenarios for non-AI systems.
+**Scope:** Generic OWASP Top 10 (web/API/infrastructure). For AI/LLM attack frameworks (OWASP LLM Top 10, OWASP Agentic Top 10, MITRE ATLAS, NIST AI 100-2), see `ai-red-teaming.md`.
 
 ---
 

@@ -176,7 +176,7 @@ Commercial platforms still relevant in 2026: **Octomind, Momentic, Stagehand / B
 - Pure browser-agent product (no test repo) reaching across many sites → **Stagehand v3** (developer-first) or **Browser-Use** (open-source) on **Browserbase** for cloud sessions.
 - RPA-shaped workflow (form-filling, document downloads, CAPTCHAs, credential vault) → **Skyvern**.
 - Cross-app journeys that leave the browser → **Anthropic Computer Use** or **OpenAI CUA**.
-- Canvas / non-DOM / cross-platform native targets → **Midscene.js** (or MaestroGPT for mobile only; see `mobile-e2e-testing.md`).
+- Canvas / non-DOM / cross-platform native targets → **Midscene.js** (or MaestroGPT for mobile only; see `mobile-testing.md`).
 - Self-healing applied to an existing Playwright repo without rewriting → **Octomind** (source-level fix) or **ZeroStep** (drop-in helper).
 - Observation / debugging / performance during AI runs → **Chrome DevTools MCP** alongside whichever action layer is in use.
 
@@ -246,4 +246,4 @@ Same as the web review checklist above, plus mobile-specific:
 - [ ] Locator strategy is `accessibilityIdentifier` / `testID` / `contentDescription` — not text on a localized screen.
 - [ ] Visual diffs mask **dynamic regions** (timestamps, signal bars, battery, push banners) before adjusting numeric thresholds.
 - [ ] Self-heal events are surfaced in the report so silent regressions cannot ride along.
-- [ ] AI-suggested tests respect the two-axis flake taxonomy (logic vs device) — see `mobile-e2e-testing.md`.
+- [ ] AI-suggested tests respect the two-axis flake taxonomy (logic vs device) — see `mobile-testing.md`.

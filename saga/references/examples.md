@@ -43,16 +43,10 @@
 > **so I can** 経理作業の時間と心理的負担を減らし、本業に集中できる。
 
 ### Anti-Pattern Check
-| # | Check | Result |
-|---|-------|--------|
-| AP-1 | Feature Dump | PASS - ストーリーアークあり |
-| AP-2 | Hero Product | PASS - 美咲が主人公 |
-| AP-3 | Missing Tension | PASS - 月末の苦痛を描写 |
-| AP-4 | No Transformation | PASS - Before→After 明確 |
-| AP-5 | Generic Persona | PASS - 具体的な人物像 |
-| AP-6 | Narrative Bias | PASS - 仮定なし |
-| AP-7 | Jargon Wall | PASS - 平易な言葉 |
-| AP-8 | Happy Path Only | PASS - 社名変更の見落とし（失敗）を描写 |
+全項目 PASS（基準は `references/anti-patterns.md`）。本例の合格理由:
+- AP-1 ストーリーアークあり / AP-2 美咲が主人公 / AP-3 月末の苦痛を描写
+- AP-4 Before→After 明確 / AP-5 具体的な人物像 / AP-6 仮定なし
+- AP-7 平易な言葉 / AP-8 社名変更の見落とし（失敗）を描写 / AP-9 販促トーンなし
 
 ---
 

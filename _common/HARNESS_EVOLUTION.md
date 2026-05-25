@@ -132,7 +132,7 @@ type: DRIFT
 source: nexus
 date: YYYY-MM-DD
 summary: "HE-05: First-iteration ACCEPT rate at 85% (threshold: 80%). Proposing Max_Iterations reduction from 3 to 2."
-affects: ["nexus", "evaluator-loop"]
+affects: ["nexus", "evaluator-loop-protocol"]
 priority: MEDIUM
 reusable: true
 -->

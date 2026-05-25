@@ -2,6 +2,14 @@
 
 Purpose: Use this reference when the target code was AI-generated, AI-assisted, or when AI tooling changes the threat model. Also covers modern SAST landscape and hybrid LLM+SAST approaches.
 
+## Scope Boundary
+
+- **This file (`ai-code-security.md`)** — AI-as-**author** risk: source-level flaws introduced by AI-assisted commits (slopsquatting, hallucinated packages, XSS/SQLi/secrets in generated code), threats against the developer's AI tooling itself (Rules File Backdoor, IDEsaster, MCP supply-chain poisoning), and the modern SAST landscape for catching them.
+- **Sibling `ai-security.md`** — AI-as-**integration** risk: runtime LLM integration code paths in the product (prompt injection, RAG indirect injection, tool-use boundary, model-output rendering, PII scrubbing, cost/rate limits, OWASP LLM Top 10 2025 mapping).
+- **Overlap clarifier — MCP tool security:** discussed here from the *developer-tooling supply-chain* angle (the dev's IDE/agent ingests a malicious MCP server). For the *product-runtime* angle — your app exposes tools to a model and must allowlist/validate/gate them — see `ai-security.md` "Tool use" row and LLM06 Excessive Agency.
+
+Rule of thumb: if the question is "did an AI write this code, and what could go wrong in *the code itself*?" → here. If the question is "does this code *talk to* an AI at runtime, and what could go wrong at *that boundary*?" → `ai-security.md`.
+
 ---
 
 ## 1. Risk Snapshot (2025-2026)

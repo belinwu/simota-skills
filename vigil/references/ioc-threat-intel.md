@@ -2,6 +2,8 @@
 
 Purpose: Manage indicators of compromise and threat intelligence as a first-class, lifecycle-managed asset. The `ioc` Recipe covers STIX 2.1 object shapes, TAXII 2.1 feed consumption, the observe → validate → enrich → expire lifecycle, MISP integration, feed deduplication, and false-positive handling. Detection rules (sigma / yara / snort) consume IoCs as inputs; `ioc` is the pipeline that feeds them cleanly.
 
+For CI/CD pipeline templates (GitHub Actions, syntax lint / TP / FP test stages, OIDC and SHA-pinned actions) that ship IoC-derived detection rules to staging and production SIEMs, see `detection-as-code.md`. This file focuses on **IoC-specific rule input** — STIX/TAXII ingestion, MISP, lifecycle, TTL, dedup, and feed-quality gates that run *before* the DaC pipeline.
+
 ## Scope Boundary
 
 - **Vigil `ioc`**: Intelligence ingestion, normalization, lifecycle, expiration, and quality. STIX/TAXII, MISP, feed hygiene.

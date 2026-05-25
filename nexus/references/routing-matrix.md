@@ -1,9 +1,11 @@
 # Full Routing Matrix
 
-**Purpose:** Canonical full task-type to chain mapping.
-**Read when:** The quick-start matrix is insufficient and you need the full mapping.
+**Purpose:** Canonical task-type → **default chain** mapping with Recipe Hints (per-step sub-skill commands) and conditional Additions.
+**Read when:** The quick-start matrix in SKILL.md is insufficient and you need the full task-type catalog.
 
-Complete task type → agent chain mapping. The SKILL.md contains the top 5 most common patterns; this file contains the full matrix.
+**Boundary vs `agent-chains.md`:** This file gives one row per task type with the *default* chain. `agent-chains.md` lists **complexity variants** (e.g., `FEATURE/S`, `FEATURE/M`, `FEATURE/L`, `FEATURE/UI`, `FEATURE/UX`) and dynamic adjustment rules. Start here to pick the task type; switch to `agent-chains.md` when complexity sub-typing matters.
+
+Complete task type → agent chain mapping. The SKILL.md Routing Quick Start contains the top patterns; this file contains the full matrix.
 
 ---
 

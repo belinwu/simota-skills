@@ -1,5 +1,7 @@
 # API Security Patterns
 
+> **Scope**: This file covers authentication, authorization, CORS, input validation, and security review patterns. For rate-limit algorithms, headers (`RateLimit-*` / legacy `X-RateLimit-*`), 429 + `Retry-After` semantics, and distributed enforcement, see `rate-limit-patterns.md` (the canonical source).
+
 ## Authentication Methods
 
 | Method | Use Case | Complexity |
@@ -7,15 +9,6 @@
 | API Key | Server-to-server | Low |
 | JWT Bearer | User auth | Medium |
 | OAuth 2.0 | Third-party access | High |
-
-## Rate Limiting Headers
-
-```
-X-RateLimit-Limit: 100
-X-RateLimit-Remaining: 95
-X-RateLimit-Reset: 1640000000
-Retry-After: 60
-```
 
 ## CORS Configuration
 
@@ -108,22 +101,9 @@ DPoP: eyJhbGciOiJFUzI1NiIsInR5cCI6ImRwb3Arand...
 | Transmission | Header only (`Authorization: Bearer` or custom `X-API-Key`); never in URL |
 | Audit | Log key ID (not value) on every request for traceability |
 
-### Rate Limiting Headers (IETF Draft RateLimit)
+### Rate Limiting Headers
 
-The IETF draft `draft-ietf-httpapi-ratelimit-headers` standardizes rate limit response headers:
-
-```http
-RateLimit-Limit: 100
-RateLimit-Remaining: 42
-RateLimit-Reset: 1
-RateLimit-Policy: 100;w=60;burst=20;comment="sliding window"
-Retry-After: 30
-```
-
-- `RateLimit-Limit`: Maximum requests in the current window.
-- `RateLimit-Remaining`: Requests remaining in the current window.
-- `RateLimit-Reset`: Seconds until the window resets (prefer over epoch timestamp).
-- `RateLimit-Policy`: Human/machine-readable policy descriptor.
+See `rate-limit-patterns.md` for the IETF `RateLimit` / `RateLimit-Policy` draft header spec, legacy `X-RateLimit-*` headers, and 429 + `Retry-After` body conventions.
 
 ---
 

@@ -2,6 +2,7 @@
 
 **Purpose:** Rules for detecting and resolving parallel-branch conflicts.
 **Read when:** Parallel work touched overlapping files, logic, or ownership boundaries.
+**See also:** This file handles conflicts that have already occurred at merge time. To **prevent** divergence before routing, see `handoff-validation.md` (handoff field requirements + integrity checks).
 
 ## Contents
 - Overview

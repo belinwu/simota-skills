@@ -8,6 +8,7 @@ Purpose: Apply the BAB copywriting framework to short-form, conversion-driven na
 - **saga `customer` (elsewhere)**: Full Before→After arc with case-study depth.
 - **saga `hero-journey` (elsewhere)**: 12-stage transformation. BAB is a *radical compression* of hero's journey.
 - **saga `narrative` (elsewhere)**: Product positioning. BAB executes the positioning; positioning frames it.
+- **saga `pyramid` (`references/minto-pyramid.md`)**: Top-down MECE answer-first delivery for executive/board memos. **Choose Pyramid over BAB when the audience must *decide* (analytic), not *act* (emotional/conversion).** BAB's Bridge is a product CTA; Pyramid's top is a governing thought + decision ask. The two can also combine — Pyramid for the spine of an exec memo, BAB embedded as a one-pager illustration of the customer transformation.
 - **Prose (elsewhere)**: Final UX microcopy and tone polish.
 - **Funnel (elsewhere)**: LP construction and conversion architecture.
 - **Growth (elsewhere)**: SEO/CRO/SMO optimization of the BAB output.
@@ -137,8 +138,8 @@ PATH       →  state the simplest action that bridges the two
 DRAFT      →  write Before / After / Bridge to length budget
            →  one sentence each for short channels; one paragraph for LP
 
-REFINE     →  AP-1~AP-9 anti-pattern check (especially AP-3 missing tension,
-           →  AP-9 ad copy disguise, AP-7 jargon wall)
+REFINE     →  AP-1~AP-9 anti-pattern check via references/anti-patterns.md
+           →  especially AP-3 missing tension, AP-9 ad copy disguise, AP-7 jargon wall
            →  read aloud to test rhythm
 
 DELIVER    →  output BAB + alternatives (2-3 variants) for A/B testing
@@ -176,15 +177,7 @@ DELIVER    →  output BAB + alternatives (2-3 variants) for A/B testing
 - **Reason**: [tone fit, audience match, CTA strength]
 
 ### Anti-Pattern Check
-- [ ] AP-1 Feature Dump: no
-- [ ] AP-2 Hero Product: no — customer-centric
-- [ ] AP-3 Missing Tension: no — Before is concrete
-- [ ] AP-4 No Transformation: no — Before/After differ measurably
-- [ ] AP-5 Generic Persona: no
-- [ ] AP-6 Narrative Bias: no — assumptions stated
-- [ ] AP-7 Jargon Wall: no
-- [ ] AP-8 Happy Path Only: not applicable for short BAB
-- [ ] AP-9 Ad Copy Disguise: no — pain is real, not manufactured
+Run the full AP-1~AP-9 checklist from `references/anti-patterns.md` and report results in the standard format. BAB emphasizes AP-3 (Missing Tension — Before must be concrete), AP-7 (Jargon Wall — short copy can't carry it), and AP-9 (Ad Copy Disguise — the largest risk for conversion copy). AP-8 (Happy Path Only) is typically marked N/A for short-form BAB.
 
 ### Test Plan
 - **Hypothesis**: variant X drives more conversion than control
@@ -239,7 +232,7 @@ When `bab` completes, emit:
 - **Audience + channel + length budget** stated.
 - **Three variants (A/B/C)** of full BAB.
 - **Recommended variant** with reason.
-- **Anti-pattern check** (AP-1~AP-9).
+- **Anti-pattern check** (AP-1~AP-9 per `references/anti-patterns.md`).
 - **Test plan** (hypothesis, metric, sample size, holdout).
 - **Handoffs**: Funnel, Growth, Prose, Experiment, Director.
 

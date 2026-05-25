@@ -1,7 +1,9 @@
 # Nexus Guardrail System Reference
 
-**Purpose:** Guardrail levels, checkpoints, and state-management rules.
-**Read when:** You need to choose or validate guardrail behavior for a task.
+**Purpose:** Guardrail **states** (L1 MONITORING → L4 ABORT), per-task-type checkpoint config, Auto-Recovery Chains (A/B/C), and execution-state tracking.
+**Read when:** You need to configure or interpret the execution-state guardrail for a task, or look up a Recovery Chain spec.
+
+**Boundary vs `error-handling.md`:** This file owns the **execution-state axis** (L1-L4 guardrail levels + recovery chain definitions + state hierarchy). `error-handling.md` owns the **error-classification axis** (L1 retry → L5 abort by error severity) and invokes Recovery Chains defined here. Both files reference L1-L4, but along different axes — guardrails by state, error-handling by error type.
 
 ## Contents
 - Guardrail Levels

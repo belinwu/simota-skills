@@ -14,25 +14,7 @@ Purpose: Score commit messages, detect weak sequences, and prepare safe rewrite 
 
 ## Message Structure Analysis
 
-Preferred format:
-
-```text
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
-```
-
-### Component Checks
-
-| Component | Key rules |
-|-----------|-----------|
-| Type | use conventional types such as `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `build`, `revert` |
-| Scope | accurate module, feature, or layer if needed |
-| Subject | imperative, lowercase start, no trailing period, `10-72` chars |
-| Body | explain `why`, not the diff itself |
-| Footer | issue links, breaking changes, co-authors when needed |
+Conventional Commits format spec (type list, scope rules, subject/body conventions, length limits) lives in `commit-conventions.md` § Conventional Commits and § Atomic Commit Rules. This file extends that spec with scoring rules below — score each component (Type, Scope, Subject, Body, Footer) against the rules in `commit-conventions.md` and aggregate per the rubrics that follow.
 
 ## Commit Sequence Analysis
 

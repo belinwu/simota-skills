@@ -1,46 +1,30 @@
 # Tilesheet Design Reference
 
-Purpose: Author tile-based sheets for 2D maps and platformers. Cover tile size selection, autotile masks (16 / 47 / Wang / Blob), terrain transitions, atlas packing, and integration with Tiled, LDtk, Phaser tilemap, Godot TileMap, Unity 2D Tilemap.
+Purpose: Author tile-based sheets for 2D maps and platformers. Covers the **recipe-level** workflow — autotile system *selection*, atlas packing, engine emission (Tiled / LDtk / Phaser / Godot / Unity), per-tile properties, and deliverable contract.
+
+> **Engine-agnostic tile fundamentals (size tables, bitmask math, 47-tile derivation, terrain overlay strategy, palette-cycle animation, seamless tile algorithm, common tile categories)** live in `references/tileset-design.md`. Read that first if you need the underlying mechanics. This document focuses on the parts unique to the `tilesheet` recipe.
 
 ## Scope Boundary
 
-- **dot `tilesheet`**: Tile-based world tile design (this document).
+- **dot `tilesheet`** (this document): Recipe workflow — autotile-system selection, atlas pack, engine emission, properties, output template.
+- **`references/tileset-design.md`**: Engine-agnostic fundamentals — tile sizes, bitmask math, 47-tile breakdown, terrain overlay strategy, seamless tiles, animation.
 - **dot `animation` (elsewhere)**: Character / sprite animation cycles.
 - **dot `palette` (elsewhere)**: Palette constraint applied to tiles.
 - **Quest (elsewhere)**: Game design level concepts.
 - **Builder (elsewhere)**: Engine integration code (TileMap loaders).
 - **Realm (elsewhere)**: Phaser-specific level rendering.
 
-## Tile Size Selection
+## Autotile System Selection
 
-| Size | Era / use |
-|------|-----------|
-| 8×8 | NES, Game Boy, gameboy color, Pico-8 (with 2× upscale) |
-| 16×16 | SNES, Mega Drive, classic JRPG, modern indie standard |
-| 24×24 | Some indies (Hollow Knight UI, Stardew portraits) |
-| 32×32 | Modern detailed pixel art, action platformers |
-| 48×48 / 64×64 | Higher-resolution pixel-art (Owlboy-class) |
+See `references/tileset-design.md` for the underlying bitmask math (4-bit / 8-bit, why 47 not 256, corner-masking rule) and Wang-vs-bitmask comparison. This section is the **selection rubric only**.
 
-**Rule of thumb**: smallest tile that comfortably represents your detail. Doubling tile size quadruples art workload.
-
-## Autotile Systems
-
-Player-placed terrain edges should *automatically* pick the correct tile based on neighbors. The complexity of the system depends on edge richness needed.
-
-### Wang 2-edge (Blob 4-bit, 16-tile)
-
-Each edge of a tile is one of two states. Used for simple grass/dirt boundaries.
-
-- 16 tiles total (2^4 corner combinations)
-- Sufficient for hard grass-on-dirt edges with no diagonals
-
-### 47-tile (RPG Maker / Tiled "Terrain")
-
-Standard for top-down terrain with corners + edges + diagonals. Used by RPG Maker, Tiled, and most 2D engines.
-
-- 47 unique tiles to cover all neighbor combinations including inner corners
-- Stored in a 8-tile-wide × 6-tile-tall bitmask layout
-- Each cell uses 4-bit corner + 4-bit edge mask (subset of 256 → 47 unique)
+| System | Tiles | Used by | Pick when |
+|--------|-------|---------|-----------|
+| Wang 2-edge (4-bit blob) | 16 | Tiled, Phaser | Simple platformer ground; hard grass-on-dirt with no diagonals |
+| 47-tile (8-bit blob) | 47 | RPG Maker MV/MZ, Tiled, most 2D engines | RPG-style map with corners + edges + diagonals |
+| 16-tile corner-blob | 16 | Godot 4 Terrain Sets | Hand-painted organic edges |
+| Wang 2-corner | 255 | Specialty | Maximum variation; expensive to author |
+| Hex 47-tile | 47 (hex) | Hex strategy games | Hex maps |
 
 ```
 Bitmask layout (Tiled / RPG Maker MV style):
@@ -49,19 +33,6 @@ Bitmask layout (Tiled / RPG Maker MV style):
 [SW][S][SE]
 ```
 
-### 16-tile Blob (corners only)
-
-Each *corner* references a tile. 4 corners × 4 states = 16 tile candidates per corner.
-
-- Used by Godot 4 Terrain Sets
-- Cleaner result for organic shapes
-
-### Wang 2-corner (255-tile)
-
-Per-corner full Wang. Powerful but expensive to author.
-
-### Selection
-
 | Need | Choose |
 |------|--------|
 | Simple platformer ground | Wang 2-edge or 47-tile |
@@ -69,20 +40,18 @@ Per-corner full Wang. Powerful but expensive to author.
 | Hand-painted organic edges | 16-tile blob (Godot) |
 | Hex tiles | Hex 47-tile variant |
 
-## Terrain Transitions
+## Terrain Transitions (Recipe Defaults)
 
-For multi-terrain interactions (grass↔sand, sand↔water), each terrain pair needs its own 47-tile set. Or use stacked terrain layers (sand-on-grass overlay) to compose without exponential growth.
+The overlay-vs-all-pairs trade-off is detailed in `references/tileset-design.md` (Multi-Terrain Strategy). For the `tilesheet` recipe, default to the **layer overlay strategy**:
 
 ```
-LAYER STRATEGY (recommended):
+DEFAULT (recommended):
 Layer 0: base ground (grass)
 Layer 1: sand-on-grass overlay (47 tiles)
 Layer 2: water-on-sand overlay (47 tiles)
 
-versus
-
-ALL-PAIRS STRATEGY (avoid):
-N terrains → N×(N-1)/2 transition sets
+AVOID:
+N terrains → N×(N-1)/2 dedicated transition sets
 ```
 
 ## Atlas Packing
@@ -162,7 +131,7 @@ Use `RuleTile` (asset) or `AnimatedRuleTile`. 47-tile pattern via `Sprite[]` arr
 
 ## Animated Tiles
 
-Water, lava, torches — frames cycle on a timer.
+Water, lava, torches — frames cycle on a timer. For frame-count/FPS guidance and palette-cycling technique, see `references/tileset-design.md` (Animated Tiles section). The Tiled per-tile animation JSON below is the canonical exchange format; Phaser / Godot / Unity all consume it.
 
 ```json
 {
@@ -174,8 +143,6 @@ Water, lava, torches — frames cycle on a timer.
   ]
 }
 ```
-
-Tiled supports per-tile animation natively. Phaser/Godot/Unity all consume it.
 
 ## Collision + Properties
 

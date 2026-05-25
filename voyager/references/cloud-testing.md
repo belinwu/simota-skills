@@ -11,8 +11,7 @@ Contents:
 
 | You need | Read |
 |----------|------|
-| Native mobile E2E framework selection (Detox / Maestro / Appium / XCUITest / Espresso) and device-farm tier matrix (PR / nightly / release) | `mobile-e2e-testing.md` (start there) |
-| Concrete WebdriverIO + Appium configuration for cloud sessions, mobile-specific patterns (rotation, push, airplane mode) | `mobile-native-testing.md` |
+| Native mobile E2E framework selection (Detox / Maestro / Appium / XCUITest / Espresso), device-farm tier matrix (PR / nightly / release), concrete WebdriverIO + Appium configuration for cloud sessions, mobile-specific patterns (rotation, push, airplane mode) | `mobile-testing.md` (start there) |
 | Web browser cloud session config, tunnels, parallel session caps, cost-tier strategy | this file |
 
 ## Native Mobile Cloud Sessions (App Automate / Real Device Cloud)
@@ -27,7 +26,7 @@ For native mobile cloud orchestration, use the App Automate / Real Device Cloud 
 | **Firebase Test Lab** | Android-only, Robo-crawler included | Cheapest Android matrix, virtual + physical devices | iOS unsupported — pair with BS/SL for full coverage |
 | **LambdaTest HyperExecute** | Real-device + KaneAI test generation; rebranded **TestMu AI** as of 2026-01 | Modular per-product billing (Live, Automation, HyperExecute, SmartUI, KaneAI, TestManager) | Combined-product seat cost can exceed $650/month — confirm scope before enabling |
 
-Concrete WebdriverIO + Appium capability examples for App Automate / Real Device Cloud live in `mobile-native-testing.md` (BrowserStack and Sauce Labs sections). The web Playwright capability examples below remain unchanged for browser-only matrices.
+Concrete WebdriverIO + Appium capability examples for App Automate / Real Device Cloud live in `mobile-testing.md` (BrowserStack and Sauce Labs sections). The web Playwright capability examples below remain unchanged for browser-only matrices.
 
 ### Firebase Test Lab — 2025-2026 lifecycle status
 

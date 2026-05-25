@@ -71,11 +71,81 @@ Each skill's `multi` Recipe falls into one of three patterns. Choose the one tha
 
 **Scoring** (use both axes):
 - Confidence axis: `CONFIRMED` / `LIKELY` / `CANDIDATE` (per Pattern C)
-- Perspective axis: `CONVERGENT` (all engines reach same conclusion) / `DIVERGENT` (engines split on conclusion — surface the split as a feature, not a bug)
+- Perspective axis: `CONVERGENT` (all engines reach same conclusion) / `DIVERGENT-N` (N ≥ 2 engines split on conclusion — surface the split as a feature, not a bug)
 
 **Synthesis**: Present both the consensus position AND the dissenting perspectives. For Magi-style 3-viewpoint skills, this becomes **3 engines × N viewpoints = N×3 matrix** — extract patterns from the matrix rather than averaging.
 
 **Filter**: Drop hallucinations and incoherent outputs; preserve well-reasoned dissents.
+
+---
+
+## Pattern H Deep Dive (shared by Scout / Atlas / Magi / Echo)
+
+The Pattern H scoring/grounding/tagging mechanics are identical across skills; only the JSON schema, cluster identity rules, and output document shape differ. Skills implementing Pattern H inherit this section verbatim and define only their deltas in `references/tri-engine-{verb}.md`.
+
+### Confidence axis (per cluster) — initial treatment
+
+| Engines in cluster | Confidence label | Initial treatment |
+|--------------------|------------------|-------------------|
+| 3 / 3 | `CONFIRMED` | High confidence; light spot-check at GROUND |
+| 2 / 3 | `LIKELY` | Strong; note what the missing engine surfaced instead — that often becomes a dissenting cluster |
+| 1 / 3 | `CANDIDATE` | Must pass GROUND to ship as primary or dissenting; drop if rejected |
+
+### Perspective axis (cross-cluster)
+
+After confidence scoring, examine the cluster set as a whole:
+
+- `CONVERGENT` — all surviving clusters reduce to the same conclusion class. Ship a single high-confidence output.
+- `DIVERGENT-N` — N ≥ 2 surviving clusters reflect genuinely different conclusions. The top-ranked cluster ships as the recommended/primary; remaining N-1 ship as Dissenting/Alternative entries with explicit downstream handoff (verification ordering, supersession triggers, etc.).
+
+**Critical Pattern H rule**: A `DIVERGENT` result is **not a failure of the multi-engine flow** — it is the precise signal multi-engine investigation is designed to produce. Single-engine output cannot tell you when alternative conclusions are plausible; multi-engine can. Ship the divergence explicitly rather than collapsing.
+
+### GROUND verdicts (shared label set)
+
+All Pattern H skills use the same verdict vocabulary. Per-skill grounding checks (code reads, repro attempts, feasibility scans, anti-pattern scans) bind to these verdicts.
+
+| Verdict | Meaning | Disposition |
+|---------|---------|-------------|
+| `VERIFIED` | All grounding checks pass | Ship as primary or dissenting per perspective axis |
+| `LIKELY-VERIFIED` | Primary checks pass; secondary checks inconclusive (e.g., repro inconclusive, severity ambiguous) | Ship as dissenting only — never as the sole primary unless no `VERIFIED` cluster exists; downgrade confidence one tier |
+| `REJECTED-HALLUCINATION` | Cited code/evidence/module does not exist | Drop; record in rejection ledger |
+| `REJECTED-CHAIN-BROKEN` | Causal/intervention chain has a missing step | Drop; record in rejection ledger |
+| `REJECTED-MITIGATED` | Already prevented / addressed upstream | Drop; record in rejection ledger |
+| `REJECTED-INFEASIBLE` | Violates a hard constraint (runtime, topology, anti-pattern) | Drop; record in rejection ledger |
+| `NEEDS-INFO` | Cannot verify without information main context does not have | Escalate to user; do not ship |
+
+**Never ship a sole primary without at least one `VERIFIED` cluster.** If all surviving clusters are `LIKELY-VERIFIED`, ship the highest-confidence as primary with an explicit confidence downgrade and call out the verification gap.
+
+### Per-cluster recording (mandatory)
+
+For every cluster surviving CLUSTER+SCORE, record:
+
+- Engine set that produced it (drives the attribution tag)
+- Union of evidence across engines (drives ground-truth audits)
+- Union of causal-chain / intervention-step nodes (skills that have chains)
+- Highest confidence assigned across engines (entry confidence before GROUND)
+- Grounding verdict (set at GROUND)
+- Cross-references to other clusters it depends on or supersedes (smell ↔ option in Atlas; primary ↔ alternative ordering in Scout)
+
+### Engine-attribution + perspective tags
+
+Every shipped cluster carries both a concurrence tag and a perspective tag.
+
+| Engines flagging cluster | Concurrence tag | Perspective tag |
+|--------------------------|-----------------|-----------------|
+| 3 / 3 | `[codex+agy+claude]` | `[CONVERGENT]` (if also the only surviving cluster) or `[DIVERGENT-N → primary/alt-i]` |
+| 2 / 3 | `[codex+agy]` (any 2-combo) | `[CONVERGENT]` or `[DIVERGENT-N → primary/alt-i]` |
+| 1 / 3 grounded | `[codex-verified]` / `[agy-verified]` / `[claude-verified]` | `[DIVERGENT-N → alt-i]` (almost always alternative/dissenting) |
+| 1 / 3 rejected | (not shipped) | (not shipped) |
+
+Atlas variant: append the architectural style to the perspective tag for divergent options (`[DIVERGENT-{style}]`).
+Scout variant: append the alternative slot id for verification ordering (`[DIVERGENT-N → alt-i]`).
+
+### Why Pattern H is not Pattern C with extra steps
+
+- **Hypothesis / option lock-in is the dominant single-engine failure mode** for judgment-bearing skills. Once an engine commits to a frame, downstream reasoning is filtered through that frame. Independent fan-out across engines with non-overlapping training-data priors breaks the lock structurally.
+- **Concurrence is rare for non-trivial judgment tasks.** When three engines independently converge, the conclusion is almost certainly correct. When they diverge, the divergence itself is diagnostic — single-engine confidence in that case would be falsely high.
+- **Pattern C drops dissent; Pattern H ships dissent as a feature.** This matches the actual epistemic state of judgment tasks — multiple plausible answers for the same problem is the common case, not the edge case.
 
 ---
 

@@ -2,6 +2,8 @@
 
 Purpose: Read this when you need a proven hook pattern, recipe ID, or stack-specific recipe combination.
 
+For canonical matcher syntax, exit-code semantics, output schemas, and event contracts, see `hook-system.md` (§ Matcher Patterns, § Exit Codes, § Output Format, § Event Catalog). This file only references those rules and shows recipe-specific implementations.
+
 ## Contents
 
 - [Recipe catalog](#recipe-catalog)

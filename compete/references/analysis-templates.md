@@ -55,9 +55,11 @@ Use this as the default one-company snapshot.
 - [YYYY-MM] [...]
 
 ### Sources
-- [Source]
+- [Source] — tag with Tier (1/2/3) per `intelligence-gathering.md#source-tiers`
 - [Source]
 ```
+
+> **Source attribution:** every claim in the templates above should carry a source tag and Tier reliability score. See `intelligence-gathering.md#source-tiers` for the canonical Tier 1/2/3 definitions and conflict-resolution rules.
 
 ## Feature Comparison
 

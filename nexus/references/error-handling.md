@@ -1,7 +1,9 @@
 # Nexus Error Handling Reference
 
-**Purpose:** Failure levels, recovery actions, and escalation flow.
-**Read when:** A step failed and you need retry, rollback, recovery, escalation, or abort rules.
+**Purpose:** **Error classification** (L1 retry → L5 abort) and escalation flow when a step fails.
+**Read when:** A step failed and you need retry, rollback, recovery-chain invocation, escalation, or abort rules.
+
+**Boundary vs `guardrails.md`:** This file owns the **error-severity axis** (L1 AUTO_RETRY / L2 AUTO_ADJUST / L3 ROLLBACK / L4 ESCALATE / L5 ABORT). `guardrails.md` owns the **execution-state axis** (L1 MONITORING / L2 CHECKPOINT / L3 PAUSE / L4 ABORT) and defines the Recovery Chains (A/B/C) that L3 here invokes. Both files use L1-L4 numbering along different axes — do not conflate them.
 
 ## Contents
 - Error Levels

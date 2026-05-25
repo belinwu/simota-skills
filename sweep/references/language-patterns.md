@@ -2,6 +2,11 @@
 
 Purpose: language-specific detection tooling, fallback rules, and common false-positive cases.
 
+Scope boundary:
+- This file = **per-language tooling** (knip/vulture/staticcheck/cargo-udeps choice and fallback hierarchy).
+- `false-positives.md` = **cross-language detection patterns** (dynamic loading, framework conventions, magic strings, risk matrix).
+- `troubleshooting.md` = **recovery procedures** when tool output misleads (ts-prune/depcheck re-export false-positive flow, backup restore).
+
 ## Contents
 
 1. TypeScript / JavaScript

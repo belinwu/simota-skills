@@ -1,60 +1,43 @@
-# Tri-Engine Parallel Investigation
+# Tri-Engine Parallel Investigation (Scout Delta)
 
-Default flow for `/scout multi` (`consensus` Recipe in multi-engine mode). Run Codex, Antigravity, and Claude Code as three independent RCA subagents in parallel, integrate hypotheses across both axes (confidence + perspective), and deliver a **Pattern H — Hybrid** investigation report that ships a primary root cause backed by consensus while preserving well-reasoned alternative hypotheses as verification-recommended branches.
+Default flow for `/scout multi`. Run Codex, Antigravity, and Claude Code as three independent RCA subagents in parallel, integrate hypotheses across both axes (confidence + perspective), and deliver a **Pattern H — Hybrid** investigation report that ships a primary root cause backed by consensus while preserving well-reasoned alternative hypotheses as verification-recommended branches.
 
-**Why three engines for RCA (Pattern H, not Pattern C):** A single-engine RCA is structurally prone to hypothesis lock-in — once an engine commits to a causal chain, downstream evidence is filtered through that frame ("the system as seen through the lens of the first hypothesis"). Independent fan-out across three engines with non-overlapping training-data priors (Codex/GitHub-heavy, Antigravity/Google-product-heavy, Claude/Anthropic-curated) breaks the lock and surfaces alternative root cause hypotheses that the primary engine never considered. **Concurrence raises confidence on the primary RCA; divergence is not noise — it preserves the alternative hypothesis space for parallel verification.** Scout's downstream (Builder) does not write code from a single committed RCA — it receives a primary-plus-alternative bundle with explicit verification ordering.
+**Why three engines for RCA (Pattern H, not Pattern C):** A single-engine RCA is structurally prone to hypothesis lock-in — once an engine commits to a causal chain, downstream evidence is filtered through that frame. Independent fan-out across three engines with non-overlapping training-data priors (Codex/GitHub-heavy, Antigravity/Google-product-heavy, Claude/Anthropic-curated) breaks the lock and surfaces alternative root cause hypotheses that the primary engine never considered. **Concurrence raises confidence on the primary RCA; divergence is not noise — it preserves the alternative hypothesis space for parallel verification.** Scout's downstream (Builder) does not write code from a single committed RCA — it receives a primary-plus-alternative bundle with explicit verification ordering.
 
-**Pattern H** = Pattern C confidence axis (CONFIRMED / LIKELY / CANDIDATE) × perspective axis (CONVERGENT / DIVERGENT). Both axes ship in the final report.
+**This file specifies Scout-specific deltas only.** Read `_common/MULTI_ENGINE_RECIPE.md` first for shared mechanics:
 
-**Adapted from `_common/MULTI_ENGINE_RECIPE.md`. This file specifies only the Scout-specific deltas — JSON schema, CLUSTER identity rules, scoring rubric, GROUND protocol, SYNTHESIZE merge, and subagent prompt skeleton.**
-
----
-
-## Flow
-
-```
-SCOPE → PREFLIGHT → FAN-OUT → NORMALIZE → CLUSTER → SCORE (confidence + perspective) → GROUND → SYNTHESIZE → REPORT
-```
-
-The skeleton is identical to `_common/MULTI_ENGINE_RECIPE.md §Canonical Flow`. Scout's deltas:
-
-- **SCOPE** carries the bug report, symptom evidence, and any prior single-engine RCA that stalled.
-- **CLUSTER** groups by *root cause hypothesis identity*, not by symptom — engines may phrase the same root cause differently.
-- **SCORE** runs both axes; divergent hypotheses are preserved.
-- **GROUND** requires actual code reading and reproduction attempt — never delegate to subagents.
-- **SYNTHESIZE** produces primary RCA + alternative hypotheses with explicit verification ordering for Builder handoff.
+- `§Pattern H Deep Dive` — confidence axis, perspective axis, GROUND verdicts, per-cluster recording, engine-attribution + perspective tag tables, "DIVERGENT is not a failure" rule
+- `§Canonical Flow` — SCOPE → PREFLIGHT → FAN-OUT → NORMALIZE → CLUSTER → SCORE → GROUND → SYNTHESIZE → DELIVER skeleton
+- `§PREFLIGHT` — engine availability probe (run in Scout main context only)
+- `§FAN-OUT` — Agent tool dispatch, loose-prompt rule, runtime-failure detection (`agy` silent-failure pattern)
+- `§Degraded Modes` — baseline fallback table; Scout-specific overrides below
+- `§Engine-Attribution Tag Convention` — base tag formats
 
 ---
 
-## 1. SCOPE
+## Scout Deltas (what differs from `_common/MULTI_ENGINE_RECIPE.md`)
 
-Define the investigation target once. All three subagents share:
+### 1. SCOPE — RCA-specific inputs
+
+All three subagents share:
 
 - Symptom and observed behavior (verbatim error message, stack trace, log lines)
 - Reproduction status (reproduced / partially reproduced / not reproduced) and minimal repro if available
 - Environment context (runtime, version, deployment)
 - Prior investigation state if multi mode was triggered by `consensus` auto-promotion (3 hypotheses exhausted) — include the **ruled-out hypotheses with their elimination evidence** so subagents do not re-traverse dead ends
-- Affected files / area (optional — subagents read the code themselves; do not pre-commit them to a specific location)
+- Affected files / area (optional — subagents read the code themselves; do not pre-commit them)
 
 Do **not** pass RCA frameworks (5 Whys, Fishbone, Fault Tree templates) into subagents — each engine applies its own RCA priors. Frameworks apply at SYNTHESIZE.
 
-## 2. PREFLIGHT
+### 2. FAN-OUT — Scout subagent names
 
-Inherit `_common/MULTI_ENGINE_RECIPE.md §2` verbatim. Engine availability detection runs in Scout main context only.
+| Subagent | Engine |
+|----------|--------|
+| `investigate-codex` | Codex CLI (`codex exec --full-auto`) |
+| `investigate-agy` | Antigravity CLI (`agy -p` + silent-failure detection per `_common/MULTI_ENGINE_RECIPE.md §3.5`) |
+| `investigate-claude` | Claude Code subagent (Agent tool, `subagent_type: general-purpose`) |
 
-## 3. FAN-OUT — parallel RCA subagents
-
-Spawn three Agent calls in a single message. Each subagent runs one engine and produces RCA hypotheses independently.
-
-| Subagent | Engine | Baseline command |
-|----------|--------|------------------|
-| `investigate-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `investigate-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
-| `investigate-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
-
-**Loose prompt rule**: pass Role + Symptom evidence + Reproduction state + Ruled-out hypotheses + Output format only. Do NOT pass: 5-Whys templates, Fishbone categories, Causal Graph rules, RCA verb lists, or Scout's confidence rubric. Let each engine apply its own RCA priors.
-
-**Required JSON output schema** (Scout-specific):
+### 3. JSON output schema (Scout-specific)
 
 ```json
 {
@@ -85,13 +68,7 @@ Spawn three Agent calls in a single message. Each subagent runs one engine and p
 
 Each engine returns 1-3 hypotheses. Single-hypothesis returns are acceptable when the engine has high conviction; multi-hypothesis returns are preferred for ambiguous symptoms.
 
-If an engine is genuinely unavailable per PREFLIGHT, record the failure and proceed. Below two engines, all hypotheses become `CANDIDATE` and require stricter grounding (see §7).
-
-## 4. NORMALIZE
-
-Parse the three JSON blobs into a unified hypothesis list. Tag each hypothesis with its source engine. Preserve per-engine wording — divergent phrasing of the same root cause may reveal different angles on the same underlying mechanism, while genuinely different root cause hypotheses must remain distinct.
-
-## 5. CLUSTER — group by root cause hypothesis identity (NOT by symptom)
+### 4. CLUSTER — group by root cause hypothesis identity (NOT by symptom)
 
 **Scout's CLUSTER rule is the most consequential delta from generic Pattern H skills.** Engines investigating the same bug always agree on the symptom — they may diverge dramatically on the root cause. Symptom-based clustering would collapse meaningful divergence.
 
@@ -107,93 +84,35 @@ Two hypotheses belong to **different clusters** when **any** of these hold:
 - Different mechanisms (logic error vs race condition vs resource exhaustion vs upstream dependency)
 - Different ultimate fix locations (different files / different owners)
 
-**Record per cluster**: which engines produced it, the union of evidence across engines, the union of causal-chain steps, the highest confidence assigned across engines.
-
 **Do not** force same-symptom hypotheses into the same cluster — divergent root causes for the same symptom are exactly the value Pattern H preserves.
 
-## 6. SCORE — confidence axis × perspective axis
+### 5. GROUND — code reading + reproduction attempt (Scout main context, never delegated)
 
-Apply both axes to every cluster.
+Grounding for RCA is **stricter than for Spark or Plea** because Scout's output drives downstream code changes. Two grounding actions are mandatory for every cluster that may ship (primary OR alternative).
 
-### Confidence axis (per Pattern C rubric, adapted)
+**5a. Code reading (mandatory for every shipping cluster).** For each cluster, read the cited `affected_areas` files and the `causal_chain` step locations with the Read tool. Answer explicitly:
 
-| Engines in cluster | Confidence label | Initial treatment |
-|--------------------|------------------|-------------------|
-| 3 / 3 | `CONFIRMED` | High confidence in root cause; spot-check at GROUND |
-| 2 / 3 | `LIKELY` | Strong; note what the missing engine surfaced instead — that often becomes an alternative hypothesis cluster |
-| 1 / 3 | `CANDIDATE` | Must pass GROUND to ship as either primary or alternative |
-
-### Perspective axis (cross-cluster pattern)
-
-After confidence scoring, examine the cluster set as a whole:
-
-- `CONVERGENT` — all surviving clusters reduce to the same root cause class (CLUSTER rule collapsed all engines onto one). Ship as a single high-confidence RCA.
-- `DIVERGENT-N` — N surviving clusters reflect genuinely different root cause hypotheses (N ≥ 2). The primary cluster (highest confidence + strongest evidence) ships as Primary RCA; remaining N-1 clusters ship as Alternative Hypotheses with verification ordering.
-
-**Critical rule for Scout (Pattern H)**: A `DIVERGENT` result is **not a failure of the multi-engine flow** — it is the precise signal multi-engine investigation is designed to produce. Single-engine RCA cannot tell you when alternative root cause hypotheses are plausible; multi-engine can. Ship the divergence as explicit Alternative Hypotheses rather than collapsing.
-
-## 7. GROUND — verify primary + alternatives (Scout main context, never delegated)
-
-Grounding for RCA is **stricter than for Spark or Plea** because Scout's output drives downstream code changes. Two grounding actions are mandatory for every cluster that may ship (primary OR alternative):
-
-### 7a. Code reading (mandatory for every shipping cluster)
-
-For each cluster, read the cited `affected_areas` files and the `causal_chain` step locations using the Read tool. Answer explicitly:
-
-1. **Does the code path described actually exist?** Engines can hallucinate function names, imports, or call chains. If the cited symbol is absent, mark `REJECTED-HALLUCINATION`.
-2. **Does the causal chain match the actual control/data flow?** Trace from the trigger to the failure step. If any intermediate step does not exist in code, mark `REJECTED-CHAIN-BROKEN`.
+1. **Does the code path described actually exist?** If the cited symbol is absent, mark `REJECTED-HALLUCINATION`.
+2. **Does the causal chain match the actual control/data flow?** If any intermediate step does not exist in code, mark `REJECTED-CHAIN-BROKEN`.
 3. **Is there an upstream mitigation already in place?** (Input validation, type guard, framework guarantee, lock, retry layer.) If the cluster's failure mode is already prevented in code, mark `REJECTED-MITIGATED`.
 4. **Are the cited evidence quotes accurate?** Verify verbatim log/error strings against actual sources. Hallucinated evidence is `REJECTED-HALLUCINATION`.
 
-### 7b. Reproduction attempt (mandatory when reproducible)
+**5b. Reproduction attempt (mandatory when reproducible).** For each cluster, attempt reproduction using the cluster's `reproduction_steps` when (a) the original bug is reproducible AND (b) the cluster's repro steps are tractable (no production data dependency). A cluster that survives code-read GROUND but fails reproduction is `LIKELY-VERIFIED` (kept, confidence downgraded one tier — CONFIRMED → LIKELY, LIKELY → CANDIDATE). A cluster that survives both is `VERIFIED`.
 
-For each cluster, attempt reproduction using the cluster's `reproduction_steps` when:
+See `_common/MULTI_ENGINE_RECIPE.md §Pattern H Deep Dive → GROUND verdicts` for the full verdict-to-disposition mapping.
 
-- The original bug is reproducible
-- The cluster's reproduction steps are tractable (no production data dependency)
-
-A cluster that survives code-read GROUND but fails reproduction is `LIKELY-VERIFIED` (kept, but confidence downgraded one tier — CONFIRMED → LIKELY, LIKELY → CANDIDATE). A cluster that survives both is `VERIFIED`.
-
-### 7c. Grounding verdicts
-
-| Verdict | Meaning | Ship as |
-|---------|---------|---------|
-| `VERIFIED` | Code path exists + chain matches + repro reproduces | Primary or Alternative (per perspective axis) |
-| `LIKELY-VERIFIED` | Code path exists + chain matches + repro inconclusive | Alternative only (never Primary unless no VERIFIED cluster exists) |
-| `REJECTED-HALLUCINATION` | Cited code/evidence does not exist | Drop |
-| `REJECTED-CHAIN-BROKEN` | Causal chain has a missing step | Drop |
-| `REJECTED-MITIGATED` | Already prevented upstream | Drop |
-| `NEEDS-INFO` | Cannot verify without information Scout does not have (prod data, infra access) | Escalate to user; do not ship |
-
-Never ship a Primary RCA without at least one `VERIFIED` cluster. If all surviving clusters are `LIKELY-VERIFIED` after grounding, ship the highest-confidence as Primary with explicit confidence downgrade and call out the verification gap.
-
-## 8. SYNTHESIZE — Primary RCA + Alternative Hypotheses with verification ordering
+### 6. SYNTHESIZE — Primary RCA + Alternative Hypotheses with verification ordering
 
 Scout's SYNTHESIZE is **the most distinctive step in the multi-engine flow** because Scout does not write fixes. The output must be a verification-ordered bundle that Builder can act on without re-doing the RCA.
 
-### 8a. Select Primary RCA
+**6a. Select Primary RCA.** Rank surviving clusters by: (1) Confidence label, (2) grounding verdict (`VERIFIED > LIKELY-VERIFIED`), (3) evidence count and specificity (file:line + repro + log > inferred chain), (4) causal chain specificity (named state transition > vague "something happens"). Top-ranked surviving cluster = Primary RCA.
 
-Rank surviving clusters by:
+**6b. Select Alternative Hypotheses.** If perspective axis is `DIVERGENT-N`, the remaining N-1 surviving clusters ship as Alternative Hypotheses (same ranking criteria). If `CONVERGENT`, no Alternatives — note explicitly in the report ("Three engines reached the same root cause class").
 
-1. Confidence label (`CONFIRMED > LIKELY > CANDIDATE`)
-2. Within tier: grounding verdict (`VERIFIED > LIKELY-VERIFIED`)
-3. Within verdict: evidence count and specificity (file:line + repro + log > inferred chain only)
-4. Within evidence: causal chain specificity (named state transition > vague "something happens")
+**6c. Author the verification-ordered handoff.** The synthesized output is a Scout Investigation Report containing:
 
-The top-ranked surviving cluster is the **Primary RCA**.
-
-### 8b. Select Alternative Hypotheses (preserved divergence)
-
-If perspective axis is `DIVERGENT-N`, the remaining N-1 surviving clusters ship as Alternative Hypotheses. Rank them by the same criteria as 8a.
-
-If perspective axis is `CONVERGENT`, there are no Alternative Hypotheses — note this explicitly in the report ("Three engines reached the same root cause class").
-
-### 8c. Author the verification-ordered handoff
-
-The synthesized output is a Scout Investigation Report containing:
-
-- **Primary RCA section** — full investigation report shape (see `references/output-format.md`), tagged with `[engine-attribution]` and `[CONVERGENT]` or `[DIVERGENT-N → primary]`
-- **Alternative Hypotheses section** — one block per surviving alternative, each with: root cause hypothesis, causal chain, evidence, suggested verification step, engine-attribution tag, perspective tag `[DIVERGENT-N → alt-i]`
+- **Primary RCA section** — full investigation report shape (see `references/output-format.md`), tagged with concurrence + perspective tags
+- **Alternative Hypotheses section** — one block per surviving alternative, each with: root cause hypothesis, causal chain, evidence, suggested verification step, attribution + perspective tags `[DIVERGENT-N → alt-i]`
 - **Verification Ordering block** — explicit instruction for Builder:
 
   ```
@@ -203,19 +122,11 @@ The synthesized output is a Scout Investigation Report containing:
   3. If symptom still persists, verify Alternative Hypothesis #2 by [specific verification step].
   ```
 
-- **Engine status summary** — which engines ran, which were unavailable, confidence distribution (`CONFIRMED: N, LIKELY: N, CANDIDATE-VERIFIED: N`), perspective verdict (`CONVERGENT` or `DIVERGENT-N`)
+- **Engine status summary** — engines run, unavailability notes, confidence distribution (`CONFIRMED: N, LIKELY: N, CANDIDATE-VERIFIED: N`), perspective verdict (`CONVERGENT` or `DIVERGENT-N`)
 - **Rejection ledger** (condensed) — count by category (hallucination / chain-broken / mitigated / needs-info)
-- **LLM Fix Prompt** — emitted **only for the Primary RCA** when its grounding verdict is `VERIFIED`. Suppress the Fix Prompt if Primary is `LIKELY-VERIFIED` (use `INVESTIGATE-FURTHER` verb) or if any alternative cluster has comparable or higher confidence in a different fix location (escalation to user judgment).
+- **LLM Fix Prompt** — emitted **only for the Primary RCA** when its grounding verdict is `VERIFIED`. Suppress if Primary is `LIKELY-VERIFIED` (use `INVESTIGATE-FURTHER` verb) or if any alternative cluster has comparable or higher confidence in a different fix location (escalation to user judgment).
 
-### 8d. Engine-attribution and perspective tags (mandatory on every shipped cluster)
-
-| Engines flagging cluster | Attribution tag | Perspective tag |
-|--------------------------|-----------------|-----------------|
-| 3 / 3 | `[codex+agy+claude]` | `[CONVERGENT]` (if also the only surviving cluster) |
-| 2 / 3 | `[codex+agy]` (any 2-combo) | `[CONVERGENT]` or `[DIVERGENT-N → primary/alt-i]` |
-| 1 / 3, grounded | `[codex-verified]` / `[agy-verified]` / `[claude-verified]` | `[DIVERGENT-N → alt-i]` (almost always alternative) |
-
-## 9. REPORT — extend canonical Scout Investigation Report
+### 7. REPORT — Scout Investigation Report extensions
 
 The multi-engine report extends `references/output-format.md` with:
 
@@ -228,7 +139,7 @@ The multi-engine report extends `references/output-format.md` with:
 
 ---
 
-## Parallel Subagent Prompt Skeleton
+## Scout Subagent Prompt Skeleton
 
 Use the Agent tool three times in the same message. Each subagent receives:
 
@@ -267,35 +178,27 @@ Return ONLY JSON matching this exact schema (no commentary outside the JSON):
 - Open with the deliverable (no completion preamble).
 ```
 
-For Codex / Antigravity subagents, the subagent's first action is `codex exec --full-auto` / `agy -p` with this prompt. For the Claude subagent, use the Agent tool with `subagent_type: general-purpose` and the prompt above.
+For Codex / Antigravity subagents, the subagent's first action is `codex exec --full-auto` / `agy -p` (with silent-failure detection per `_common/MULTI_ENGINE_RECIPE.md §3.5`). For the Claude subagent, use the Agent tool with `subagent_type: general-purpose`.
 
 ---
 
-## Degraded Modes
+## Scout-Specific Degraded-Mode Overrides
 
-| Situation | Behavior |
-|-----------|----------|
-| 1 engine binary missing | Run the other two; all clusters become at most `LIKELY` (2/3 ceiling) or `CANDIDATE` (1/2); stricter GROUND required |
-| 2 engines fail | Single-engine RCA; every hypothesis is `CANDIDATE` and must be `VERIFIED` to ship as Primary; Alternative Hypotheses section omitted (no divergence to preserve from a single engine) |
-| All 3 fail | Abort multi mode; degrade to default `bug` Recipe with Scout main context |
-| User explicitly requests single engine | Skip fan-out; use default `bug` Recipe |
+Inherits the base table from `_common/MULTI_ENGINE_RECIPE.md §Degraded Modes`. Scout overrides:
+
+| Situation | Scout behavior |
+|-----------|----------------|
+| 1 engine binary missing | All clusters cap at `LIKELY` (2/3 ceiling); GROUND must be stricter for surviving CANDIDATEs |
+| 2 engines fail | Every hypothesis is `CANDIDATE` and must be `VERIFIED` to ship as Primary; Alternative Hypotheses section omitted (no divergence to preserve from a single engine) |
+| All 3 fail | Degrade to default `bug` Recipe |
 | Symptom is a known pattern (e.g., null deref with obvious cause) | Optionally skip multi; recommend default Recipe |
-| Reproduction requires production data | Multi mode still useful for hypothesis breadth, but GROUND will produce many `NEEDS-INFO` verdicts; flag in report |
-
----
-
-## Why This Works for RCA (Pattern H rationale)
-
-- **Hypothesis lock-in is the dominant single-engine RCA failure mode.** Once committed, evidence is filtered through the lock. Independent fan-out breaks the lock structurally rather than relying on the engine's metacognition.
-- **Concurrence on root cause class is rare for non-trivial bugs.** When three engines independently converge, the RCA is almost certainly correct. When they diverge, the divergence itself is the diagnostic — single-engine confidence in that case would be falsely high.
-- **Scout's downstream is fix-routing, not fix-writing.** Builder receives an explicit verification order across primary + alternatives, eliminating the "fix didn't work, re-investigate from scratch" cycle. The alternative hypotheses are pre-grounded and ready to verify.
-- **Pattern H is not Pattern C with extra steps.** Pattern C drops dissent; Pattern H ships dissent as a feature. This matches the actual epistemic state of RCA — multiple plausible root causes for the same symptom is the common case, not the edge case.
+| Reproduction requires production data | Multi mode still useful for hypothesis breadth, but GROUND produces many `NEEDS-INFO` verdicts; flag in report |
 
 ---
 
 ## Cross-References
 
-- `_common/MULTI_ENGINE_RECIPE.md` — base protocol (canonical flow, PREFLIGHT, engine-attribution conventions, Pattern H definition)
+- `_common/MULTI_ENGINE_RECIPE.md` — base protocol; **Pattern H Deep Dive** carries the shared confidence/perspective/GROUND-verdict/tagging mechanics this file extends
 - `_common/SUBAGENT.md §MULTI_ENGINE` — engine dispatch, loose-prompt rule, fallback rules
 - `judge/references/tri-engine-review.md` — Pattern C canonical implementation (confidence-only axis, dissent dropped)
 - `spark/references/tri-engine-proposal.md` — Pattern D canonical implementation (divergence-primary, dissent preserved as Portfolio)

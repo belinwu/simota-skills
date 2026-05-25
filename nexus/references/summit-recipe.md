@@ -168,6 +168,8 @@ Summit is a **quality-maximization recipe** that mobilizes three execution engin
 
 ## Engine × Team Matrix
 
+> **Executive summary for routing planning.** Per-phase contracts below (Phase 0-6) restate the engine assignments inline with phase-specific gates and inputs. When designing a Summit run, use this matrix to allocate agents to engines; when executing a specific phase, follow the phase contract for the full step sequence.
+
 **Engine routing principle:** route each agent to the engine whose distinctive strength best fits the agent's job — Claude is reserved for judgment, orchestration, and ethics; Codex owns code generation, sandbox execution, and test running (Terminal-Bench 77.3% leader); agy owns long-context analysis (1M window), multimodal asset work, Deep Think creative alternatives, and Search grounding. Each cell below lists the agents spawned on that engine for that team.
 
 | | Claude (hub — judgment & orchestration) | Codex (sandbox & code generation) | Antigravity / agy (long-context & multimodal) |

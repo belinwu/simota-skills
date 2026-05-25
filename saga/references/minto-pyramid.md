@@ -7,6 +7,7 @@ Purpose: Apply Barbara Minto's Pyramid Principle to executive/stakeholder narrat
 - **saga `pyramid`**: Minto Pyramid for top-down narrative delivery (this document).
 - **saga `narrative` (elsewhere)**: Product positioning. Pyramid is *delivery* of narrative; narrative is the *content*.
 - **saga `story` / `customer` / `hero-journey` (elsewhere)**: Bottom-up emotional arcs. Pyramid is structurally inverse but content-compatible.
+- **saga `bab` (`references/before-after-bridge.md`)**: 3-beat emotional copywriting for LP/email/CTA — the opposite use case. **Choose BAB over Pyramid when the audience must *act* (commercial CTA), not *decide* (analytic conclusion).** Pyramid's governing thought is a deductive answer; BAB's Bridge is a conversion CTA. The two can combine — Pyramid as memo spine with a BAB excerpt as the customer-transformation illustration.
 - **Scribe (elsewhere)**: Formal document authoring. Pyramid provides the structural skeleton Scribe fills in.
 - **Stage (elsewhere)**: Slide generation — Pyramid maps directly to slide outlines.
 - **Magi (elsewhere)**: Decision arbitration — Pyramid is the format Magi consumes.
@@ -227,10 +228,7 @@ Slide 8: Risks & alternatives
 - [ ] If not: restructure before delivery
 
 ### Anti-Pattern Check
-- [ ] AP-1 Feature Dump: no — arguments are MECE, not feature lists
-- [ ] AP-6 Narrative Bias: no — assumptions stated
-- [ ] AP-7 Jargon Wall: no — accessible to non-technical exec
-- [ ] AP-9 Ad Copy Disguise: no — analytic, not promotional
+Run the full AP-1~AP-9 checklist from `references/anti-patterns.md` and report results in the standard format. Pyramid emphasizes AP-1 (Feature Dump — arguments must be MECE, not feature lists), AP-6 (Narrative Bias — exec memos need stated assumptions), AP-7 (Jargon Wall — must be accessible to non-technical execs), and AP-9 (Ad Copy Disguise — pyramid is analytic, not promotional).
 
 ### Decision Ask
 - **Decision needed**: [...]
@@ -273,7 +271,7 @@ When `pyramid` completes, emit:
 - **Evidence** under each argument.
 - **MECE check** (overlap / coverage / parallelism / grouping pattern).
 - **Top-sentence-only test** result.
-- **Anti-pattern check** (Saga AP-1~AP-9 + Pyramid-specific).
+- **Anti-pattern check** (AP-1~AP-9 per `references/anti-patterns.md` + Pyramid-specific table below).
 - **Decision ask** (what / when / consequence).
 - **Handoffs**: Stage, Scribe, Magi, Prose, Stratum.
 

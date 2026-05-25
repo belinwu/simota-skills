@@ -2,6 +2,8 @@
 
 Purpose: define the canonical feature proposal structure and the interaction templates Spark may use to clarify scope or validation choices.
 
+Related: for the inter-agent handoff packet shapes that feed into or out of these proposals (e.g. `ECHO_TO_SPARK_HANDOFF`, `SPARK_TO_SHERPA_HANDOFF`), see `references/collaboration-patterns.md`.
+
 ## Contents
 - Full proposal template
 - Minimal proposal template

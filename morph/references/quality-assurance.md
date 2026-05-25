@@ -1,6 +1,7 @@
 # Quality Assurance Guide
 
-Purpose: Use this reference when scoring conversion fidelity, grading outputs, or setting up manual or automated verification.
+Purpose: Use this reference when scoring conversion fidelity, grading outputs, or setting up manual or automated verification — the **per-conversion** measurement step.
+Pair with: `conversion-calibration.md` for the **cross-conversion** learning loop that consumes these scores (record schema, tool-effectiveness tracking, calibration rules, pattern library).
 
 ## Contents
 
