@@ -185,6 +185,26 @@ When an agent references an image (screenshot, Figma frame, photograph, diagram,
 
 **Rationale:** Image interpretation has wider semantic latitude than text. A speculative reading propagates undetected through downstream agents, and the cost of one confirmation question is vastly lower than the cost of building on a misread visual.
 
+### Bug Report Images (mandatory deep analysis)
+
+When the user attaches an image to a bug report, defect report, or "this is broken" request, **a one-line description of the image is not sufficient**. The image is the primary evidence; treat it as a first-class artifact and produce a structured analysis before proposing any fix or routing the request downstream.
+
+**Required analysis output (all sections, in order):**
+
+1. **Observations** — enumerate verbatim what is visible: error message text, status codes, stack traces, UI state, highlighted regions, cursor position, timestamps, environment indicators (OS chrome, browser frame, device frame, viewport size), and any annotations the reporter added (red boxes, arrows, circles, callouts).
+2. **Inferred context** — derived facts that are not literally in the image but are reasonably implied (e.g., "this is the checkout step 2 based on the breadcrumb", "the input lost focus before the error appeared based on the cursor outline"). Mark each as inferred, not observed.
+3. **Problem points** — list each distinct problem the image evidences. Separate primary defect from incidental issues visible in the same frame (e.g., main bug = 500 error toast; incidental = misaligned button, low-contrast helper text). Do not collapse them into a single "the screen is broken" entry.
+4. **Improvement proposals** — for each problem point, propose a concrete remediation direction (code area to investigate, UX fix, copy change, validation rule, etc.). Distinguish "fix the reported defect" from "incidental improvements the image surfaced".
+5. **Open questions** — anything the image alone cannot resolve (reproduction steps, the exact API response, prior user actions, account state). Route these through the Image Handling ambiguity rules above.
+
+**Rules:**
+- This applies regardless of execution mode (AUTORUN / AUTORUN_FULL included). Skipping the structured analysis on a bug-report image is a `PARTIAL` outcome, not a `SUCCESS`.
+- When delegating to Scout, Sherpa, Builder, or any downstream agent, pass the **structured analysis**, not the raw image alone — downstream agents inherit a verified reading rather than re-interpreting pixels.
+- If the image is genuinely under-determined (per Image Handling rules above), produce the partial analysis from what *is* observable and surface the remaining gaps as `Open questions` for the reporter, instead of skipping the analysis.
+- Incidental improvements found in the image must not silently expand the fix scope — surface them as a separate recommendation list, and let the user decide whether to bundle them.
+
+**Rationale:** Bug-report images encode evidence the reporter could not (or did not) articulate in text. A shallow read ("looks like a UI bug") loses the high-signal details and forces downstream agents to either re-analyze the image or guess. A one-pass structured analysis converts the image into durable, machine-and-human-readable findings that the entire bug chain (Scout → Sherpa → Builder → Radar) can act on without re-deriving.
+
 ---
 
 ## Self-Evolution
