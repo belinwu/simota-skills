@@ -186,6 +186,16 @@ For natural-language input without an explicit subcommand. Subcommand match wins
 | `growth-acceptance`, `lifecycle gate`, `market proof`, `research proof`, `brand proof`, `insight ledger`, `incrementality gate`, `brand compiler`, `growth-brand contract`, `post-launch measurement` | `growth-acceptance` |
 | `summit`, `tri-engine`, `all engines`, `claude+codex+agy`, `quality maximization`, `strategic decision`, `release-critical`, `design-critical launch` | `summit` |
 | `/Nexus` (no arguments) | `proactive` |
+| `skill audit`, `MCP supply chain`, `plugin intake`, `.claude config audit`, `Unicode Tag injection`, `curl-pipe scan`, `third-party intake` | `SUPPLY_CHAIN_AUDIT` (Chain) |
+| `Shai-Hulud`, `npm worm`, `PyPI worm`, `lottie-player`, `S1ngularity`, `infected lockfile`, `C2 traffic`, `credential rotation order`, `感染` | `MALWARE_RESPONSE` (Husk → Triage → Crypt) |
+| `auto-tune`, `continuous tuning`, `GC tuning`, `threadpool`, `connection pool`, `worker count`, `cache size 自動調整` | `AUTO_TUNING` (Dial) |
+| `技術的負債 可視化`, `debt mascot`, `debt character`, `gamified retro`, `quarterly debt review` | `DEBT_VISUALIZATION` (Hex → Sketch) |
+| `audio analysis`, `LUFS`, `True Peak`, `BPM detect`, `key detect`, `mastering QC`, `EBU R128`, `librosa`, `pyloudnorm` | `AUDIO_ANALYSIS` (Sonar) |
+| `ToS`, `Terms of Service`, `Privacy Policy`, `特商法`, `プライバシーポリシー`, `利用規約レビュー`, `規約ギャップ` | `LEGAL_REVIEW` (Clause → Scribe) |
+| `ICE`, `RICE`, `WSJF`, `MoSCoW`, `Kano`, `Cost of Delay`, `優先度`, `prioritize`, `順位付け`, `ranking` | `PRIORITIZE` (Rank → Magi) |
+| `pre-mortem`, `premortem`, `プレモーテム`, `FMEA`, `failure modes`, `RPN`, `AP`, `失敗シナリオ列挙`, `what could go wrong` | `PREMORTEM` (Omen → Ripple) |
+| `manual QA`, `TestRail`, `Xray`, `Zephyr`, `Qase`, `BVA`, `equivalence class`, `decision table`, `exploratory charter`, `手動テスト手順書` | `MANUAL_QA` (Drill) |
+| `test pyramid`, `trophy`, `honeycomb`, `coverage heatmap`, `flake dashboard`, `Wilson lower-bound`, `mutation overlay`, `test shape` | `TEST_INTELLIGENCE` (Vista) |
 | unclear or multi-domain request | `classify` → `references/intent-clarification.md` |
 
 ## Subcommand Dispatch
