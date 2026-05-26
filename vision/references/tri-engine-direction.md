@@ -1,8 +1,12 @@
-# Tri-Engine Design Direction
+# Multi-Engine Design Direction
 
-Default flow for `/vision multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to generate **divergent UX/design directions** for the same brief, integrate results across two axes (concurrence + divergence), and deliver a **Portfolio of complementary directions** that the user selects between before downstream handoff to Muse / Palette / Flow / Forge.
+> **Filename retained** as `tri-engine-direction.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
 
-**Why three engines for design direction (Pattern D — Divergence-primary):** Vision's value is *breadth of aesthetic and interaction priors*. Codex (GitHub-heavy training, dev-tooling and component-library exposure), Antigravity (Google product corpus, Material 3 Expressive, MD-style restraint), and Claude (Anthropic-curated corpus, broader editorial/brand references) each carry non-overlapping design-trend training data. A 3/3 concurrent direction is a **safe, broadly recognized aesthetic**; a 1/3 divergent direction is often a **brand-defining breakthrough** — the angle only one engine surfaced.
+Default flow for `/vision multi`. Run subagents in parallel — one per AVAILABLE engine — to generate **divergent UX/design directions** for the same brief, integrate results across two axes (concurrence + divergence), and deliver a **Portfolio of complementary directions** that the user selects between before downstream handoff to Muse / Palette / Flow / Forge.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. For Vision the agy uplift is meaningful (Material 3 Expressive / Google design-language coverage); dual-engine still covers GitHub component libraries (Codex) + editorial-brand aesthetics (Claude). See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Why multiple engines for design direction (Pattern D — Divergence-primary):** Vision's value is *breadth of aesthetic and interaction priors*. Codex (GitHub-heavy training, dev-tooling and component-library exposure) + Claude (Anthropic-curated corpus, broader editorial/brand references) form the dual-engine baseline carrying non-overlapping design-trend training data. Antigravity (Google product corpus, Material 3 Expressive, MD-style restraint) adds the third axis when AVAILABLE. A unanimous direction (2/2 dual / 3/3 tri) is a **safe, broadly recognized aesthetic**; a divergent direction (1/2 dual / 1/3 tri) is often a **brand-defining breakthrough** — the angle only one engine surfaced.
 
 **Adapted from `_common/MULTI_ENGINE_RECIPE.md` (canonical Pattern D protocol) and `spark/references/tri-engine-proposal.md` (Pattern D reference implementation). Re-uses SCOPE / PREFLIGHT / FAN-OUT / NORMALIZE / CLUSTER mechanics; specializes SCORE / GROUND / SYNTHESIZE for design-direction Portfolio output.**
 

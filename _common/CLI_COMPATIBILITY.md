@@ -4,6 +4,8 @@ Cross-CLI compatibility reference for Claude Code / Codex CLI / Antigravity CLI 
 
 > **Date stamps**: As of 2026-05. Antigravity CLI (`agy`) launched 2026-05-19 (Google I/O 2026); Gemini CLI personal-tier service stops 2026-06-18. Re-verify against current docs before relying on any "未確認" item.
 
+> **Engine selection policy (2026-05 update)**: The default baseline for multi-engine recipes is **Claude + Codex (dual-engine)**. agy is an **optional addon** used only when available at PREFLIGHT — never a hard prerequisite. Reason: agy v1.0.x exhibits frequent silent runtime failures (quota, OAuth, executor errors, subagent timeouts — see §9). For canonical policy + tag conventions, see `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
+
 ---
 
 ## At-a-Glance

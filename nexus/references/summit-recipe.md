@@ -1,6 +1,8 @@
 # Nexus Summit Recipe Reference
 
-> **"Three engines, five teams, one verdict — quality maximized through orchestrated diversity."**
+> **"Multiple engines, five teams, one verdict — quality maximized through orchestrated diversity."**
+>
+> **Default baseline (2026-05 update): Claude + Codex (dual-engine).** agy is an **optional third axis** when AVAILABLE; dual-engine mode is fully supported and NOT degraded. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 
 ## Contents
 
@@ -21,16 +23,18 @@
 
 ## Overview
 
-Summit is a **quality-maximization recipe** that mobilizes three execution engines (Claude Code / Codex CLI / Antigravity CLI) across five functional teams (Analysis / Design / Execution / Verification / Improvement). It produces engine-attributed, multi-perspective deliverables for strategic decisions and high-stakes outputs where the cost of failure dramatically exceeds the cost of triangulation.
+Summit is a **quality-maximization recipe** that mobilizes multiple execution engines across five functional teams (Analysis / Design / Execution / Verification / Improvement). It produces engine-attributed, multi-perspective deliverables for strategic decisions and high-stakes outputs where the cost of failure dramatically exceeds the cost of triangulation.
+
+**Default baseline: Claude + Codex (dual-engine).** agy / Antigravity CLI is added as an **optional third axis** when AVAILABLE at PREFLIGHT — it contributes long-context (1M window), multimodal, Deep Think, and Search-grounding capabilities to Phase 1 / 3 / 4 / 5 when reachable, and is gracefully skipped when not. Dual-engine mode (Claude + Codex) is the recipe's normal operating state, NOT a degraded mode. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
 
 **Design Team conditional inclusion**: The Design team is included by default but skipped when Phase 0's `mission_charter.yaml` sets `ui_dimension: none` (pure backend / infrastructure tasks with no user-facing surface). When skipped, Design sub-tracks across all phases are bypassed and the recipe operates as a four-team workflow with proportionally reduced cost.
 
 **Key design decisions:**
-- **Claude is always the hub**; Codex and Antigravity are accessed exclusively through `arena` (no direct CLI invocation from Nexus).
-- **agy is a hard prerequisite** — if Antigravity CLI is not reachable at preflight, Summit refuses to launch (degradation to dual-engine is not allowed; that would defeat the recipe's purpose).
-- **Tri-engine triangulation is load-bearing** in Phase 1 (Analysis) and Phase 4 (Verification). Single-engine outputs in these phases are treated as recipe violations.
+- **Claude is always the hub**; Codex and (optionally) Antigravity are accessed exclusively through `arena` (no direct CLI invocation from Nexus).
+- **agy is OPTIONAL** — when AVAILABLE, the recipe runs in tri-engine mode (Claude + Codex + agy) and the Phase 1 / 3 / 4 / 5 agy branches activate. When UNAVAILABLE or RUNTIME-BROKEN, the recipe runs in dual-engine mode (Claude + Codex); the agy branches are recorded as `skipped (engine unavailable)` and their workload is absorbed by Claude or Codex per the engine-strength routing rules below.
+- **Multi-engine triangulation is load-bearing** in Phase 1 (Analysis) and Phase 4 (Verification). Dual-engine triangulation (Claude judgment ‖ Codex code-analysis) satisfies this requirement; the third axis is a quality lift, not a correctness gate.
 - **Improvement loop is capped at 3 iterations** with Agent Tennis circuit breaker to prevent runaway cost.
-- **User confirmation is mandatory** before launch (same gate as `apex`). Summit spawns 20-50 agents per run.
+- **User confirmation is mandatory** before launch (same gate as `apex`). Summit spawns 20-50 agents per run (tri-engine) or 14-36 (dual-engine).
 
 ---
 
@@ -49,13 +53,13 @@ Summit is a **quality-maximization recipe** that mobilizes three execution engin
 |--------------|-------|---------------|
 | `claude` binary | always available (host) | n/a |
 | `codex` binary | reachable via `which codex` or fallback paths (`~/.bun/bin/`, `~/.local/bin/`, `/usr/local/bin/`, `/opt/homebrew/bin/`, `~/.npm-global/bin/`) | abort with "Codex CLI required for summit; install or use apex/feature instead" |
-| `agy` binary | reachable via `which agy` or fallback paths (same list) | abort with "Antigravity CLI required for summit; install agy or use apex (claude+codex) instead" |
+| `agy` binary | reachable via `which agy` or fallback paths (same list) | **OPTIONAL** — record verdict (AVAILABLE / UNAVAILABLE / RUNTIME-BROKEN). UNAVAILABLE switches the recipe to dual-engine mode (Claude + Codex); does NOT abort. Surface the mode choice to the user in the confirmation prompt |
 | `arena` skill available | check `~/.claude/skills/arena/SKILL.md` exists | abort with "arena skill required for engine bridging" |
 | `arena.max_depth >= 2` (Codex config) | inspect `~/.codex/config.toml` | warn and continue; sub-spawning may fail |
 | User cost acknowledgment | mandatory confirmation prompt | abort if declined |
 | Mission charter producible | Phase 0 must produce valid `mission_charter.yaml` | abort if FRAMING fails |
 
-**Why agy is mandatory (not optional):** Summit's value comes from three independent reasoning styles. With only two engines (claude + codex), output quality is statistically similar to running `judge` plus a normal feature chain — the orchestration overhead is not justified. Users wanting two-engine workflows should use `apex` instead.
+**Why agy is optional (2026-05 policy update):** Earlier versions of this recipe required agy as a hard prerequisite on the assumption that two-engine workflows offered insufficient diversity vs `apex` + `judge`. Field experience with agy v1.0.x (frequent silent runtime failures — quota / OAuth / executor / subagent timeouts) showed that hard dependency made Summit brittle. Dual-engine baseline (Claude judgment + Codex sandbox-execution) provides the load-bearing diversity for tri-engine quorum logic; agy contributes a third axis (1M context / multimodal / Deep Think / Search) that meaningfully lifts quality when reachable but is not a correctness gate. The recipe automatically detects engine availability and adjusts engine distribution, agent counts, and cost estimates accordingly. Users who want guaranteed three-engine coverage should ensure `agy --version` succeeds before invocation.
 
 ---
 
@@ -81,10 +85,11 @@ Summit is a **quality-maximization recipe** that mobilizes three execution engin
 
 ### Do NOT use Summit when
 
-- agy is unavailable → use `apex`
-- Codex is unavailable → use single-engine chain or `apex` if codex is the only missing piece
+- Codex is unavailable → use single-engine chain or `apex` (Codex is required; only agy is optional)
 - User has not confirmed the cost envelope
 - The task does not have a clear acceptance criteria definable in Phase 0
+
+> agy unavailability does NOT preclude Summit — the recipe runs in dual-engine mode (Claude + Codex) and surfaces the mode in the pre-launch confirmation. If you specifically need agy's third-axis lift (long-context whole-codebase reasoning, multimodal asset reading, Deep Think alternatives, Search-grounded competitive analysis) and agy is broken, defer Summit until agy is back rather than swapping recipes.
 
 ---
 
@@ -811,8 +816,8 @@ Phase 6 DELIVER includes an "Engine Distribution Audit" section showing actual v
 | **Agents** | 8-25 | 3-6 | 32-119 (UI tasks 44-119, non-UI tasks 32-92) |
 | **Wall time** | 30-90 min | 5-15 min | 49-193 min |
 | **Cost multiplier vs feature** | 4-8× | 0.5-1× | 7-25× (lowered vs previous 8-28× due to engine rebalance) |
-| **Engine distribution** | Claude + Codex (apex spec) | judge built-in tri | ~50-55% Codex / ~25-30% agy / ~20% Claude (judgment only) |
-| **agy required** | No (optional) | Yes (tri-engine review) | Yes (hard prerequisite) |
+| **Engine distribution** | Claude + Codex (apex spec) | judge built-in multi | tri-engine: ~50-55% Codex / ~25-30% agy / ~20% Claude · dual-engine fallback: ~65-70% Codex / ~30-35% Claude |
+| **agy required** | No (optional) | No (optional — judge falls back to dual-engine) | No (optional — dual-engine fallback) |
 | **User confirmation** | Yes (mandatory) | No | Yes (mandatory) |
 | **Best for** | New features needing full lifecycle | PR review, pre-commit checks | Strategic decisions, high-stakes releases, design-critical launches |
 

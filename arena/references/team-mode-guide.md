@@ -6,16 +6,17 @@ Guide for running Arena in Team Mode using the Agent Teams API for true parallel
 
 ## Core Concept
 
-In Team Mode, Arena acts as the **team leader** and spawns subagents (Claude Code `general-purpose` agents) that serve as **proxies** for external AI engines. Each subagent's sole job is to invoke an external CLI (`codex exec` or `agy`) via the Bash tool — the subagent does NOT implement code itself.
+In Team Mode, Arena acts as the **team leader** and spawns subagents (Claude Code `general-purpose` agents) that serve as **proxies** for external AI engines. Each subagent's sole job is to invoke an external CLI (`codex exec` or `agy`) via the Bash tool — the subagent does NOT implement code itself. When `agy` is UNAVAILABLE per PREFLIGHT, the dual-engine baseline (Codex + Claude subagent) replaces agy variants — see `arena/SKILL.md §Engine Availability` and `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 
 ```
 Arena (Team Leader)
 ├── variant-codex (subagent) → Bash: codex exec ...
-├── variant-agy (subagent) → Bash: agy -p ...
-└── [optional: variant-codex-2, variant-agy-2, ...]
+├── variant-agy (subagent) → Bash: agy -p ...        ← spawn only when agy AVAILABLE
+├── variant-claude (subagent, dual-engine baseline)  ← replaces variant-agy in dual-engine mode
+└── [optional: variant-codex-2, variant-{engine}-2, ...]
 ```
 
-**Key principle:** Subagents are remote hands, not brains. They delegate all implementation work to external engines.
+**Key principle:** Subagents are remote hands, not brains. They delegate all implementation work to external engines (codex/agy) or run as Claude subagents directly when agy is unavailable.
 
 > **Important — agy v1.0.2 silent-failure detection (mandatory).** Every subagent invoking `agy -p ...` must pass `--dangerously-skip-permissions --log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error / silent subagent 60s timeout on bare paths). The skip-permissions flag is required because headless `agy -p` cannot interactively answer the default `request-review` gate. See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection` for the canonical command form. Schematic diagrams below show `agy -p "{spec}"` as a placeholder — actual Bash subagent invocations must include `--dangerously-skip-permissions --output-format json --log-file <path> --print-timeout 15m`. Subagent-level silent failures pollute variant comparison and integration.
 >

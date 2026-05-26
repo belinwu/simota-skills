@@ -85,7 +85,7 @@ Read `_common/PROOF_CARRYING.md` v2 Tier table. Classify the change by inspectin
 - Diff classifier (G5) categorizes cosmetic / semantic / breaking
 - Any semantic diff blocks merge; Source-of-Truth Spec (G10) is queried to identify which is correct
 
-**Engine routing for Tier-S** (G1 cross-engine diversity): Oracle generation → agy (long-context spec reasoning). Implementation engine recorded for later split-check.
+**Engine routing for Tier-S** (G1 cross-engine diversity): Oracle generation → agy when AVAILABLE (long-context spec reasoning is its strength); when agy is UNAVAILABLE or RUNTIME-BROKEN, route Oracle generation to Codex with explicit "treat spec as ground truth, do not regenerate from training-data priors" framing — this preserves cross-engine diversity against the Claude-based AI-A implementation. Implementation engine recorded for later split-check. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy` for the dual-engine fallback rationale.
 
 #### Phase 2B — Design-Axis Oracles (atelier sub-orchestration, when `ui_dimension != none`)
 
@@ -159,8 +159,8 @@ Each adversarial agent (Layer A or B) must produce a non-trivial exploration rep
 - `attest` — final spec-implementation conformance verdict
 
 **Engine routing for Tier-S** (G1 cross-engine diversity):
-- `judge` runs tri-engine (Claude + Codex + agy) — already its default for code-review use
-- Gate verdict requires 2-of-3 quorum (CONFIRMED or LIKELY)
+- `judge` runs multi-engine — tri-engine (Claude + Codex + agy) when agy AVAILABLE, dual-engine (Claude + Codex) when agy UNAVAILABLE / RUNTIME-BROKEN. See `_common/MULTI_ENGINE_RECIPE.md §Engine Availability Modes`.
+- Gate verdict requires 2-of-3 quorum (tri-engine: CONFIRMED or LIKELY) or 2-of-2 quorum (dual-engine: CONFIRMED only — `LIKELY` is unreachable with two engines, so the gate naturally tightens)
 
 **Layer A Decision rules**:
 1. All 12 Code-side evidence fields present and non-empty (semantic-non-emptiness rule)
@@ -182,7 +182,7 @@ Each adversarial agent (Layer A or B) must produce a non-trivial exploration rep
 
 **Engine routing for Tier-S Layer B**:
 - Deterministic Design Compiler verdicts → Codex
-- Multi-modal compliance checks (long-context VRT review) → agy
+- Multi-modal compliance checks (long-context VRT review) → agy when AVAILABLE; when UNAVAILABLE, route to Claude (multimodal-capable model — i.e. Claude reading screenshot/image inputs directly, NOT the `vision` skill agent) with explicit "image-by-image VRT comparison" framing. Claude handles screenshots natively; the only loss vs agy is the 1M-context whole-set scan, which can be batched into 5-10 image groups
 - Brand / unspecifiable advisory → Claude
 
 **Layer B Decision rules**:
@@ -242,7 +242,7 @@ Phase 0: Nexus[classify-tier + detect-ui-dimension + check-design-proof-mode]
 
 Phase 1: attest[spec-diff] (+ accord[spec-amend] if spec changes; + scribe if human-readable spec needed)
 
-Phase 2A (Layer A — Code Oracles, parallel, engine=agy for Tier-S):
+Phase 2A (Layer A — Code Oracles, parallel, engine=agy for Tier-S when AVAILABLE; else Codex with spec-as-ground-truth framing):
   ‖ radar[property+regression]
   ‖ mint[fixtures]
   ‖ drill[E2E scenarios]

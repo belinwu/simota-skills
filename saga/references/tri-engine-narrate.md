@@ -1,6 +1,10 @@
-# Tri-Engine Narrative Generation
+# Multi-Engine Narrative Generation
 
-Saga-specific delta for the `multi` Recipe. Run Codex + Antigravity + Claude Code in parallel via subagents to generate **3 independent narrative arcs** for the same customer + same feature, integrate across two axes (concurrence + divergence), and deliver either a Portfolio of complementary arcs (default) or a single Compete-merged narrative.
+> **Filename retained** as `tri-engine-narrate.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
+
+Saga-specific delta for the `multi` Recipe. Run subagents in parallel — one per AVAILABLE engine — to generate independent narrative arcs (2 for dual-engine baseline, 3 for tri-engine) for the same customer + same feature, integrate across two axes (concurrence + divergence), and deliver either a Portfolio of complementary arcs (default) or a single Compete-merged narrative.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. dual-engine mode is NOT degraded. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
 
 **Base protocol**: `_common/MULTI_ENGINE_RECIPE.md` (Pattern D — Divergence-Primary). This document only specifies what differs for Saga.
 

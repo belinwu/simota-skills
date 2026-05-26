@@ -2,7 +2,7 @@
 
 Operational reference for using Anthropic's Claude Code CLI as a review engine. This file is the authoritative "how to run a Claude Code review" guide. For Codex CLI see `codex-review-usage.md`; for Antigravity CLI see `antigravity-review-usage.md`. For output interpretation (severity, false-positives) see `codex-integration.md` — those rules apply across engines.
 
-Claude Code is one of the three engines in Judge's default tri-engine parallel review (Codex + Antigravity + Claude Code subagents, fanned out in a single `Agent` tool message — see `tri-engine-review.md`). This file is consumed by the `review-claude` subagent during that fan-out. Use it directly as a single-engine review only when: the user explicitly asks for a Claude-only review, two of the three engines are unavailable, or cross-verification against an already-run engine is needed. The mandatory subagent pattern below still applies in any Claude-based review path to eliminate self-bias.
+Claude Code is one of the engines in Judge's default multi-engine parallel review. **Default baseline = Claude + Codex (dual-engine, 2 subagents fanned out in a single `Agent` tool message)**; agy is added as an optional third subagent when AVAILABLE at PREFLIGHT — see `tri-engine-review.md`. This file is consumed by the `review-claude` subagent during that fan-out. Use it directly as a single-engine review only when: the user explicitly asks for a Claude-only review, Codex is unavailable, or cross-verification against an already-run engine is needed. The mandatory subagent pattern below still applies in any Claude-based review path to eliminate self-bias.
 
 ---
 

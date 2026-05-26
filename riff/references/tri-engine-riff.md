@@ -1,8 +1,12 @@
-# Tri-Engine Riff (Parallel Brainstorm Round)
+# Multi-Engine Riff (Parallel Brainstorm Round)
+
+> **Filename retained** as `tri-engine-riff.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
 
 Implementation notes for `/riff multi`. Reads as a delta on `_common/MULTI_ENGINE_RECIPE.md` — this document only states what is **Riff-specific**. Read the common protocol first.
 
-**Pattern type**: D (Divergence-primary). **Verb**: `riff`. **Subagent names**: `riff-codex`, `riff-agy`, `riff-claude`.
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. dual-engine mode is NOT degraded. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Pattern type**: D (Divergence-primary). **Verb**: `riff`. **Subagent names**: `riff-codex` + `riff-claude` (dual-engine baseline) + `riff-agy` (when AVAILABLE).
 
 **Why three engines for brainstorming.** Riff already rotates through four modes (Expand / Propose / Evaluate / Subtract). Multiplying that by three engines gives a **4 × 3 = 12-angle matrix** on a single theme — but each engine's training-data priors push each mode in a different direction (Codex tilts toward GitHub-shaped solutions, Antigravity tilts toward Google-product ergonomics, Claude tilts toward Anthropic-curated framing). The breakthrough idea usually lives in a single cell of the matrix, not at the consensus center.
 

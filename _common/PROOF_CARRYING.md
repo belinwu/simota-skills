@@ -144,7 +144,7 @@ The Gate (typically `judge` + `attest` for Layer A; `atelier` + `canon` for Laye
 
 1. **Schema completeness** — every required field (12 Code + 9 Design when applicable) must be present and non-empty. Empty `adversarial_findings` or `ux_task_proof` ≠ "no findings"; require a non-trivial exploration report.
 2. **Spec consistency** — if `spec_diff` is non-empty, the spec change itself must be re-validated against meta-invariants (see Spec Self-Bug below). Design-side equivalent: Design-Code Contract changes must pass Contract Meta-Oracle (see below).
-3. **Cross-engine quorum** — for Tier-S, evidence must be produced or verified across at least 2 different engines (Claude + Codex, or Codex + agy). Single-engine evidence is CANDIDATE, not CONFIRMED.
+3. **Cross-engine quorum** — for Tier-S, evidence must be produced or verified across at least 2 different engines. **Default baseline: Claude + Codex (dual-engine, always available).** Tri-engine combinations (Claude + Codex + agy) add coverage when agy is AVAILABLE at PREFLIGHT. Single-engine evidence is CANDIDATE, not CONFIRMED. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 4. **No semantic short-circuit** — schema-valid but semantically empty outputs (e.g. "no issues found" with zero exploration) trigger a hard re-run, not a pass.
 5. **Random sampling escape valve** — see Success-PR Random Review below.
 6. **Layer A + Layer B joint verdict** — when both layers apply, PASS requires both. Either FAIL blocks merge. A common failure mode is "Code Proof PASS shipped despite Design Proof FAIL" — the Gate must not split-merge.
@@ -163,11 +163,18 @@ These are not optional polish — without them the Proof-Carrying PR pipeline de
 **Problem**: If `implementer-AI`, `oracle-generator-AI`, and `adversarial-explorer-AI` all run on the same model family, they share blind spots. The adversary cannot find a bug the implementer didn't think of, because both reason from the same priors. omen FM-L3-4 calls this **correlated LLM failure** — the most insidious failure mode because no individual run looks wrong.
 
 **Rule**: For Tier-S, the implementer engine and the adversarial-verifier engine must be different families. Recommended split:
-- Implementer → Codex (code-gen strength)
+
+**Tri-engine (when agy AVAILABLE at PREFLIGHT):**
+- Implementer → Codex (code-gen strength, sandbox-first)
 - Oracle generator → agy (long-context spec reasoning)
 - Adversarial explorer → Claude (judgment + edge-case enumeration)
 
-For Tier-A, two-engine split is sufficient. Tier-B can run single-engine.
+**Dual-engine baseline (default when agy UNAVAILABLE):**
+- Implementer → Codex (code-gen strength, sandbox-first)
+- Oracle generator → Codex with explicit "treat spec as ground truth, do not regenerate from training-data priors" framing — uses a fresh Codex subagent with different prompt context to preserve cross-frame diversity against the implementer
+- Adversarial explorer → Claude (judgment + edge-case enumeration)
+
+For Tier-A, two-engine split is sufficient (Claude + Codex baseline). Tier-B can run single-engine.
 
 Reference: `_common/MULTI_ENGINE_RECIPE.md` (engine dispatch), `nexus/references/summit-recipe.md` (engine-strength routing).
 
@@ -206,10 +213,10 @@ These extend G1-G3 with concerns surfaced when Code Proof + Design Proof two-axi
 **Problem**: "Two AIs implement the same spec, CI diffs them — if diff = 0, ship." This works only when the two AIs do not share the same misreading. If both are the same LLM family, they share priors and the same statistical bias → silent agreement on a wrong reading (omen FM-A1, RPN=630, S=9). LLM-vendor diversity is not the same as training-data diversity (omen FM-A8, RPN=540).
 
 **Rule**: When Dual-Implementation Oracle is used (see §Dual-Implementation Oracle):
-1. AI-A (production) and AI-B (reference oracle) MUST run on different LLM families (Claude / Codex / agy).
+1. AI-A (production) and AI-B (reference oracle) MUST run on different LLM families. **Default baseline**: AI-A on Claude, AI-B on Codex (or vice versa) — these are the two always-available engines and have non-overlapping training-data priors. agy may substitute for either when AVAILABLE. Same-family combinations (e.g. two Claude subagents) FAIL G4 even with prompt differentiation.
 2. Prompt scaffolding MUST differ (one-shot vs few-shot, English vs Japanese spec, natural-language vs formal spec).
 3. AI-A and AI-B verdicts triangulate against Source-of-Truth Spec (see G10), not against each other only.
-4. Adversarial reviewer (AI-C) runs on yet a third engine to defeat reviewer bias toward either implementation (omen FM-A6).
+4. Adversarial reviewer (AI-C) runs on yet a third engine to defeat reviewer bias toward either implementation (omen FM-A6). **When only 2 engines are available** (Claude + Codex, agy UNAVAILABLE), AI-C runs on a fresh subagent of whichever engine was NOT the implementer, with an explicit "adversarial mode — assume the implementer made plausible-looking mistakes" framing. Two-engine cyclic assignment (AI-A:Claude, AI-B:Codex, AI-C:Claude-adversarial) is acceptable for Tier-S when agy is UNAVAILABLE.
 
 ### G5. Diff Semantics Classifier
 

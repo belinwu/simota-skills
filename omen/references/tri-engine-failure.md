@@ -1,8 +1,12 @@
-# Tri-Engine Failure Mode Enumeration
+# Multi-Engine Failure Mode Enumeration
 
-Default flow for `/omen multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to enumerate failure modes (pre-mortem), integrate results across two axes (concurrence + divergence), score each failure mode with composite `engine_concurrence × RPN`, and deliver an integrated FMEA + Risk Matrix preserving single-engine breakthrough catastrophic modes.
+> **Filename retained** as `tri-engine-failure.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
 
-**Pattern type: D (Divergence-Primary).** Different training-data biases directly map to **different failure-mode blind spots** — Codex (GitHub/OSS bug corpora), Antigravity (Google production-incident shapes), Claude (Anthropic safety/alignment failure modes) each surface failure modes the others structurally miss. A 1/3 divergent failure mode is often **the most catastrophic** — precisely because two engines were blind to it.
+Default flow for `/omen multi`. Run subagents in parallel — one per AVAILABLE engine — to enumerate failure modes (pre-mortem), integrate results across two axes (concurrence + divergence), score each failure mode with composite `engine_concurrence × RPN`, and deliver an integrated FMEA + Risk Matrix preserving single-engine breakthrough catastrophic modes.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. dual-engine mode is NOT degraded. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Pattern type: D (Divergence-Primary).** Different training-data biases directly map to **different failure-mode blind spots** — Codex (GitHub/OSS bug corpora), Claude (Anthropic safety/alignment failure modes) form the dual-engine baseline; Antigravity (Google production-incident shapes) adds the third axis when AVAILABLE. Each engine surfaces failure modes the others structurally miss. A divergent failure mode (1/2 dual / 1/3 tri) is often **the most catastrophic** — precisely because the other engines were blind to it.
 
 **Adapted from `spark/references/tri-engine-proposal.md` (canonical Pattern D). Re-uses PREFLIGHT, FAN-OUT, NORMALIZE, and CLUSTER stages.** Universal mechanics (engine probe, loose-prompt rule, attribution tags, degraded modes) live in `_common/MULTI_ENGINE_RECIPE.md` — read that first; this document is **the Omen-specific delta only**.
 

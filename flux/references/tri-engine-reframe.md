@@ -1,8 +1,12 @@
-# Tri-Engine Reframe Generation
+# Multi-Engine Reframe Generation
 
-Default flow for `/flux multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to produce **assumption inversions and cross-domain reframes**, then synthesize a *Portfolio of divergent perspective shifts*.
+> **Filename retained** as `tri-engine-reframe.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
 
-**Why three engines for reframing (different from Judge, more extreme than Spark):** Flux's entire value proposition is *vertical reasoning reinforces existing thought structures rather than breaking them* (de Bono). A single engine — no matter how capable — is structurally bounded by its training-data priors and will only produce assumption-inversions consistent with those priors. Three independent engines with non-overlapping training data (Codex/GitHub-heavy, Antigravity/Google-product-heavy, Claude/Anthropic-curated) each apply their own implicit prior to the *same* problem, producing reframes that no single engine can reach alone.
+Default flow for `/flux multi`. Run subagents in parallel — one per AVAILABLE engine — to produce **assumption inversions and cross-domain reframes**, then synthesize a *Portfolio of divergent perspective shifts*.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE. For Flux the agy uplift is meaningful (Deep Think mode + 1M-context cross-domain analogy) but dual-engine (Claude's broad-domain reasoning + Codex's GitHub-priors as alternative-domain analogy source) still produces meaningful divergence. When agy is UNAVAILABLE, compensate by explicitly framing each Claude branch with a different reframing technique (Bisociation / SCAMPER / TRIZ inversion / Oblique Strategies) to widen prompt-frame diversity. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Why multiple engines for reframing (different from Judge, more extreme than Spark):** Flux's entire value proposition is *vertical reasoning reinforces existing thought structures rather than breaking them* (de Bono). A single engine — no matter how capable — is structurally bounded by its training-data priors and will only produce assumption-inversions consistent with those priors. Multiple independent engines with non-overlapping training data (Codex/GitHub-heavy, Claude/Anthropic-curated baseline; Antigravity/Google-product-heavy when AVAILABLE) each apply their own implicit prior to the *same* problem, producing reframes that no single engine can reach alone.
 
 **Consequence**: In Flux's `multi` Recipe, `VERIFIED-DIVERGENT` reframes (surfaced by exactly one engine) are the **most valuable** outputs — they represent perspective shifts structurally unreachable by the other two engines. This inverts Judge's scoring polarity. Flux ships divergence first, concurrence second.
 

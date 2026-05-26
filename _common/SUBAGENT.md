@@ -112,7 +112,7 @@ Multiple Explore agents investigate different areas in parallel.
 
 ### MULTI_ENGINE
 
-Three AI engines (Codex, Antigravity, Claude) independently work on the same task, leveraging diverse knowledge bases.
+Multiple AI engines independently work on the same task, leveraging diverse knowledge bases. **Default baseline: Claude + Codex (dual-engine).** agy / Antigravity is added as a third axis when AVAILABLE at PREFLIGHT — never required. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy` for tag conventions and Engine Availability Modes.
 
 **When:** Quality-critical tasks where diverse perspectives catch blind spots (security scans, bug hunts, edge-case tests, refactoring proposals).
 

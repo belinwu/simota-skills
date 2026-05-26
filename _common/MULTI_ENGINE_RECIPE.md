@@ -1,10 +1,26 @@
 # Multi-Engine Recipe Protocol
 
-Cross-skill protocol for the `multi` Recipe — spawning Codex + Antigravity + Claude subagents in parallel for tasks where multi-engine perspectives improve quality. Adapted from `judge/references/tri-engine-review.md` for non-review skills.
+Cross-skill protocol for the `multi` Recipe — spawning subagents in parallel across engines for tasks where multi-engine perspectives improve quality. Adapted from `judge/references/tri-engine-review.md` for non-review skills.
 
 **Audience**: Skills implementing a `multi` Recipe (Spark, Plea, Omen, Magi, Compete, Sentinel, Riff, Flux, Researcher, Vision, Saga, Atlas, Echo, Scout, and future additions).
 
 **Prerequisites**: `_common/SUBAGENT.md §MULTI_ENGINE` (base engine dispatch mechanics), `judge/references/tri-engine-review.md` (canonical PREFLIGHT/FAN-OUT logic).
+
+---
+
+## Base Engine Policy (2026-05 update)
+
+**Default baseline: Claude + Codex (dual-engine).** agy / Antigravity CLI is an **optional addon** — used when AVAILABLE at PREFLIGHT, gracefully skipped when not. Skills MUST NOT treat agy as a hard prerequisite; recipes MUST function correctly in dual-engine mode.
+
+Rationale: agy v1.0.x has frequent silent runtime failures (RESOURCE_EXHAUSTED quota, OAuth expiry, executor errors, internal subagent timeouts — see §3.5). Building hard dependencies on agy makes recipes brittle. The dual-engine Claude+Codex baseline covers the core diversity need (judgment-oriented engine + sandbox-execution engine with non-overlapping training-data priors); agy contributes a third axis (1M context / multimodal / Deep Think / Search grounding) when reachable but is never load-bearing.
+
+| Engine count at runtime | Mode | Tag convention | Confidence floor |
+|-------------------------|------|----------------|------------------|
+| Claude + Codex + agy (3) | `tri-engine` | `[codex+agy+claude]` etc. | Standard |
+| Claude + Codex (2) | `dual-engine` (default) | `[codex+claude]`, `[codex-verified]`, `[claude-verified]` | Standard — NOT degraded |
+| Claude only or Codex only (1) | `single-engine` | `[codex-verified]` / `[claude-verified]` | Degraded — every output requires explicit grounding |
+
+Recipes documented as "tri-engine" historically should be read as "multi-engine with optional third axis". The `tri-engine-{verb}` slug remains as a stable filename convention; rename only when restructuring the skill.
 
 ---
 
@@ -354,22 +370,35 @@ For the Claude subagent, use the Agent tool with `subagent_type: general-purpose
 
 ---
 
-## Degraded Modes
+## Engine Availability Modes
 
-| Situation | Behavior |
-|-----------|----------|
-| 1 engine binary missing | Run the other two; note reduced confidence/diversity; CANDIDATE-tier outputs require stricter grounding |
-| 2 engines fail | Single-engine output; treat every output as CANDIDATE; ground all before reporting; flag reduced confidence |
-| All 3 fail | Abort multi mode; degrade to the skill's default Recipe |
+> Per Base Engine Policy: Claude+Codex is the default baseline (NOT degraded). agy is optional — its absence is a normal mode, not a failure.
+
+| Situation | Mode | Behavior |
+|-----------|------|----------|
+| Claude + Codex + agy AVAILABLE | `tri-engine` | Run all three; standard confidence rubric; engine-attribution tags include agy |
+| Claude + Codex AVAILABLE, agy UNAVAILABLE or RUNTIME-BROKEN | `dual-engine` (default fallback) | Run Claude + Codex; standard confidence rubric (NOT degraded); engine-attribution tags use 2-of-2 vocabulary; record agy absence in the rejection ledger as informational, not as a failure |
+| Only 1 engine AVAILABLE (other RUNTIME-BROKEN or missing) | `single-engine` (degraded) | Single-engine output; every output is CANDIDATE; ground all before reporting; flag reduced confidence explicitly |
+| 0 engines AVAILABLE | Abort multi mode; degrade to the skill's default non-multi Recipe |
 | User explicitly requests single engine | Skip fan-out; use default Recipe |
 | Trivial scope | Optionally skip multi; recommend default Recipe |
-| Auth/quota error during execution | Apply §3.5 Engine Runtime Failure Detection; mark engine `RUNTIME-BROKEN`, exclude from aggregation, surface the matched log excerpt in the rejection ledger; do not silently degrade |
+| Auth/quota error during execution | Apply §3.5 Engine Runtime Failure Detection; mark engine `RUNTIME-BROKEN`, exclude from aggregation, surface the matched log excerpt in the rejection ledger; if agy is the broken engine, fall through to `dual-engine` mode silently (no abort) |
+
+**Dual-engine tag vocabulary** (when running Claude + Codex only):
+
+| Engines flagging | Tag | Meaning |
+|------------------|-----|---------|
+| 2 / 2 | `[codex+claude]` | Universal / Confirmed (dual-engine) |
+| 1 / 2 grounded | `[codex-verified]` / `[claude-verified]` | Single-engine, passed grounding |
+| 1 / 2 rejected | (not shipped) | — |
 
 ---
 
 ## Engine-Attribution Tag Convention
 
-Every output shipped from a `multi` Recipe carries an engine-attribution tag. Tag formats:
+Every output shipped from a `multi` Recipe carries an engine-attribution tag. The tag set depends on the runtime engine count (see Base Engine Policy + Engine Availability Modes).
+
+**Tri-engine mode** (Claude + Codex + agy AVAILABLE):
 
 | Engines flagging | Tag format | Meaning |
 |------------------|------------|---------|
@@ -377,6 +406,14 @@ Every output shipped from a `multi` Recipe carries an engine-attribution tag. Ta
 | 2 / 3 | `[codex+agy]`, `[codex+claude]`, `[agy+claude]` | Likely (two-of-three) |
 | 1 / 3 grounded | `[codex-verified]`, `[agy-verified]`, `[claude-verified]` | Single-engine, passed grounding |
 | 1 / 3 rejected | (not shipped) | — |
+
+**Dual-engine mode** (Claude + Codex only — default baseline):
+
+| Engines flagging | Tag format | Meaning |
+|------------------|------------|---------|
+| 2 / 2 | `[codex+claude]` | Universal / Confirmed (dual-engine baseline) |
+| 1 / 2 grounded | `[codex-verified]`, `[claude-verified]` | Single-engine, passed grounding |
+| 1 / 2 rejected | (not shipped) | — |
 
 For Pattern D skills with calibration (Plea): append a second tag `[validated]` / `[supported]` / `[hypothesis]` / `[synthetic-only]` per the skill's calibration rules.
 

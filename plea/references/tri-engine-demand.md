@@ -1,6 +1,10 @@
-# Tri-Engine Demand Generation
+# Multi-Engine Demand Generation
 
-Default flow for `/plea multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to generate synthetic user demands across the same persona set, integrate results across two axes (concurrence + divergence), and deliver a Demand Report that preserves both universal pain points AND engine-specific blind-spot fills.
+> **Filename retained** as `tri-engine-demand.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
+
+Default flow for `/plea multi`. Run subagents in parallel — one per AVAILABLE engine — to generate synthetic user demands across the same persona set, integrate results across two axes (concurrence + divergence), and deliver a Demand Report that preserves both universal pain points AND engine-specific blind-spot fills.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) only when AVAILABLE at PREFLIGHT. Dual-engine mode is NOT degraded — persona-voice divergence comes from independent channeling of the same persona by 2 engines with non-overlapping training-data priors (Claude's empathy-curated corpus + Codex's GitHub-issue-driven complaint patterns). See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
 
 **Pattern**: D (Divergence-primary) per `_common/MULTI_ENGINE_RECIPE.md`. Divergent single-engine demands are NOT auto-low-value — they often surface the silent-majority insight that the other engines' persona-channeling priors smoothed over.
 

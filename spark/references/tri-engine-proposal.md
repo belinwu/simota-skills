@@ -1,6 +1,10 @@
-# Tri-Engine Proposal Generation
+# Multi-Engine Proposal Generation
 
-Default flow for `/spark multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to generate feature proposals, integrate results across two axes (concurrence + divergence), and deliver either a Compete-merged single best proposal or a Portfolio of complementary proposals.
+> **Filename retained** as `tri-engine-proposal.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex, 2 spawns / 6 cells) and tri-engine optional (Claude + Codex + agy, 3 spawns / 9 cells) modes.
+
+Default flow for `/spark multi`. Run subagents in parallel — one per AVAILABLE engine — to generate feature proposals, integrate results across two axes (concurrence + divergence), and deliver either a Compete-merged single best proposal or a Portfolio of complementary proposals.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) only when AVAILABLE at PREFLIGHT. Dual-engine mode is NOT degraded. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes` for tag vocabulary (`[codex+claude]` for dual / `[codex+agy+claude]` etc. for tri) and runtime mode selection.
 
 **Pattern**: D (Divergence-primary) per `_common/MULTI_ENGINE_RECIPE.md`. Divergent single-engine proposals are NOT auto-low-value — they often surface the breakthrough opportunity each engine's training-data blind spot would otherwise hide.
 

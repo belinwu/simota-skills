@@ -202,23 +202,27 @@ rationale: "Engine output could not be parsed"
 
 ---
 
-## Fallback Strategy
+## Engine Availability Modes
+
+> **Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (2-Engine Mode)**. 3-engine mode adds agy as an optional third axis when AVAILABLE. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 
 Engine Mode adapts based on available engines:
 
 | Available Engines | Mode | Behavior |
 |---|---|---|
-| 3 (Claude + Codex + Antigravity) | **Full Engine Mode** | 3 engines deliberate independently |
-| 2 (Claude + 1 external) | **2-Engine Mode** | 2 engines, consensus patterns: 2-0 / 1-1 / 0-2 |
+| 3 (Claude + Codex + Antigravity) | **3-Engine Mode** | 3 engines deliberate independently — adds agy's 1M context / multimodal / Deep Think axis |
+| 2 (Claude + Codex — DEFAULT BASELINE) | **2-Engine Mode** | 2 engines deliberate independently; consensus patterns: 2-0 / 1-1 / 0-2. NOT degraded — this is the recipe's normal operating state |
+| 2 (Claude + agy, Codex unavailable) | **2-Engine Mode (variant)** | Same scoring as above but with agy in place of Codex; flag the substitution because Codex is the preferred second axis |
 | 1 (Claude only) | **Auto-fallback** | Automatic switch to Simple Mode, notify user |
 
-### 2-Engine Mode Details
+### 2-Engine Mode Details (default baseline)
 
-When only one external engine is available:
-- Claude + available engine deliberate independently
+When the recipe runs in 2-Engine Mode (Claude + Codex):
+- Both engines deliberate independently
 - Consensus patterns reduce to: 2-0 (unanimous), 1-1 (split), 0-2 (unanimous rejection)
 - Weighted confidence is 2-engine average
 - Split (1-1) always escalates to user
+- agy absence is recorded as informational header line, NOT as a failure
 
 ### Auto-Fallback Notification
 

@@ -1,8 +1,12 @@
-# Tri-Engine Cognitive Walkthrough
+# Multi-Engine Cognitive Walkthrough
 
-Default flow for `/echo multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to perform cognitive walkthroughs of the **same UI flow** across the **same persona set**, then integrate the results across three axes — per-persona concurrence, cross-persona universality, and engine-specific blind-spot fills.
+> **Filename retained** as `tri-engine-walkthrough.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
 
-**Why three engines for cognitive walkthrough (different from Judge / Spark):** Judge optimizes for *agreement on a single defect* — concurrence is the quality signal. Spark optimizes for *breadth of ideation*. Echo lives in between: a friction confirmed by 3 engines × N personas is one of the strongest synthetic UX signals available, but the *novel* friction noticed by only one engine inside one persona's voice is often the breakthrough finding the team had unconsciously normalized. Each engine has different priors about how a "beginner," "senior," or "mobile user" actually moves through a UI; tri-engine flow surfaces both convergent confidence and divergent angle in a single matrix.
+Default flow for `/echo multi`. Run subagents in parallel — one per AVAILABLE engine — to perform cognitive walkthroughs of the **same UI flow** across the **same persona set**, then integrate the results across three axes — per-persona concurrence, cross-persona universality, and engine-specific blind-spot fills.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. dual-engine mode is NOT degraded — Claude (empathy-curated persona channeling) + Codex (GitHub-issue user-pain patterns) cover two distinct UX-judgment priors. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Why multiple engines for cognitive walkthrough (different from Judge / Spark):** Judge optimizes for *agreement on a single defect* — concurrence is the quality signal. Spark optimizes for *breadth of ideation*. Echo lives in between: a friction confirmed by all AVAILABLE engines × N personas is one of the strongest synthetic UX signals available, but the *novel* friction noticed by only one engine inside one persona's voice is often the breakthrough finding the team had unconsciously normalized. Each engine has different priors about how a "beginner," "senior," or "mobile user" actually moves through a UI; multi-engine flow surfaces both convergent confidence and divergent angle in a single matrix.
 
 **Adapted from `_common/MULTI_ENGINE_RECIPE.md` (Pattern H) and `plea/references/tri-engine-demand.md`.** Re-uses PREFLIGHT and FAN-OUT mechanics; only the parts that differ for the walkthrough domain are documented below.
 

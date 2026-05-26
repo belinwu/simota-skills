@@ -8,9 +8,11 @@ Direct CLI reference for external AI engines used by Arena. Arena calls `codex e
 
 Arena directly invokes external AI engine CLIs to generate implementation variants (COMPETE) or subtask implementations (COLLABORATE). Each engine runs in its own Git branch, producing isolated outputs.
 
+> **Base Engine Policy (2026-05)**: Codex is the always-required engine. `agy` is **optional** — used when AVAILABLE at PREFLIGHT, gracefully skipped when not. Dual-engine baseline (Codex + Claude subagent) substitutes for agy variants in dual-engine mode. See `arena/SKILL.md §Engine Availability` + `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
+
 ### Key Principles
 
-- **No abstraction layer** — Arena calls `codex exec` and `agy` directly via Bash
+- **No abstraction layer** — Arena calls `codex exec` (always) and `agy` (when AVAILABLE) directly via Bash; Claude subagent variants run via the `Agent` tool
 - **Git branch isolation** — Each variant lives in its own `arena/variant-{engine}` branch (COMPETE) or `arena/task-{subtask_id}` branch (COLLABORATE)
 - **Engine-agnostic evaluation** — Same scoring criteria regardless of which engine produced the code
 - **Dual paradigm** — Same CLI commands for both COMPETE (compare variants) and COLLABORATE (integrate subtasks). See `collaborate-mode-guide.md` for COLLABORATE-specific prompt templates.

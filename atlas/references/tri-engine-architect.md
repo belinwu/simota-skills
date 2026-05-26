@@ -1,6 +1,10 @@
-# Tri-Engine Architecture Deliberation (Atlas Delta)
+# Multi-Engine Architecture Deliberation (Atlas Delta)
 
-Default flow for `/atlas multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to produce architectural assessments and ADR drafts, integrate results across two axes (concurrence + divergence), and deliver a **consensus ADR with explicit dissenting options** so the trade-off matrix becomes exhaustive rather than the single-engine narrow.
+> **Filename retained** as `tri-engine-architect.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
+
+Default flow for `/atlas multi`. Run subagents in parallel — one per AVAILABLE engine — to produce architectural assessments and ADR drafts, integrate results across two axes (concurrence + divergence), and deliver a **consensus ADR with explicit dissenting options** so the trade-off matrix becomes exhaustive rather than the single-engine narrow.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. dual-engine mode is NOT degraded. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
 
 **Pattern type:** H (Hybrid — concurrence calibrates confidence on smells, divergence enriches the Options section).
 

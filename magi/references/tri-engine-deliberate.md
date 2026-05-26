@@ -1,10 +1,14 @@
-# Tri-Engine Deliberation
+# Multi-Engine Deliberation
 
-Default flow for `/magi multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents — each engine independently deliberates from **all three Magi viewpoints (Logos / Pathos / Sophia)** — then integrate into a **9-cell deliberation matrix** (3 engines × 3 viewpoints) for two-pass scoring (per-viewpoint concurrence + per-engine consistency) and pattern-based final verdict.
+> **Filename retained** as `tri-engine-deliberate.md` for backward compatibility. The content covers both **dual-engine baseline (6-cell matrix)** and **tri-engine optional (9-cell matrix)** modes.
 
-**Why three engines for deliberation (Pattern H — Hybrid):** Magi's value model demands both *consensus signal* (high concurrence within a viewpoint raises confidence) AND *dissent signal* (cross-viewpoint divergence reveals trade-offs in the decision). Single-engine deliberation inherits one model's blind spots across all three viewpoints. Tri-engine deliberation produces a 9-cell matrix where patterns (e.g., "all Logos approve, all Pathos reject") become the verdict's most valuable artifact — not noise to average away.
+Default flow for `/magi multi`. Run subagents in parallel — one per AVAILABLE engine — each engine independently deliberates from **all three Magi viewpoints (Logos / Pathos / Sophia)** — then integrate into a deliberation matrix (engines × 3 viewpoints) for two-pass scoring (per-viewpoint concurrence + per-engine consistency) and pattern-based final verdict.
 
-**Adapted from `_common/MULTI_ENGINE_RECIPE.md` (Pattern H). Re-uses SCOPE / PREFLIGHT / FAN-OUT / NORMALIZE / DELIVER stages; replaces single-axis CLUSTER/SCORE with a two-pass concurrence model and replaces SYNTHESIZE with 9-cell matrix visualization + pattern-based verdict synthesis.**
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 6-cell matrix)**. agy is added as a third axis (tri-engine, 9-cell matrix) only when AVAILABLE at PREFLIGHT. dual-engine mode is the recipe's normal operating state, NOT a degraded mode. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Why multi-engine deliberation (Pattern H — Hybrid):** Magi's value model demands both *consensus signal* (high concurrence within a viewpoint raises confidence) AND *dissent signal* (cross-viewpoint divergence reveals trade-offs in the decision). Single-engine deliberation inherits one model's blind spots across all three viewpoints. Multi-engine deliberation produces a matrix where patterns (e.g., "all Logos approve, all Pathos reject") become the verdict's most valuable artifact — not noise to average away. **Dual-engine baseline (Claude judgment + Codex sandbox-execution priors) covers the load-bearing diversity**; the optional agy axis adds a third independent training-data signature when reachable.
+
+**Adapted from `_common/MULTI_ENGINE_RECIPE.md` (Pattern H). Re-uses SCOPE / PREFLIGHT / FAN-OUT / NORMALIZE / DELIVER stages; replaces single-axis CLUSTER/SCORE with a two-pass concurrence model and replaces SYNTHESIZE with matrix visualization + pattern-based verdict synthesis.**
 
 ---
 
@@ -37,15 +41,15 @@ Use the canonical probe from `_common/MULTI_ENGINE_RECIPE.md §2 PREFLIGHT`. Mag
 
 Availability verdicts and "never declare unavailable based on..." rules: identical to the protocol baseline.
 
-## 3. FAN-OUT — parallel subagents (3 spawns, NOT 9)
+## 3. FAN-OUT — parallel subagents (N spawns where N = engine count, NOT N×3)
 
-Spawn **three Agent calls in a single message**. Each subagent runs one engine and produces all three viewpoint deliberations in one JSON response.
+Spawn **one Agent call per AVAILABLE engine in a single message**. Each subagent runs one engine and produces all three viewpoint deliberations in one JSON response. **Dual-engine baseline = 2 spawns** (Claude + Codex); **tri-engine = 3 spawns** when agy is also AVAILABLE.
 
-| Subagent | Engine | Baseline command |
-|----------|--------|------------------|
-| `deliberate-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
-| `deliberate-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
-| `deliberate-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
+| Subagent | Engine | Spawn Condition | Baseline command |
+|----------|--------|-----------------|------------------|
+| `deliberate-codex` | Codex CLI | Always (Codex required for magi multi) | `codex exec --full-auto "<prompt>"` |
+| `deliberate-claude` | Claude Code CLI (subagent) | Always (host engine) | Agent tool with `subagent_type: general-purpose` |
+| `deliberate-agy` | Antigravity CLI | **Only when AVAILABLE at PREFLIGHT** | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection`) |
 
 **Loose prompt rule** (per `_common/SUBAGENT.md` MULTI_ENGINE): pass Role + Target + Output format only. Do NOT pass:
 
@@ -300,13 +304,16 @@ The three subagents return JSON; Magi main context handles NORMALIZE through DEL
 
 ---
 
-## Degraded Modes
+## Engine Availability Modes
 
-| Situation | Behavior |
-|-----------|----------|
-| 1 engine binary missing | Run other two; 6-cell matrix; viewpoint concurrence labels become 2/2-CONFIRMED, 1/2-LIKELY, etc.; CANDIDATE-tier cells require stricter grounding |
-| 2 engines fail | Single-engine 3-cell matrix; every cell treated as CANDIDATE; ground all before reporting; flag reduced confidence and matrix-pattern detection disabled |
-| All 3 fail | Abort multi flow; degrade to `decide` (Simple Mode three internal lenses) |
+> Per Base Engine Policy: Claude + Codex is the default baseline (NOT degraded). agy is optional — its absence is the normal dual-engine path, not a failure. See `_common/MULTI_ENGINE_RECIPE.md §Engine Availability Modes`.
+
+| Situation | Mode | Behavior |
+|-----------|------|----------|
+| Claude + Codex + agy AVAILABLE | `tri-engine` | Run all three; 9-cell matrix; concurrence labels per tri-engine rubric (3/3 CONFIRMED, 2/3 LIKELY, 1/3 CANDIDATE) |
+| Claude + Codex AVAILABLE, agy UNAVAILABLE or RUNTIME-BROKEN | `dual-engine` (default baseline) | Run Claude + Codex; **6-cell matrix**; concurrence labels per dual-engine rubric (2/2 CONFIRMED, 1/2 CANDIDATE — `LIKELY` is unreachable with 2 engines, so the bar for shipping a single-engine viewpoint is naturally tighter); matrix-pattern detection FULLY enabled (6 cells is sufficient for pattern recognition); record agy absence as informational header line, NOT as a failure |
+| Only 1 of Claude/Codex AVAILABLE | `single-engine` (degraded) | Single-engine 3-cell matrix; every cell treated as CANDIDATE; ground all before reporting; flag reduced confidence; matrix-pattern detection DISABLED (3 cells too sparse for cross-engine pattern signal) |
+| Both Claude and Codex unavailable | Abort multi flow; degrade to `decide` (Simple Mode three internal lenses) |
 | User explicitly requests single engine | Skip fan-out; use standard `decide` Recipe |
 | Trivial / low-stakes / fully-reversible decision | Recommend `decide` instead; reserve multi for high-stakes, low-reversibility |
 | One engine's all 3 viewpoints return ABSTAIN | Treat as that engine declined to deliberate; flag but do not auto-replace |

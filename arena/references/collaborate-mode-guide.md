@@ -31,9 +31,11 @@ COLLABORATE: Decomposed spec → Engine per subtask → Integrate ALL → Unifie
 
 **COLLABORATE is best when:**
 - A feature has distinct components (e.g., core algorithm + API layer + UI integration)
-- codex and agy each excel at different subtasks
+- Available engines each excel at different subtasks (e.g., codex for sandbox-execution-heavy parts, agy for long-context / multimodal parts when AVAILABLE, Claude subagent for judgment-heavy parts)
 - The goal is a complete implementation, not a quality comparison
-- External engines (not Claude Code) are needed for cooperative development
+- External engines (not just Claude Code) are needed for cooperative development
+
+> **Base Engine Policy (2026-05)**: Default baseline is Codex + Claude subagent when agy is UNAVAILABLE; agy added as a third axis when AVAILABLE at PREFLIGHT. Subtask assignments below treat agy as an optional engine — when unavailable, redistribute its subtasks to codex (sandbox tasks) or Claude subagent (judgment/long-context tasks). See `arena/SKILL.md §Engine Availability` + `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 
 **COLLABORATE is NOT for:**
 - Comparing approaches (use COMPETE)

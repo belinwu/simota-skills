@@ -1,14 +1,18 @@
-# Tri-Engine Competitive Analysis
+# Multi-Engine Competitive Analysis
 
-Default flow for `/compete multi`. Run Codex, Antigravity, and Claude Code in parallel via subagents to surface competitive coverage across non-overlapping training-data priors, then integrate results into Battle Card / Feature Matrix / Positioning Map / SWOT artifacts with engine-concurrence attribution.
+> **Filename retained** as `tri-engine-compete.md` for backward compatibility. Covers both dual-engine baseline (Claude + Codex) and tri-engine optional (Claude + Codex + agy) modes.
 
-**Why three engines for competitive analysis (Pattern D — Divergence-primary):** Each engine's training data carries distinct enterprise/product exposure:
+Default flow for `/compete multi`. Run subagents in parallel — one per AVAILABLE engine — to surface competitive coverage across non-overlapping training-data priors, then integrate results into Battle Card / Feature Matrix / Positioning Map / SWOT artifacts with engine-concurrence attribution.
+
+**Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. For Compete the third engine's coverage uplift is **larger than for other Pattern D skills** because agy patches a blind-spot (large-cap APAC enterprise SaaS) that Claude and Codex share. When agy is UNAVAILABLE, surface the uncovered segment in the Uncommon-Competitors callout and recommend a manual WebSearch sweep. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+
+**Why multiple engines for competitive analysis (Pattern D — Divergence-primary):** Each engine's training data carries distinct enterprise/product exposure:
 
 - **Codex** — GitHub-heavy corpus → strong on OSS, dev tools, infrastructure vendors, indie SaaS, GitHub-published changelogs
-- **Antigravity** — Google-product-adjacent corpus → strong on Google Workspace / Cloud peers, enterprise SaaS, large-cap incumbents, ad/martech, regional Asia-Pacific players
+- **Antigravity** — Google-product-adjacent corpus → strong on Google Workspace / Cloud peers, enterprise SaaS, large-cap incumbents, ad/martech, regional Asia-Pacific players (optional axis when AVAILABLE)
 - **Claude** — Anthropic-curated corpus → strong on diverse industries, B2C consumer brands, recent fundraising signal, AI-native competitors, regulated verticals
 
-A single engine *will* systematically miss competitors in the segments it under-indexes. The most valuable output of tri-engine compete is a `VERIFIED-DIVERGENT` competitor — a real, ground-checked competitor that only one engine surfaced because the other two's training data structurally blinded them to that segment.
+A single engine *will* systematically miss competitors in the segments it under-indexes. The most valuable output of multi-engine compete is a `VERIFIED-DIVERGENT` competitor — a real, ground-checked competitor that only one engine surfaced because the others' training data structurally blinded them to that segment. Dual-engine covers two of the three blind-spot axes (codex/claude); tri-engine adds the third (agy).
 
 **Adapted from `_common/MULTI_ENGINE_RECIPE.md` and `spark/references/tri-engine-proposal.md`. Re-uses PREFLIGHT, FAN-OUT, NORMALIZE, CLUSTER stages; specializes SCORE / GROUND / SYNTHESIZE for competitive coverage.**
 

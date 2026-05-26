@@ -2,7 +2,7 @@
 
 Operational reference for using Google's Antigravity CLI as a review engine. This file is the authoritative "how to run an Antigravity CLI (`agy`) review" guide. For Codex CLI, see `codex-review-usage.md`. For output interpretation (severity mapping, false-positive filtering), see `codex-integration.md` — those rules apply across engines.
 
-Gemini is one of the three engines in Judge's default tri-engine parallel review (Codex + Antigravity + Claude Code subagents, fanned out in a single `Agent` tool message — see `tri-engine-review.md`). This file is consumed by the `review-agy` subagent during that fan-out. Use it directly as a single-engine review only when: the user explicitly requests a Antigravity CLI-only review, two of the three engines are unavailable, cross-verification against an already-run engine is needed, or the repository's GitHub Actions use the `gemini-cli` extension and local parity is desired.
+**agy is the OPTIONAL third engine** in Judge's default multi-engine parallel review. The default baseline is Claude + Codex (dual-engine); when agy is AVAILABLE at PREFLIGHT, a third subagent (`review-agy`) joins the fan-out for tri-engine mode — see `tri-engine-review.md` for the full algorithm. This file is consumed by the `review-agy` subagent during that fan-out. Use it directly as a single-engine review only when: the user explicitly requests an Antigravity CLI-only review, both Claude and Codex are unavailable, cross-verification against an already-run engine is needed, or the repository's GitHub Actions use the `gemini-cli` extension and local parity is desired. **When agy is UNAVAILABLE or RUNTIME-BROKEN, Judge runs in dual-engine mode without aborting** — this file is simply not consumed.
 
 ---
 

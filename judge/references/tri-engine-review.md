@@ -1,8 +1,10 @@
-# Tri-Engine Parallel Review
+# Multi-Engine Parallel Review
 
-Default flow for `/judge`. Run Codex, Antigravity, and Claude Code reviews in parallel via subagents, integrate results, verify findings, and return **only findings that warrant fixing**.
+Default flow for `/judge`. Run reviews in parallel via subagents across the available engines, integrate results, verify findings, and return **only findings that warrant fixing**.
 
-**Why three engines:** Each LLM family misses different defect classes. Single-engine review delivers ~45% defect detection; multi-engine concurrence + grounding raises precision above 90% while collapsing noise. Independent subagent contexts also eliminate self-bias — especially critical when Claude is one of the engines.
+**Base Engine Policy (2026-05 update)**: The default baseline is **Claude + Codex (dual-engine)**. agy / Antigravity is added as an optional third axis when AVAILABLE at PREFLIGHT — never required. Filename retained as `tri-engine-review.md` for backward compatibility; the content covers both tri-engine and dual-engine modes. See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
+
+**Why multi-engine:** Each LLM family misses different defect classes. Single-engine review delivers ~45% defect detection; multi-engine concurrence + grounding raises precision above 90% while collapsing noise. Independent subagent contexts also eliminate self-bias — especially critical when Claude is one of the engines. **Dual-engine (Claude + Codex) covers the load-bearing diversity** — judgment-oriented + sandbox-execution priors are non-overlapping. agy contributes a third axis (1M context / multimodal / Search) that lifts coverage further when reachable.
 
 ---
 
@@ -74,13 +76,13 @@ When passing an absolute binary path to a subagent (because the standard PATH pr
 
 ### 3. FAN-OUT — parallel subagents
 
-Spawn **three Agent calls in a single message** so they run concurrently. Each subagent has an independent context window (no self-bias) and runs one engine.
+Spawn **one Agent call per AVAILABLE engine in a single message** so they run concurrently. Each subagent has an independent context window (no self-bias) and runs one engine. **Dual-engine baseline = 2 spawns** (Claude + Codex); **tri-engine = 3 spawns** when agy is also AVAILABLE.
 
-| Subagent | Engine | Reference | Baseline command |
-|----------|--------|-----------|------------------|
-| `review-codex` | Codex CLI | `codex-review-usage.md` | `codex review --base <branch> "<focused prompt>"` |
-| `review-agy` | Antigravity CLI | `antigravity-review-usage.md` | `agy -p "<focused prompt>" --dangerously-skip-permissions --log-file <tmp>` (silent-failure detection per `antigravity-review-usage.md` § Silent Failure Detection) |
-| `review-claude` | Claude Code CLI | `claude-review-usage.md` | `claude -p "<focused prompt>" --permission-mode plan` |
+| Subagent | Engine | Spawn Condition | Reference | Baseline command |
+|----------|--------|-----------------|-----------|------------------|
+| `review-codex` | Codex CLI | Always (Codex required for judge) | `codex-review-usage.md` | `codex review --base <branch> "<focused prompt>"` |
+| `review-claude` | Claude Code CLI | Always (host engine) | `claude-review-usage.md` | `claude -p "<focused prompt>" --permission-mode plan` |
+| `review-agy` | Antigravity CLI | **Only when AVAILABLE at PREFLIGHT** | `antigravity-review-usage.md` | `agy -p "<focused prompt>" --dangerously-skip-permissions --log-file <tmp>` (silent-failure detection per `antigravity-review-usage.md` § Silent Failure Detection) |
 
 Each subagent prompt must require structured JSON output so integration is deterministic:
 
@@ -103,7 +105,7 @@ Each subagent prompt must require structured JSON output so integration is deter
 }
 ```
 
-If an engine is genuinely unavailable per the PREFLIGHT criteria (binary missing in all probed locations), record the failure and proceed with the remaining engines. Auth-expired, network, and quota errors are runtime failures — surface the actual error in the report rather than dropping the engine. Below two engines, downgrade to single-engine output and flag reduced confidence.
+**agy UNAVAILABLE handling**: agy missing or RUNTIME-BROKEN is the **normal dual-engine path**, NOT a degraded mode. Record `agy: skipped (engine unavailable)` in the report header and proceed with Claude + Codex. Auth-expired, network, and quota errors during agy execution → mark RUNTIME-BROKEN per `_common/MULTI_ENGINE_RECIPE.md §3.5` and fall through to dual-engine without aborting. Below two engines (i.e. Claude OR Codex also missing), downgrade to single-engine output and flag reduced confidence explicitly.
 
 **Silent-failure detection (agy in particular):** A subagent must always pass `--log-file <tmp>` and check stdout. If `agy` (or any engine) exits 0 with empty stdout, grep the log for `RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON input` and report the engine as `RUNTIME-BROKEN` (with the matched line as evidence) rather than emitting empty findings. Do NOT include such an engine in concurrence tags. Record the reason (`quota`/`auth`/`mcp_corrupt`/`upstream`) in the rejections ledger. See `antigravity-review-usage.md` § Silent Failure Detection.
 
@@ -123,11 +125,20 @@ Record the set of engines that flagged each cluster.
 
 ### 5. SCORE — initial confidence
 
+**Tri-engine mode** (Claude + Codex + agy AVAILABLE):
+
 | Engines flagging | Label | Action |
 |------------------|-------|--------|
 | 3 / 3 | `CONFIRMED` | Keep — skip grounding for time, still run a sanity read |
 | 2 / 3 | `LIKELY` | Keep — record the dissenting engine's silence as a note |
 | 1 / 3 | `CANDIDATE` | Must pass grounding (step 6) to survive |
+
+**Dual-engine mode** (Claude + Codex only — agy UNAVAILABLE):
+
+| Engines flagging | Label | Action |
+|------------------|-------|--------|
+| 2 / 2 | `CONFIRMED` | Keep — skip grounding for time, still run a sanity read |
+| 1 / 2 | `CANDIDATE` | Must pass grounding (step 6) to survive. `LIKELY` is unreachable in dual-engine mode (1/2 is structurally indistinguishable from CANDIDATE), so the bar for shipping a single-engine finding is automatically higher than in tri-engine mode |
 
 ### 6. GROUND — verify CANDIDATE and LIKELY findings (and spot-check CONFIRMED)
 
@@ -167,7 +178,7 @@ Structure the final report around the filtered set only. Include:
 
 - Summary table: total findings per severity after filtering, engine concurrence stats (e.g., `3/3: 2, 2/3: 5, 1/3-verified: 3`).
 - Engine status: which of the three ran successfully; note any unavailability.
-- Findings list, each with: ID, file:line, severity, issue, evidence, suggested fix, engine concurrence (e.g., `[codex+agy+claude]` or `[claude-verified]`), remediation agent.
+- Findings list, each with: ID, file:line, severity, issue, evidence, suggested fix, engine concurrence (tri-engine: `[codex+agy+claude]` / `[codex+agy]` etc. / `[claude-verified]` ; dual-engine: `[codex+claude]` / `[codex-verified]` / `[claude-verified]`), remediation agent.
 - Intent-alignment verdict (if requested).
 - Rejections ledger (optional, condensed): count and categories of findings that were dropped during grounding — this preserves SNR transparency without re-introducing noise.
 - Overall verdict: `APPROVE` / `REQUEST CHANGES` / `BLOCK`.
@@ -207,13 +218,16 @@ Do not modify any files. Do not emit commentary outside the JSON.
 
 ---
 
-## Degraded Modes
+## Engine Availability Modes
 
-| Situation | Behavior |
-|-----------|----------|
-| 1 engine binary missing | Run the other two; note reduced confidence; CANDIDATE findings from the single remaining engine require stricter grounding |
-| 2 engines fail | Single-engine output; treat every finding as CANDIDATE; ground all before reporting |
-| All 3 fail | Abort; surface the failure to the user; do not guess findings |
+> Per Base Engine Policy: Claude+Codex is the default baseline (NOT degraded). agy is optional — its absence is the normal dual-engine path, not a failure. See `_common/MULTI_ENGINE_RECIPE.md §Engine Availability Modes` for the canonical reference.
+
+| Situation | Mode | Behavior |
+|-----------|------|----------|
+| Claude + Codex + agy AVAILABLE | `tri-engine` | Run all three; 3/2/1-of-3 scoring per SCORE table tri-engine row |
+| Claude + Codex AVAILABLE, agy UNAVAILABLE or RUNTIME-BROKEN | `dual-engine` (default) | Run Claude + Codex; 2/1-of-2 scoring per SCORE table dual-engine row; record agy absence as informational header line, NOT as a failure |
+| Only 1 of Claude/Codex AVAILABLE | `single-engine` (degraded) | Single-engine output; treat every finding as CANDIDATE; ground all before reporting; flag reduced confidence explicitly |
+| Both Claude and Codex unavailable | Abort; surface the failure to the user; do not guess findings |
 | User explicitly requests single engine | Skip fan-out entirely; use that engine's normal flow |
 | Scope <50 LOC and low-risk | Optionally use single-engine; record the short-scope rationale |
 
