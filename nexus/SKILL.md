@@ -149,7 +149,7 @@ Single source of truth for Recipe definitions. Full phase contracts for Recipes 
 |--------|-----------|-------------|----------------|------|
 | Auto Classify | `classify` (default) | No Recipe specified — auto-classification | CLASSIFY → CHAIN_SELECT (legacy flow) | `references/routing-matrix.md` |
 | Bug Fix | `bug` | Bug reports and fix requests | Scout → Sherpa → Builder → Radar (+Sentinel for security) | `references/routing-matrix.md` |
-| Feature | `feature` | New feature implementation | Sherpa → Forge → Builder → Radar (+Muse for UI) | `references/routing-matrix.md` |
+| Feature | `feature` | New **web / backend / generic** feature implementation. **If the target is iOS or Android native, route to `MOBILE_NATIVE` (Native) instead** — see Routing Quick Start + Signal Keywords. | Sherpa → Forge → Builder → Radar (+Muse for UI) | `references/routing-matrix.md` |
 | Security | `security` | Security response | Sentinel → Builder → Radar (+Probe for dynamic testing) | `references/routing-matrix.md` |
 | Refactor | `refactor` | Refactoring (internal-only, no external behavior change) | Zen → Radar (+Atlas for architectural scope) | `references/routing-matrix.md` |
 | Optimize | `optimize` | Performance improvement (perf-only) | Bolt/Tuner → Radar (+Schema for DB-heavy) | `references/routing-matrix.md` |
@@ -196,6 +196,10 @@ For natural-language input without an explicit subcommand. Subcommand match wins
 | `pre-mortem`, `premortem`, `プレモーテム`, `FMEA`, `failure modes`, `RPN`, `AP`, `失敗シナリオ列挙`, `what could go wrong` | `PREMORTEM` (Omen → Ripple) |
 | `manual QA`, `TestRail`, `Xray`, `Zephyr`, `Qase`, `BVA`, `equivalence class`, `decision table`, `exploratory charter`, `手動テスト手順書` | `MANUAL_QA` (Drill) |
 | `test pyramid`, `trophy`, `honeycomb`, `coverage heatmap`, `flake dashboard`, `Wilson lower-bound`, `mutation overlay`, `test shape` | `TEST_INTELLIGENCE` (Vista) |
+| `iOS`, `iOS 実装`, `iPhone`, `iPad`, `Swift`, `SwiftUI`, `Swift 6.2`, `Liquid Glass`, `iOS 26`, `@Observable`, `SwiftData`, `Xcode`, `App Store`, `TestFlight`, `xcrun`, `simctl`, `devicectl`, `xctrace`, `WidgetKit`, `Live Activities`, `App Intents`, `ASAuthorizationController`, `Apple Intelligence`, `Foundation Models` | `MOBILE_NATIVE` (Native) — iOS path |
+| `Android`, `Android 実装`, `Kotlin`, `Jetpack Compose`, `Material 3 Expressive`, `M3 Expressive`, `Compose Multiplatform`, `Strong Skipping`, `Type-safe Navigation`, `Gradle`, `KSP`, `Android Gradle Plugin`, `AGP`, `Play Store`, `Play Console`, `adb`, `logcat`, `dumpsys`, `WorkManager`, `Credential Manager`, `Jetpack Glance`, `Gemini Nano`, `AICore` | `MOBILE_NATIVE` (Native) — Android path |
+| `ネイティブアプリ`, `ネイティブ実装`, `モバイルアプリ実装`, `iOS Android 両方`, `mobile native`, `native app`, `pure native`, `Passkey mobile`, `Privacy Manifest`, `Data Safety form`, `Universal Links`, `App Links`, `App Bundle`, `staged rollout`, `phased release` | `MOBILE_NATIVE` (Native) — cross-platform / shared mobile |
+| `Web から iOS`, `Web から Android`, `Web → ネイティブ`, `Web to native`, `port to iOS`, `port to Android`, `feature parity matrix`, `ネイティブ化`, `porting design`, `Strangler Fig mobile` | `PORTING` (Port → Native) |
 | unclear or multi-domain request | `classify` → `references/intent-clarification.md` |
 
 ## Subcommand Dispatch
@@ -445,6 +449,8 @@ Canonical matrix: `references/routing-matrix.md`. Recipe-driven chains (Apex / S
 | `OPTIMIZE` | Bolt/Tuner → Radar | `+Schema` for DB-heavy work |
 | `DESIGN_SYSTEM_DOCS` | Muse → Showcase + Canvas → Quill | `+Vision` for direction, `+Artisan` for live examples |
 | `DESIGN_WORKFLOW` | Atelier (orchestrates: Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas) | Full design→code loop with design-system persistence. When request spans direction + tokens + prototype + implementation + catalog |
+| `MOBILE_NATIVE` | **Native** → Radar → Showcase → Launch | iOS Swift/SwiftUI or Android Kotlin/Compose implementation. `+Native cli` for terminal automation (xcrun / adb), `+Forge` for prototype validation, `+Vision`/`+Muse` for mobile design tokens, `+Voyager` for mobile E2E, `+Cloak` for Privacy Manifest review, `+Crypt` for Passkey/Keychain. **Pure-native only** — RN/Flutter/KMP/CMP は対象外 (route to Forge for cross-platform prototypes). Full task-type details: `references/routing-matrix.md` MOBILE_NATIVE row |
+| `PORTING` | Lens/Atlas → **Port → Native** → Voyager → Launch | Web → iOS/Android porting design + implementation. `+Fossil` for legacy business-rule extraction, `+Researcher` for mobile user research, `+Scaffold` for project skeleton, `+Polyglot` for i18n, `+Cloak`/`+Crypt` for compliance / Passkey. Trigger: "Web から iOS/Android に移植", "ネイティブアプリ化", "feature parity matrix" |
 
 **Sherpa skip conditions** (skip Sherpa from default chain only when ALL apply):
 - Task touches ≤ 2 files
