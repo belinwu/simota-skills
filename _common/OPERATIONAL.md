@@ -165,6 +165,28 @@ When using `WebFetch`, `WebSearch`, MCP web tools (`mcp__claude-in-chrome__*`), 
 
 ---
 
+## Image Handling
+
+When an agent references an image (screenshot, Figma frame, photograph, diagram, UI mockup, generated asset, etc.) as input to any decision, design, implementation, or response, treat unclear or under-determined visual content the same way Web Fetch Safety treats untrusted text: **do not let speculation fill the gap**.
+
+**Rules:**
+- Distinguish two zones in any image-derived statement: (a) what is **observed** in the image, and (b) what is **inferred / assumed**. Surface (b) explicitly to the user before acting on it.
+- If any of the following hold, stop and ask the user via `AskUserQuestion` (or the equivalent confirmation channel) before proceeding:
+  - Text in the image is unreadable (resolution, occlusion, glare, truncation).
+  - Symbols, arrows, lines, or connections admit more than one plausible interpretation.
+  - Multiple UI elements / screens / variants are present and the target one is not stated.
+  - Numbers, units, or scale are ambiguous (e.g., "12" without unit, axis labels missing).
+  - The image references off-screen context the agent cannot see.
+  - The user's request and the visible content disagree, and the resolution is unclear.
+- This rule applies in AUTORUN and AUTORUN_FULL modes — image ambiguity is an `Ask First` trigger that overrides the default no-confirmation policy.
+- Skip confirmation only when the image is fully self-evident for the task (e.g., a single legible error-message screenshot whose text is the entire input).
+- When asking, quote the specific region or element ("the icon at the top-right of frame 2", "the value next to the orange arrow") rather than asking generic "could you clarify the image?" questions.
+- Log image-derived decisions and the resolution of any ambiguity in the agent journal so downstream agents inherit the verified reading, not the raw image.
+
+**Rationale:** Image interpretation has wider semantic latitude than text. A speculative reading propagates undetected through downstream agents, and the cost of one confirmation question is vastly lower than the cost of building on a misread visual.
+
+---
+
 ## Self-Evolution
 
 All agents load prior context before starting work (Tier 1). Agents with learning loops run post-task calibration (Tier 2).
