@@ -1,4 +1,4 @@
-# Language Idioms: TypeScript, Go, Python
+# Language Idioms: TypeScript, Go, Python, Rust
 
 > Per-language idiomatic patterns, project structure, type safety, error handling, and testing
 
@@ -381,7 +381,253 @@ with PostgresContainer("postgres:16") as pg:
 
 ---
 
-## 4. Cross-Language Principles
+## 4. Rust (Edition 2024, 1.85+)
+
+### Idioms
+
+- `let-else` for early-return / unhappy-path-first flow (1.65+)
+- `?` operator + `anyhow::Context::context` / `with_context` for error context chains
+- `Option<T>` / `Result<T, E>` combinators (`map`, `and_then`, `ok_or`, `unwrap_or_else`) over `match` for simple lifts
+- Iterator chains over imperative loops; `collect::<Result<Vec<_>, _>>()` to short-circuit on first error
+- `match` with exhaustive arms over nested `if let` chains; let compiler enforce coverage
+- `From` / `Into` for infallible, `TryFrom` / `TryInto` for fallible conversions; never hand-roll `to_*` if `From` fits
+- Function signatures take `&str` / `&[T]` / `&Path` (not `&String` / `&Vec<T>` / `&PathBuf`); use `AsRef<T>` / `impl AsRef<T>` for ergonomic callers
+- Newtype pattern for domain IDs (`struct UserId(Uuid);`) — opt-in `#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]` only as needed
+- Builder pattern via the `bon` crate (`#[bon::builder]`) — 2026 idiomatic; hand-roll only for non-trivial state machines
+- `Cow<'_, str>` for APIs that may borrow or own depending on input
+- `async fn` in traits (stable since 1.75); reach for `async-trait` only when you need `dyn Trait` object safety
+- `LazyLock` (stable 1.80) / `OnceLock` (stable 1.70) replace `lazy_static!` and `once_cell::sync::Lazy`
+- Trait upcasting (stable 1.86) — `&dyn Sub` to `&dyn Super` without explicit `as_super()`
+- `core::error::Error` (re-exported as `std::error::Error`) for `no_std`-friendly library error traits
+
+```rust
+// let-else: bail early, keep happy path flat
+let Some(user) = repo.find(id).await? else {
+    return Err(DomainError::NotFound { id });
+};
+
+// ? + anyhow::Context: typed origin, human context chain
+use anyhow::Context;
+let cfg = fs::read_to_string(&path)
+    .with_context(|| format!("failed to read config at {}", path.display()))?;
+
+// Iterator: short-circuit on first parse failure
+let ids: Vec<UserId> = raw.iter()
+    .map(|s| s.parse::<UserId>())
+    .collect::<Result<_, _>>()?;
+
+// Newtype + derives only when needed
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
+pub struct UserId(uuid::Uuid);
+
+// async in trait (no async-trait crate needed for static dispatch)
+pub trait UserRepo: Send + Sync {
+    async fn find(&self, id: UserId) -> Result<Option<User>, RepoError>;
+}
+```
+
+#### Async & Concurrency
+
+- Pick the Tokio flavor explicitly: `#[tokio::main(flavor = "current_thread")]` for CLIs / single-threaded servers, multi-thread (default) for HTTP servers
+- Wrap CPU-bound or blocking I/O in `tokio::task::spawn_blocking`; never call sync I/O directly inside an async fn
+- Structured concurrency: `tokio::task::JoinSet` for dynamic fan-out, store `JoinHandle` if you spawn — never orphan a task
+- `tokio::select!` requires every branch to be cancellation-safe; read each future's docs before composing
+- Use **bounded** `tokio::sync::mpsc::channel(N)` for backpressure; `broadcast` for fan-out, `watch` for latest-value
+- Spawned futures must be `Send + 'static`; `Arc<RwLock<T>>` only when read-heavy and contention is measured — default to `Arc<Mutex<T>>`
+- Never hold a `std::sync::MutexGuard` across `.await` (the guard is `!Send`); either drop before await or switch to `tokio::sync::Mutex` — but prefer `std::sync::Mutex` (faster) and restructure the code to release before yielding
+
+```rust
+use tokio::task::JoinSet;
+
+let mut set = JoinSet::new();
+for url in urls { set.spawn(fetch(url)); }
+while let Some(res) = set.join_next().await {
+    let body = res??;  // join error, then task error
+    // ...
+}
+```
+
+### Project Structure
+
+```
+my-crate/
+├── Cargo.toml
+├── Cargo.lock           # commit for both bin AND lib (2024+ guidance)
+├── rust-toolchain.toml  # pin channel/components
+├── deny.toml            # cargo-deny config
+├── src/
+│   ├── main.rs / lib.rs
+│   ├── domain/          # pure types, no I/O
+│   ├── application/     # use cases
+│   └── adapter/         # http, db, fs
+├── tests/               # integration tests (one binary per file)
+└── benches/             # criterion benches
+```
+
+Workspace `Cargo.toml`:
+
+```toml
+[workspace]
+resolver = "3"                         # Edition 2024 default
+
+[workspace.package]
+edition      = "2024"
+rust-version = "1.85"                  # declare MSRV explicitly
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "warn"
+expect_used = "warn"
+```
+
+Rules: feature flags **additive only** (never mutually exclusive — breaks `cargo build --all-features`); `rustfmt` + `clippy -- -D warnings` enforced in CI; lockfile committed everywhere.
+
+Toolchain — `cargo-deny` (license / advisory / source), `cargo-audit` (RUSTSEC vulns), `cargo-machete` (unused deps), `cargo-nextest` (parallel test runner), `cargo-hack` (feature-matrix builds).
+
+Production crates (2026 baseline):
+
+| Concern | Default | Notes |
+|---------|---------|-------|
+| HTTP server | `axum` | tokio-native, tower middleware |
+| HTTP client | `reqwest` | `hyper` directly only when you need low-level |
+| DB | `sqlx` | compile-time-checked SQL; `sea-orm` for ActiveRecord, `diesel` for DSL |
+| Serde | `serde` + `serde_json` + `rmp-serde` / `bincode` v2 | DTO layer, not domain types |
+| Time | `jiff` | tz-aware, modern; `time` for `no_std`; avoid new `chrono` adoption |
+| UUID | `uuid` (feature `v7`) | time-sortable IDs |
+| Logging | `tracing` + `tracing-subscriber` | not `log` |
+| Config | `figment` / `config` + explicit struct | parse-don't-validate at startup |
+| CLI | `clap` v4 (derive) | derive macros over builder API |
+
+### Type Safety
+
+Make illegal states unrepresentable; lean on the type system before runtime checks.
+
+```rust
+// Sum types over boolean flag soup
+pub enum Order {
+    Draft     { items: Vec<Item> },
+    Submitted { items: NonEmpty<Item>, submitted_at: Timestamp },
+    Shipped   { tracking: TrackingNumber, shipped_at: Timestamp },
+}
+
+// Typestate: compile-time state machine
+pub struct Connection<S> { socket: TcpStream, _state: PhantomData<S> }
+pub struct Closed; pub struct Open;
+impl Connection<Closed> { pub fn open(self) -> Connection<Open> { /* ... */ } }
+impl Connection<Open>   { pub fn send(&mut self, _: &[u8]) { /* ... */ } }
+// `connection.send()` on Closed = compile error, no runtime branch
+
+// Sealed trait: prevent downstream impls
+mod private { pub trait Sealed {} }
+pub trait Component: private::Sealed { /* ... */ }
+
+// Forward-compatible public enums / structs
+#[non_exhaustive]
+pub enum ApiError { NotFound, Unauthorized, RateLimited { retry_after: Duration } }
+```
+
+### Error Handling
+
+- **Library crates**: `thiserror` enum, one variant per failure mode, `#[from]` for transparent wrapping, never expose `Box<dyn Error>` in public API
+- **Binary / application crates**: `anyhow::Result<T>` with `.context()` chains; `fn main() -> anyhow::Result<()>`
+- Never mix `thiserror` and `anyhow` in the **same crate's public surface** — `anyhow::Error` erases the type information `thiserror` exists to preserve
+- Reserve `panic!` for invariant violations that mean the program is fundamentally broken; never for control flow
+
+```rust
+// Library: typed errors
+#[derive(Debug, thiserror::Error)]
+pub enum UserError {
+    #[error("user {0} not found")]
+    NotFound(UserId),
+    #[error("invalid email: {0}")]
+    InvalidEmail(String),
+    #[error(transparent)]
+    Db(#[from] sqlx::Error),
+}
+
+// Binary: anyhow with context
+fn main() -> anyhow::Result<()> {
+    let cfg = load_config().context("loading config")?;
+    run(cfg).context("running server")?;
+    Ok(())
+}
+```
+
+### Testing
+
+```rust
+// Unit tests co-located
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn rejects_invalid_email() {
+        let err = User::new("not-an-email").unwrap_err();
+        assert!(matches!(err, UserError::InvalidEmail(_)));
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn finds_existing_user() { /* ... */ }
+}
+
+// rstest: parameterized + fixtures
+#[rstest]
+#[case("a@b.com", true)]
+#[case("not-an-email", false)]
+fn validates_email(#[case] input: &str, #[case] ok: bool) {
+    assert_eq!(Email::parse(input).is_ok(), ok);
+}
+
+// proptest: property-based
+proptest! {
+    #[test]
+    fn sort_preserves_multiset(xs in prop::collection::vec(0i32..1000, 0..100)) {
+        let mut sorted = xs.clone(); sorted.sort();
+        prop_assert_eq!(xs.iter().sum::<i32>(), sorted.iter().sum::<i32>());
+    }
+}
+
+// insta: snapshot
+#[test]
+fn renders_invoice() { insta::assert_yaml_snapshot!(render(&invoice)); }
+```
+
+| Tool | Purpose |
+|------|---------|
+| `cargo nextest run` | Parallel runner; ~3x faster than `cargo test`, per-test isolation |
+| `criterion` | Statistical benchmarks under `benches/` |
+| `mockall` | Mocks — but prefer trait injection + hand-rolled fakes |
+| `tests/` directory | Integration tests; each file = its own crate-level binary |
+
+### Anti-Patterns
+
+| # | Pattern | Do this instead |
+|---|---------|-----------------|
+| 1 | `.unwrap()` / `.expect()` in production code | Return `Result`; allow only in tests, `main`, or with `// SAFETY:` proof comment |
+| 2 | Defensive `.clone()` to escape the borrow checker | Redesign ownership; clone only when semantically required |
+| 3 | `&Vec<T>` / `&String` / `&PathBuf` in signatures | `&[T]` / `&str` / `&Path` — generic over storage |
+| 4 | Wrapping every field in `Arc<Mutex<T>>` | Design ownership first; reach for `Arc` when sharing is required, not preemptively |
+| 5 | Holding `std::sync::MutexGuard` across `.await` | Drop guard before await, or use `tokio::sync::Mutex` (only if guard *must* cross await) |
+| 6 | `panic!` for control flow | Return `Result<T, E>`; reserve panic for unrecoverable invariant violations |
+| 7 | `futures::executor::block_on` inside async code | Compose with `.await`; `block_on` deadlocks on multi-thread runtimes |
+| 8 | Over-generic `fn f<T: Trait>(...)` everywhere | Use `&dyn Trait` when monomorphization bloat or compile time matters |
+| 9 | Explicit `'a` annotations the compiler could elide | Trust lifetime elision; annotate only when the borrow checker actually demands it |
+| 10 | `Result<(), Box<dyn Error>>` in library public API | Concrete `thiserror` enum so callers can match variants |
+| 11 | `lazy_static!` / `once_cell::sync::Lazy` | `std::sync::LazyLock` (1.80+) / `OnceLock` (1.70+) |
+| 12 | `s + &t + &u` string concatenation | `format!("{s}{t}{u}")` or `String::push_str` in a loop |
+| 13 | Deeply nested `if let Some(x) = ... { if let Some(y) = ... { ... } }` | `?` operator, `let-else`, or `Option::and_then` chains |
+| 14 | Auto-deriving `Clone`/`Copy`/`Debug`/`Hash`/`Eq` on every struct | Derive deliberately — `Copy` on large structs hurts perf, `Debug` on secrets leaks |
+| 15 | `impl Deserialize for DomainEntity` directly | Define a DTO struct with `Deserialize`, then `TryFrom<Dto> for Entity` enforces invariants |
+| 16 | `unsafe { ... }` / `mem::transmute` without `// SAFETY:` comment | Document invariants the caller / surrounding code must uphold |
+| 17 | Mutually exclusive `#[cfg(feature = "...")]` flags | Features must be additive; gate with separate crates or runtime config |
+| 18 | `tokio::spawn(fut)` and dropping the `JoinHandle` | Store in `JoinSet` or await the handle; orphaned tasks hide panics and leak |
+| 19 | `mpsc::unbounded_channel()` | Use bounded `channel(N)` — backpressure is a feature, not a limitation |
+| 20 | Re-exporting transitive dep types (`pub use reqwest::Client`) in public API | Wrap in a newtype; otherwise consumers pin to your transitive versions |
+
+---
+
+## 5. Cross-Language Principles
 
 ### Testing Trophy
 
@@ -446,5 +692,11 @@ with PostgresContainer("postgres:16") as pg:
 - [Python 3.12 What's New](https://docs.python.org/3/whatsnew/3.12.html)
 - [Real Python uv Guide](https://realpython.com/python-uv/)
 - [Ruff Configuration](https://docs.astral.sh/ruff/configuration/)
+- [Rust Edition 2024 / 1.85 announcement](https://blog.rust-lang.org/2025/02/20/Rust-1.85.0.html)
+- [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/)
+- [Tokio — Shared state & cancellation safety](https://tokio.rs/tokio/tutorial/shared-state)
+- [thiserror vs anyhow](https://nick.groenen.me/notes/thiserror-vs-anyhow/)
+- [bon — builder macros](https://bon-rs.com/)
+- [cargo-nextest](https://nexte.st/)
 - [Testing Trophy (Kent C. Dodds)](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications)
 - [Property-Based Testing with Hypothesis](https://semaphore.io/blog/property-based-testing-python-hypothesis-pytest)
