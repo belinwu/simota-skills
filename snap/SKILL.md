@@ -1,7 +1,6 @@
 ---
 name: snap
 description: "XCUITest specialist for iOS UI automation, accessibility-identifier-driven element queries, programmatic screenshot capture, and fastlane snapshot pipelines for App Store assets. Authors XCUITest test targets with XCUIApplication / XCUIElement / XCUIElementQuery patterns, Page Object structures in Swift, status-bar-clean screenshot sessions, and CI integration via xcodebuild + xcresulttool. Don't use for cross-platform mobile E2E or Appium/Detox/Maestro authoring (Voyager), production iOS app feature implementation (Native), Playwright-based product demo recording (Director), or unit/integration test cases (Radar)."
-skill-routing-alias: xcuitest, xcuiapplication, xcuielement, xcuielementquery, accessibilityidentifier, fastlane-snapshot, xctest-ui, xcresulttool, xcodebuild-test, ios-screenshot, app-store-screenshot, ios-ui-test, swift-page-object, status-bar-override, simctl-screenshot
 ---
 
 <!--
