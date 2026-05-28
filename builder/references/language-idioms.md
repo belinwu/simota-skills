@@ -383,6 +383,13 @@ with PostgresContainer("postgres:16") as pg:
 
 ## 4. Rust (Edition 2024, 1.85+)
 
+> **See also (deep-dive references):**
+> - [`rust-language-spec.md`](./rust-language-spec.md) — Edition 2024 breaking changes, ownership/lifetimes/variance, GATs, dyn compatibility, async desugaring (Pin, RPITIT, AFIT, async closures), macros, the canonical UB list + Stacked/Tree Borrows, atomics, FFI, `no_std`, const-eval, and the 1.75→1.92 stabilization timeline.
+> - [`rust-best-practices.md`](./rust-best-practices.md) — full Rust API Guidelines C-* checklist, error-handling decision tree (thiserror/anyhow/snafu/eyre), workspace patterns, the 2026 cargo+toolchain stack with annotated `deny.toml`, seven-layer testing strategy, perf practices (allocator/SIMD/PGO/BOLT), 21-row production crate matrix, structured-concurrency idioms, docs & doctest discipline, release/distribution, and a 2023→2026 migration cheatsheet.
+> - [`rust-anti-patterns.md`](./rust-anti-patterns.md) — 256 anti-patterns across 14 categories (ownership, lifetimes, types, async, errors, perf, traits, macros, unsafe, cargo, testing, security, API design, WASM/embedded) cross-referenced with 40+ Clippy lints and a copy-pasteable `[lints.clippy]` block.
+>
+> The 20 anti-patterns below remain the short-form baseline. The deep-dive files extend, not replace.
+
 ### Idioms
 
 - `let-else` for early-return / unhappy-path-first flow (1.65+)
