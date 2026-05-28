@@ -1,6 +1,12 @@
 # Language Idioms: TypeScript, Go, Python, Rust
 
-> Per-language idiomatic patterns, project structure, type safety, error handling, and testing
+> Per-language idiomatic patterns, project structure, type safety, error handling, and testing.
+>
+> **Swift and Kotlin do not have inline sections in this file.** Their depth lives in dedicated deep-dive references in this same directory:
+> - Swift 6.2+ / Xcode 26: [`swift-language-spec.md`](./swift-language-spec.md), [`swift-best-practices.md`](./swift-best-practices.md), [`swift-anti-patterns.md`](./swift-anti-patterns.md)
+> - Kotlin 2.3+ / K2: [`kotlin-language-spec.md`](./kotlin-language-spec.md), [`kotlin-best-practices.md`](./kotlin-best-practices.md), [`kotlin-anti-patterns.md`](./kotlin-anti-patterns.md)
+>
+> Platform/UI specifics (SwiftUI / Liquid Glass / iOS HIG / Jetpack Compose / Material 3 Expressive) live in the `native` skill, not here.
 
 ## 1. TypeScript (6.0 / tsgo 7.0)
 
