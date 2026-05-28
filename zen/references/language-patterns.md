@@ -8,6 +8,8 @@ Purpose: Use this file for non-TypeScript language patterns or concurrency clean
 - [Go Patterns](#go-patterns)
 - [Rust Patterns](#rust-patterns)
 - [Java Patterns](#java-patterns)
+- [Swift Patterns](#swift-patterns)
+- [Kotlin Patterns](#kotlin-patterns)
 - [Async/Concurrency Patterns](#asyncconcurrency-patterns)
 - [Cross-Language Principles](#cross-language-principles)
 
@@ -403,6 +405,59 @@ enum OrderStatus {
     public abstract boolean canCancel();
 }
 ```
+
+---
+
+## Swift Patterns
+
+### Swift 6.2 Deep-Dive
+
+Cross-language Swift refactors (`Optional` chain → `?`, `class` → `struct`, force-unwrap removal, naming hygiene) follow the same shape as the Java/Kotlin patterns above. For Swift-specific refactor idioms — including:
+
+- Nested `if let` → comma-chained binding (5.7+) / `guard let`
+- `ObservableObject` + `@Published` → `@Observable` macro (5.9+)
+- Manual `Result` propagation → typed `throws(E)` (6.0+)
+- Completion-handler bridging → `async`/`await` + `withCheckedThrowingContinuation`
+- `@MainActor`-everywhere → fine-grained isolation (Approachable Concurrency 6.2)
+- Floating `Task { }` → structured `async let` / `TaskGroup`
+- `XCTest` → Swift Testing (`@Test`, `#expect`)
+- Primitive-obsession IDs → typed wrappers
+- Naming hygiene per Swift API Design Guidelines
+
+→ Read [`swift-cheatsheet.md`](./swift-cheatsheet.md).
+
+Upstream sources of truth (do not duplicate):
+
+- Bad-pattern catalog: [`builder/references/swift-anti-patterns.md`](../../builder/references/swift-anti-patterns.md)
+- Target idioms / API Design Guidelines: [`builder/references/swift-best-practices.md`](../../builder/references/swift-best-practices.md)
+- Swift 6.2 language surface: [`builder/references/swift-language-spec.md`](../../builder/references/swift-language-spec.md)
+
+---
+
+## Kotlin Patterns
+
+### Kotlin 2.3+ / K2 Deep-Dive
+
+Cross-language Kotlin refactors (null-check chains → `?.let`, `if/else` ladders → `when`, primitive-obsession → `value class`) follow the same shape as the Java patterns above. For Kotlin-specific refactor idioms — including:
+
+- Nested null check → `?.let` chain / Elvis `?:`
+- `LiveData` → `StateFlow` + `collectAsStateWithLifecycle`
+- `Channel<T>` state → `StateFlow`; `Channel<T>` events → `SharedFlow`
+- `Pair<First, Second>` overuse → `data class`
+- `data class UserId(val v: String)` → `@JvmInline value class`
+- `companion object` utility → top-level function
+- `runBlocking` in app code → structured scope
+- `kapt` → KSP2 migration
+- Scope function decision matrix (`let` / `also` / `apply` / `run` / `with`)
+- Naming hygiene per Kotlin Coding Conventions
+
+→ Read [`kotlin-cheatsheet.md`](./kotlin-cheatsheet.md).
+
+Upstream sources of truth (do not duplicate):
+
+- Bad-pattern catalog: [`builder/references/kotlin-anti-patterns.md`](../../builder/references/kotlin-anti-patterns.md)
+- Target idioms / Style Guide / Effective Kotlin: [`builder/references/kotlin-best-practices.md`](../../builder/references/kotlin-best-practices.md)
+- K2 language surface: [`builder/references/kotlin-language-spec.md`](../../builder/references/kotlin-language-spec.md)
 
 ---
 

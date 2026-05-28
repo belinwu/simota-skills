@@ -13,7 +13,9 @@ Scope boundary:
 2. Python
 3. Go
 4. Rust
-5. Language-agnostic risk patterns
+5. Swift
+6. Kotlin
+7. Language-agnostic risk patterns
 
 ## TypeScript / JavaScript
 
@@ -114,6 +116,84 @@ Upstream sources of truth (do not duplicate):
 - Cargo / dependency pitfalls: [`builder/references/rust-anti-patterns.md`](../../builder/references/rust-anti-patterns.md) §10
 - Cargo & toolchain 2026 stack: [`builder/references/rust-best-practices.md`](../../builder/references/rust-best-practices.md) §4
 - Edition 2024 cleanup nuances: [`builder/references/rust-language-spec.md`](../../builder/references/rust-language-spec.md)
+
+## Swift
+
+| Tool | Purpose | Usage |
+|------|---------|-------|
+| `swiftlint` | Unused declarations, unused imports, unused captures | `swiftlint lint --strict` |
+| Periphery | Cross-module unused declarations | `periphery scan --workspace MyApp.xcworkspace --schemes MyApp` |
+| `swiftc -warnings-as-errors` | Builtin unused-result and dead-code warnings | `swift build -Xswiftc -warnings-as-errors` |
+| `xcrun swift-symbolgraph-extract` | Public symbol surface diff (libraries) | See cheatsheet |
+
+Common false positives:
+- `@objc` / `@objcMembers` / `dynamic` (consumed via Obj-C runtime, KVO)
+- `@IBOutlet` / `@IBAction` / `@IBInspectable` (consumed by Interface Builder)
+- `Codable` synthesized members
+- Macro-emitted symbols
+- `#if DEBUG` / `#if canImport(...)` blocks
+
+### Swift 6.2 Deep-Dive
+
+The table above is the language-patterns quick lookup. For Swift-specific cleanup landmines — including:
+
+- Full tooling matrix (SwiftLint rules, Periphery config, symbol graphs)
+- Safe-to-remove vs tread-carefully categories
+- Obj-C runtime landmines (`@objc`, `@objcMembers`, `dynamic`, `@_cdecl`)
+- Interface Builder consumers (`@IBOutlet`, `@IBAction`, `@IBInspectable`)
+- `Codable` synthesis, `Mirror` reflection, macro-emitted symbols
+- SwiftPM dependency cleanup, package traits cleanup
+- `#if DEBUG` / `#if swift(>=...)` stale-block removal
+
+→ Read [`swift-cheatsheet.md`](./swift-cheatsheet.md).
+
+Upstream sources of truth (do not duplicate):
+
+- Bad-pattern catalog: [`builder/references/swift-anti-patterns.md`](../../builder/references/swift-anti-patterns.md)
+- Toolchain & libraries: [`builder/references/swift-best-practices.md`](../../builder/references/swift-best-practices.md)
+- Module system & access control: [`builder/references/swift-language-spec.md`](../../builder/references/swift-language-spec.md) §11
+
+## Kotlin
+
+| Tool | Purpose | Usage |
+|------|---------|-------|
+| Detekt | Unused private/internal members, imports, parameters | `./gradlew detekt` |
+| IntelliJ "Unused declaration" inspection | Cross-module unused symbols | `./gradlew qodana` (CI) |
+| `gradle-dependency-analysis-plugin` | Unused dependencies, misplaced configurations | `./gradlew buildHealth` |
+| `-Xexplicit-api=strict` | Library public-API exposure | `./gradlew assemble -PkotlinExplicitApi=strict` |
+| Ktlint | Unused imports (style) | `./gradlew ktlintCheck` |
+
+Common false positives:
+- Reflection-accessed (`KClass.declaredMemberProperties`, Spring component scanning)
+- `@Component` / `@Service` / `@Repository` (Spring auto-detect)
+- `@SerialName` fields on `Serializable` types (consumed by kotlinx.serialization)
+- `@Parcelize` data class fields
+- `@JvmField` / `@JvmStatic` / `@JvmOverloads` (Java interop)
+- KSP2 / kapt generated code references
+- `lateinit` properties (init via DI / framework)
+- `data class` synthesized members (`copy`, `componentN`)
+- Compose `@Composable` callable signatures
+- Convention plugins in `buildSrc/` / `build-logic/`
+
+### Kotlin 2.3+ / K2 Deep-Dive
+
+The table above is the language-patterns quick lookup. For Kotlin-specific cleanup landmines — including:
+
+- Full tooling matrix (Detekt rules, IntelliJ inspections, dependency analysis plugin)
+- Safe-to-remove vs tread-carefully categories
+- Reflection / Spring DI / kotlinx.serialization landmines
+- `@Parcelize`, `@JvmField`/`@JvmStatic`/`@JvmOverloads` removal pitfalls
+- KSP2 / kapt-generated code, `lateinit`, `data class` synthesis
+- Gradle multi-module cleanup, version catalog cleanup
+- kapt → KSP2 migration cleanup
+
+→ Read [`kotlin-cheatsheet.md`](./kotlin-cheatsheet.md).
+
+Upstream sources of truth (do not duplicate):
+
+- Bad-pattern catalog: [`builder/references/kotlin-anti-patterns.md`](../../builder/references/kotlin-anti-patterns.md)
+- Gradle / build toolchain: [`builder/references/kotlin-best-practices.md`](../../builder/references/kotlin-best-practices.md) §5
+- K2 specifics: [`builder/references/kotlin-language-spec.md`](../../builder/references/kotlin-language-spec.md) §13
 
 ## Language-Agnostic Risk Patterns
 
