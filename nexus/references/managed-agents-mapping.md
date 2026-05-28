@@ -3,6 +3,7 @@
 Anthropic's **Claude Managed Agents** (announced Code w/ Claude SF 2026) bundles four features that map closely to existing Nexus patterns. Use this reference to align local routing with the official vocabulary, and to surface upgrade paths when a chain would benefit from the managed-platform equivalent.
 
 [Source: Anthropic — *Code with Claude SF 2026* and *New in Claude: Managed Agents* (2026)](https://claude.com/blog/new-in-claude-managed-agents)
+[Source: Anthropic — *Introducing Dynamic Workflows in Claude Code* (2026)](https://claude.com/blog/introducing-dynamic-workflows-in-claude-code) — see §5.
 
 ---
 
@@ -53,8 +54,35 @@ Use these as evidence when proposing local chain patterns of the same shape (e.g
 
 ---
 
+## 5. Dynamic Workflows (Claude Code-native, research preview 2026)
+
+**What it is.** A Claude Code feature where Claude "dynamically writes orchestration scripts that run tens to hundreds of parallel subagents in a single session, checking its work before anything reaches you." It is the native, in-session delivery of Multiagent Orchestration (§1) + Outcomes-style verification + automatic checkpointing, combined into one mechanism. "Progress is saved as the run goes, so a job that's interrupted picks up where it left off instead of starting over." High-stakes runs add **adversarial review** (agents attempt to refute findings before delivery).
+
+| Property | Dynamic Workflows | Nexus equivalent |
+|----------|-------------------|------------------|
+| Fan-out scale | tens–hundreds of parallel subagents | L2 Parallel Spawn / Rally (L3) — typically 2–8 branches before hierarchical decomposition (Core Rule #9) |
+| Verification | independent verification + adversarial review before integration | Evaluator-Loop / `acceptance` Code+Design adversaries |
+| Resume | native checkpoint-resume across interruptions | Checkpoint-resume for 4+ step chains (Safety Contract) |
+| Orchestration logic | Claude writes the orchestration script on the fly | Recipe + routing-matrix (pre-designed chains) |
+
+**Activation (Claude Code).** Two paths:
+1. Ask directly: "Create a dynamic workflow".
+2. Enable the **`ultracode`** setting (effort menu) — sets effort to `xhigh` and lets Claude auto-decide when to deploy a workflow. Auto mode is recommended. `ultracode` ≈ AUTORUN_FULL + Opus 4.8 P6 (`xhigh` baseline).
+
+**Availability.** Research preview across Claude Code CLI, Desktop, VS Code extension, and the Claude API (incl. Amazon Bedrock, Vertex AI, Microsoft Foundry).
+
+**Selection rule — native Dynamic Workflows vs Nexus manual orchestration:**
+- Prefer **native Dynamic Workflows** as the *execution substrate* for large homogeneous fan-outs on Claude Code: codebase-wide bug hunts / security audits, large migrations or framework modernization spanning thousands of files, and critical work needing independent verification. Native DW scales fan-out and checkpointing further than Nexus can manually spawn.
+- Keep **Nexus** as the *routing/recipe layer*: task classification, minimum-viable-chain design, cross-domain specialist selection (Recipes), and hub-spoke guardrails. Nexus's value is *which* specialists and *what shape*, not raw parallel throughput.
+- Composition: a Nexus Recipe step whose work is a large parallel sweep (e.g. `acceptance` Code Oracles, `apex` Loop) may **delegate execution to a native dynamic workflow** when available, rather than Nexus issuing dozens of individual `Agent(...)` calls. Surface this in `NEXUS_COMPLETE` when the workload matches a DW use case.
+- When DW is unavailable (Codex CLI / agy, or older Claude Code), fall back to L2/L3 spawn + Core Rule #9 hierarchical decomposition.
+
+**Anti-pattern vocabulary (extends §3):** "run hundreds of agents in parallel and self-check until it converges" → call this **Dynamic Workflows**, not "big parallel chain".
+
+---
+
 ## When to Read This File
 
-- During `CLASSIFY` when the user explicitly mentions Managed Agents, Outcomes, Dreaming, or Webhooks.
-- During `CHAIN_SELECT` when a request describes a managed-agents feature in plain English.
+- During `CLASSIFY` when the user explicitly mentions Managed Agents, Outcomes, Dreaming, Webhooks, **Dynamic Workflows, or `ultracode`**.
+- During `CHAIN_SELECT` when a request describes a managed-agents feature in plain English, **or when a Recipe step is a large parallel sweep that native Dynamic Workflows could execute**.
 - During `DELIVER` to surface an escalation recommendation in `NEXUS_COMPLETE` if the local hub-and-spoke is not the right long-term home for the workload.
