@@ -1,7 +1,7 @@
 # Nexus Apex Recipe Reference
 
 **Purpose:** End-to-end auto-implementation chain spanning discovery, ideation, decision, specification, parallel design, risk gating, implementation loop, and ship — with sub-orchestration via Vision (UX) and Orbit (implementation loop).
-**Read when:** User invokes `/nexus apex` or requests "最強の自動実装", full-cycle delivery from user need to release, or any chain requiring 10+ agents across discovery and implementation.
+**Read when:** User invokes `/nexus apex` or requests "ultimate auto-implementation", full-cycle delivery from user need to release, or any chain requiring 10+ agents across discovery and implementation.
 
 ## Contents
 - Overview
@@ -54,6 +54,7 @@ Route elsewhere when the task is:
 - Refactoring → `refactor` recipe
 - Pure design exploration without implementation → Atelier or Vision direct
 - Decomposition only (no execution) → Sherpa direct
+- Cross-language rewrite preserving behavior (TS→Rust, Go→Rust, …) → `transmute` recipe (`references/transmute-recipe.md`)
 
 ## Topology
 
@@ -63,7 +64,7 @@ Phase 0 (no-args only)              Phase 1            Phase 2  Phase 3  Phase 4
 ┌─────────────────────────────┐     ┌─────────────┐    ┌────┐   ┌────┐   ┌────────┐ │ ┌──────────┐  ┌──────────────┐    │  ┌──────────────┐  ┌────────┐
 │ project_scan (proactive)    │     │ plea        │    │riff│   │magi│   │ accord │ │ │ atlas    │  │ vision (sub) │    │  │ orbit         │  │guardian│
 │ + voice?  + pulse? +compete?│ ──▶ │ researcher  │ ─▶ │    │─▶ │    │─▶ │ +void? │▶│ │ +gateway?│  │  ├ muse      │    │▶ │  ├ builder    │ ─▶│ launch │
-│ → spark (3-5 候補)          │     │ +echo (現状)│    │    │   │    │   │ +scribe?│ │+schema?  │  │  ├ palette   │    │  │  ├ artisan?   │  └────────┘
+│ → spark (3-5 ideas)         │     │ +echo (as-is)│    │    │   │    │   │ +scribe?│ │+schema?  │  │  ├ palette   │    │  │  ├ artisan?   │  └────────┘
 │ → rank (ICE/RICE)           │     └─────────────┘    └────┘   └────┘   └────────┘ │ └──────────┘  │  ├ prose     │    │  │  ├ showcase?  │
 │ → sage? (bottleneck check)  │                                                     │               │  ├ flow?     │    │  │  ├ judge      │
 │ → magi? (tie-break)         │                                                     │               │  ├ frame?    │    │  │  ├ radar      │

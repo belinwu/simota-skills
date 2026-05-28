@@ -828,6 +828,10 @@ Is the task a new feature needing discovery → ship?
   └─ YES → apex
   └─ NO ↓
 
+Is the task a behavior-preserving cross-language rewrite (TS→Rust, Go→Rust, …)?
+  └─ YES → transmute (references/transmute-recipe.md)
+  └─ NO ↓
+
 Is the task purely code review?
   └─ YES → judge
   └─ NO ↓
