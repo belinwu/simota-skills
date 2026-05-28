@@ -498,15 +498,16 @@ If none of these thresholds apply, keep the action as a composed general-tool pa
 
 ---
 
-## 11. Opus 4.7 Operating Principles for Generated Skills
+## 11. Opus 4.8 Operating Principles for Generated Skills
 
-> Source: Anthropic "Best Practices for Using Claude Opus 4.7 with Claude Code" (2026)
+> Source: Anthropic "Prompting best practices" — *Prompting Claude Opus 4.8* (platform.claude.com, 2026)
+> Canonical detail: `_common/OPUS_48_AUTHORING.md` (P1–P11). This section mirrors it for the generation pass.
 
-Opus 4.7 changes several defaults that directly affect how generated skills should be authored. Apply these when designing new agents or updating existing ones.
+Opus 4.8 keeps the 4.7 defaults (existing 4.7 prompts still work) but sharpens several behaviors. Apply these when designing new agents or updating existing ones. 11.1–11.7 carry over from 4.7; 11.9–11.12 are 4.8-specific.
 
 ### 11.1 Front-Loaded Task Specification
 
-Opus 4.7 rewards complete first-turn intent over progressive disclosure across multiple turns. Generated skills should bias users and orchestrators toward stating intent, constraints, acceptance criteria, and file locations up front.
+Opus 4.8 rewards complete first-turn intent over progressive disclosure across multiple turns, and uses more tokens when intent arrives progressively. Generated skills should bias users and orchestrators toward stating intent, constraints, acceptance criteria, and file locations up front, and minimize required user round-trips for interactive skills.
 
 **Design rules**:
 - Trigger Guidance section should explicitly list what callers must provide on the first turn (target files, success criteria, constraints).
@@ -515,7 +516,7 @@ Opus 4.7 rewards complete first-turn intent over progressive disclosure across m
 
 ### 11.2 Calibrated Response Length
 
-Opus 4.7 calibrates verbosity to task complexity instead of defaulting to verbose. Skills must state expected output shape and length explicitly or risk under- or over-shooting.
+Opus 4.8 calibrates verbosity to task complexity (sharper than 4.7) instead of defaulting to verbose. Skills must state expected output shape and length explicitly or risk under- or over-shooting. Prefer positive concision examples over "do not" instructions.
 
 **Design rules**:
 - Output sections (reports, handoffs, summaries) must specify length envelopes (line counts, bullet counts, or table dimensions).
@@ -524,7 +525,7 @@ Opus 4.7 calibrates verbosity to task complexity instead of defaulting to verbos
 
 ### 11.3 Explicit Tool-Use Guidance
 
-Opus 4.7 reasons more and calls tools less by default. Skills that need aggressive tool execution must say so explicitly with "when" and "why" instructions.
+Opus 4.8 reasons more and calls tools less by default (even more than 4.7). Skills that need aggressive tool execution must say so explicitly with "when" and "why" instructions — and note that effort is the stronger lever (see 11.10).
 
 **Design rules**:
 - For each tool a skill expects to use, document the trigger condition (when) and the value the tool provides (why).
@@ -533,25 +534,26 @@ Opus 4.7 reasons more and calls tools less by default. Skills that need aggressi
 
 ### 11.4 Explicit Parallel Subagent Triggers
 
-Opus 4.7 spawns fewer subagents by default. Skills that benefit from parallel fan-out must spell it out.
+Opus 4.8 spawns fewer subagents by default. Skills that benefit from parallel fan-out must spell it out.
 
 **Design rules**:
 - When a skill's workflow has independent subtasks (multi-file reads, multi-target analysis, voting/consensus), include an explicit instruction: "Spawn N subagents in the same turn when fanning out across [items]."
+- Pair with the inverse guard: "Do not spawn a subagent for work you can complete directly in a single response."
 - Reference `_common/SUBAGENT.md` for the parallelism-layer decision (skill-internal subagents vs Agent Teams).
 - Do not assume the model will infer parallelism from workflow structure alone.
 
 ### 11.5 Adaptive Thinking Hints
 
-Extended thinking with fixed budgets is no longer supported; Opus 4.7 decides per step whether deeper reasoning helps. Skills can steer this at decision points.
+Thinking is off unless `thinking:{type:"adaptive"}` is set; Opus 4.8 then decides per step whether deeper reasoning helps, and triggering is steerable. Skills can steer this at decision points.
 
 **Design rules**:
 - At high-stakes decision points (architectural choices, irreversible actions, ambiguity resolution), include a thinking nudge: "Think carefully and step-by-step before responding; this decision affects [downstream impact]."
 - At low-stakes throughput-sensitive points (formatting, transformation, lookup), include the inverse: "Prioritize responding quickly rather than thinking deeply."
-- Do not embed numeric thinking budgets — they are no longer respected.
+- Do not embed numeric thinking budgets — they are deprecated; control depth via `effort` (11.6).
 
 ### 11.6 Effort-Level Awareness
 
-The default effort level is now `xhigh`. Generated skills should be sized for `xhigh` as the assumed runtime envelope.
+The default effort level is `xhigh`, and Opus 4.8 respects effort strictly. Generated skills should be sized for `xhigh` as the assumed runtime envelope and aware that `low`/`medium` genuinely narrows scope to exactly what was asked.
 
 | Effort | When skills should expect this |
 |--------|-------------------------------|
@@ -571,11 +573,48 @@ Treat the model as a capable engineer being delegated to, not a line-by-line pai
 - Provide enough context inside the skill (or via references) that the model does not need to ask clarifying questions for documented decisions.
 - Avoid micro-step instructions that prevent the model from exercising judgment; prefer phase-level contracts with verification gates.
 
-### 11.8 Application in Architect Phases
+### 11.8 Literal-Scope Instruction Following *(new in 4.8)*
+
+Opus 4.8 interprets instructions literally, especially at lower effort; it does not silently generalize an instruction from one item to another and does not infer unrequested work.
+
+**Design rules**:
+- When an instruction should apply broadly, state the scope: "Apply this to **every** section/file/case, not just the first."
+- Don't rely on one worked example to imply a rule across the skill — state the rule, then exemplify.
+- For structured-extraction/pipeline skills, treat the literalism as an asset: pin exact output schemas and field-level expectations.
+- Keep the anti-overengineering intent (4.8 won't add unrequested features/abstractions/defensive code); request "above and beyond" explicitly when actually wanted.
+
+### 11.9 Effort-Calibrated Tool Use & Native Updates *(new in 4.8)*
+
+Effort is the primary control surface on 4.8 — stronger than prompt wording — for reasoning depth and tool-call volume; the model also emits good interim updates natively.
+
+**Design rules**:
+- For tool-eager skills (agentic search, multi-file coding), specify `high`/`xhigh` effort as the baseline rather than only adding "use the tool" prompts.
+- For latency-bounded skills held at `low`/`medium`, add a targeted nudge for the rare complex case instead of globally raising effort.
+- Remove legacy scaffolding that forces interim status ("summarize every N tool calls"); if cadence/shape matters, describe it explicitly with an example.
+
+### 11.10 Coverage-vs-Filter for Review & Detection Skills *(new in 4.8)*
+
+Opus 4.8 finds more bugs but follows conservative reporting instructions ("only high-severity", "don't nitpick") more faithfully — a harness tuned for older models can show *lower measured recall* (harness effect, not regression).
+
+**Design rules (reviewers/detectors)**:
+- Separate *finding* from *filtering*: at the finding stage instruct coverage ("report every issue including uncertain/low-severity; tag confidence + severity; a later stage ranks").
+- Move confidence/severity filtering to a downstream verification/ranking stage.
+- If self-filtering in one pass, set a **concrete** bar ("anything that could cause incorrect behavior, a test failure, or a misleading result"), not "important".
+- Validate recall/F1 against an eval subset after prompt changes.
+
+### 11.11 Calibrated Voice & Design Defaults *(new in 4.8)*
+
+Opus 4.8 prose trends direct/opinionated with sparing emoji; frontend output has a persistent house style (cream/serif/terracotta) that suits editorial but not dashboards/dev-tools/fintech/healthcare/enterprise.
+
+**Design rules**:
+- For writer skills: re-evaluate voice prompts against the direct baseline; state warmer/conversational tone explicitly when the product needs it.
+- For design/frontend skills: break the house style with a concrete alternative palette/typography, or have the model propose 3–4 directions first — generic negation just shifts to another fixed palette. 4.8 needs less anti-"AI slop" prompting than prior models.
+
+### 11.12 Application in Architect Phases
 
 | Phase | Apply |
 |-------|-------|
 | `UNDERSTAND` | Confirm caller-provided context is complete (11.1); flag missing fields once, not iteratively |
-| `DESIGN` | Bake length envelopes (11.2), tool-use rationale (11.3), parallelism triggers (11.4), and thinking hints (11.5) into the section contract |
-| `GENERATE` | Verify generated SKILL.md states effort-level expectations (11.6) and delegation-engineer framing (11.7) |
-| `VALIDATE` | Add Opus 4.7 readiness checks to the validation pass — skills missing 11.1–11.5 guidance are incomplete for `xhigh`-default runtime |
+| `DESIGN` | Bake length envelopes (11.2), tool-use rationale (11.3), parallelism triggers (11.4), thinking hints (11.5), explicit scope (11.8), and — for reviewers — coverage-vs-filter (11.10) into the section contract |
+| `GENERATE` | Verify generated SKILL.md states effort-level expectations (11.6/11.9), delegation-engineer framing (11.7), literal-scope handling (11.8), and (writers/designers) voice/design defaults (11.11) |
+| `VALIDATE` | Add Opus 4.8 readiness checks to the validation pass — skills missing 11.1–11.5 / 11.8–11.11 guidance are incomplete for `xhigh`-default runtime |

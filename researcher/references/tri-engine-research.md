@@ -256,4 +256,4 @@ The three subagents return JSON; Researcher main context handles NORMALIZE throu
 - `researcher/references/ai-assisted-research.md` — applied at GROUND for AI-moderation / synthetic-user disclosure
 - `researcher/references/survey-quantitative-design.md` — applied at SYNTHESIZE for survey-method clusters
 - `researcher/references/continuous-discovery-mixed-methods.md` — applied at SYNTHESIZE for Combined-Plan triangulation logic
-- `_common/OPUS_47_AUTHORING.md` — spawn prompt sizing, parallel-fan-out triggers
+- `_common/OPUS_48_AUTHORING.md` — spawn prompt sizing, parallel-fan-out triggers

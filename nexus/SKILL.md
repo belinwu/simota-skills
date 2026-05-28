@@ -79,7 +79,7 @@ Route elsewhere when the task is primarily:
 7. **Learn only from evidence.** Routing adaptation requires execution data, verification, and journaled results.
 8. **Prevent circular handoffs.** Enforce max-hop limits (default: 2 round-trips per agent pair) to prevent A→B→A handoff loops. [Source: codebridge.tech]
 9. **Hierarchical decomposition for scale.** For chains with 6+ agents, spawn feature-lead agents that each coordinate 2-3 specialists. [Source: addyosmani.com]
-10. **Author for Opus 4.7 defaults.** Apply `_common/OPUS_47_AUTHORING.md` principles **P4 (parallel subagent triggers), P6 (effort-level awareness), P7 (delegation framing)**. Opus 4.7 spawns fewer subagents and reasons more by default — explicit fan-out triggers and per-step model selection are mandatory. Spawn prompts must state thinking nudges (P5) and length envelopes (P2).
+10. **Author for Opus 4.8 defaults.** Apply `_common/OPUS_48_AUTHORING.md` principles **P4 (parallel subagent triggers), P6 (effort-level awareness), P7 (delegation framing), P9 (effort-calibrated tool use)**. Opus 4.8 spawns fewer subagents and reasons more by default, respects `effort` strictly, and follows instructions literally — explicit fan-out triggers, per-step model/effort selection, and explicit step scope are mandatory. Spawn prompts must state thinking nudges (P5) and length envelopes (P2).
 
 ## Boundaries
 
@@ -406,7 +406,7 @@ Agent(
 )
 ```
 
-> **Opus 4.7 note**: The four directive fields above (acceptance criteria / output length / tool-use / thinking) are not optional. Opus 4.7 calibrates output length to context and restrains tool calls by default, so both under- and over-shoot occur when these are implicit. For parallel spawns, see **Core Rule #10** and **`_common/SUBAGENT.md`**, and issue multiple `Agent(... run_in_background: true)` calls in the same turn. Shared protocol: `_common/OPUS_47_AUTHORING.md`.
+> **Opus 4.8 note**: The four directive fields above (acceptance criteria / output length / tool-use / thinking) are not optional. Opus 4.8 calibrates output length to context, restrains tool calls by default (raise `effort` to increase tool use), and interprets each field literally, so both under- and over-shoot occur when these are implicit. For parallel spawns, see **Core Rule #10** and **`_common/SUBAGENT.md`**, and issue multiple `Agent(... run_in_background: true)` calls in the same turn. Shared protocol: `_common/OPUS_48_AUTHORING.md`.
 
 **Codex CLI variant**: same prompt body; invoke via `spawn_agent(prompt=<body>)` then `wait_agent(id)`.
 
@@ -556,7 +556,7 @@ Read only the files that match the current decision point.
 | `references/feature-impact-simulate.md` | Feature impact prediction before implementation begins (Persona+Journey+Product v4 fold-in). Reference recipe (NOT a top-level Nexus subcommand) — chain: omen ‖ ripple ‖ echo[council mode] → experiment → magi. Org Tier: Solo skip-echo / SMB max-3 personas / Enterprise max-9 + arena multi for Tier-S |
 | `references/summit-recipe.md` | `/nexus summit` — prereqs (agy OPTIONAL — dual-engine fallback when unavailable), engine × team matrix, phase contracts, arena sub-orchestration, Vision sub-orchestration of design specialists, multi-engine quorum rules, AUTORUN chain template, failure escalation, cost/latency profile, decision tree vs apex/judge |
 | `references/podium-recipe.md` | `/nexus podium` — five-team content workflow (Research / Narrative / Production / Verification / Improvement) for doc + high-quality slide creation. Engine × team matrix (Claude prose / Codex compile / agy imagery), phase contracts with output_format variants (doc / slide / both / notebooklm / figma-slides), claim-grounding via Attest, 6×6 + WCAG-AA + persona walkthrough gates, max-2 improvement loop, decision tree vs single-skill / atelier / summit |
-| `_common/OPUS_47_AUTHORING.md` | Designing spawn prompts, planning output envelopes, or selecting per-step model effort. Critical for orchestrators: P4 (parallel subagents), P6 (effort), P7 (delegation) |
+| `_common/OPUS_48_AUTHORING.md` | Designing spawn prompts, planning output envelopes, or selecting per-step model effort. Critical for orchestrators: P4 (parallel subagents), P6 (effort), P7 (delegation) |
 
 ## Operational Notes
 

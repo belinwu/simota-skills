@@ -209,4 +209,4 @@ Inherits the base table from `_common/MULTI_ENGINE_RECIPE.md §Degraded Modes`. 
 - `scout/references/output-format.md` — Scout's canonical Investigation Report shape that multi-engine output extends
 - `scout/references/fix-prompt-generation.md` — LLM Fix Prompt rules; multi mode emits one Fix Prompt for the Primary RCA only
 - `_common/INVESTIGATION_ESCALATION.md` — confidence scale aligned across Scout / Lens / Trail / Specter
-- `_common/OPUS_47_AUTHORING.md` — spawn prompt sizing (P2), tool-use eagerness during GROUND (P3), thinking depth during SYNTHESIZE (P5)
+- `_common/OPUS_48_AUTHORING.md` — spawn prompt sizing (P2), tool-use eagerness during GROUND (P3), thinking depth during SYNTHESIZE (P5)

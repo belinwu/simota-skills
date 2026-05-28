@@ -464,4 +464,4 @@ When adding `multi` Recipe to a new skill:
 - `judge/references/tri-engine-review.md` — canonical Pattern C implementation
 - `spark/references/tri-engine-proposal.md` — canonical Pattern D implementation (with Portfolio/Compete merge)
 - `plea/references/tri-engine-demand.md` — canonical Pattern D with calibration + cross-axis (persona × engine)
-- `_common/OPUS_47_AUTHORING.md` — spawn prompt sizing, thinking-depth nudges, parallel-fan-out triggers
+- `_common/OPUS_48_AUTHORING.md` — spawn prompt sizing, thinking-depth nudges, parallel-fan-out triggers

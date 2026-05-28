@@ -14,7 +14,7 @@
 - Validation Report Template
 - Quick Validation Checklist
 - 6. Context Efficiency Validation (OPTIONAL)
-- 7. Opus 4.7 Readiness Validation (RECOMMENDED)
+- 7. Opus 4.8 Readiness Validation (RECOMMENDED)
 - 8. Output Density Protocol Validation (REQUIRED)
 - Automated Validation Script
 
@@ -416,9 +416,9 @@ See `references/context-compression.md` for compression strategies and equivalen
 
 ---
 
-## 7. Opus 4.7 Readiness Validation (RECOMMENDED)
+## 7. Opus 4.8 Readiness Validation (RECOMMENDED)
 
-Validate that generated skills align with Opus 4.7 default behaviors. See `references/official-design-patterns.md` Section 11.
+Validate that generated skills align with Opus 4.8 default behaviors. See `references/official-design-patterns.md` Section 11 and `_common/OPUS_48_AUTHORING.md` (P1–P11).
 
 - [ ] **R7.1** Front-loaded context capture
   - Trigger Guidance enumerates first-turn required inputs (target files, success criteria, constraints)
@@ -448,6 +448,22 @@ Validate that generated skills align with Opus 4.7 default behaviors. See `refer
 - [ ] **R7.7** Delegation-engineer framing
   - Workflow is self-directing for the bulk of execution
   - User check-ins reserved for `Ask first` decisions, not micro-steps
+
+- [ ] **R7.8** Literal-scope instruction following *(4.8)*
+  - Instructions meant to apply broadly state their scope explicitly ("every section, not just the first")
+  - Rules are stated, not left to be generalized from a single example
+
+- [ ] **R7.9** Effort-calibrated tool use *(4.8)*
+  - Tool-eager skills specify `high`/`xhigh` effort baseline, not just "use the tool" prompts
+  - No legacy forced-progress scaffolding ("summarize every N tool calls")
+
+- [ ] **R7.10** Coverage-vs-filter (reviewers/detectors only) *(4.8)*
+  - Finding stage instructs coverage (report all, tag confidence/severity); filtering deferred to a downstream stage
+  - Any single-pass self-filter uses a concrete bar, not qualitative terms like "important"
+
+- [ ] **R7.11** Voice & design defaults (writers/designers only) *(4.8)*
+  - Voice prompts re-evaluated against the direct/opinionated baseline; warmer tone stated explicitly if needed
+  - Design/frontend skills break the house style with concrete specs or option-proposal, not generic negation
 
 ---
 

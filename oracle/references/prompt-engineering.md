@@ -45,31 +45,38 @@ You are [role] with expertise in [domain].
 <examples>...</examples>
 ```
 
-## Claude 4.x Techniques (Opus 4.7 / Sonnet 4.6 baseline, 2026-05)
+## Claude 4.x Techniques (Opus 4.8 / Sonnet 4.6 baseline, 2026-05)
 
 ### Adaptive Thinking
 
+Thinking is off unless `thinking:{type:"adaptive"}` is set; the model then decides depth per step, calibrated by `effort` and query complexity. Budget control moved to `effort` — `budget_tokens` is deprecated.
+
 | Effort | Use case |
 |--------|----------|
-| `low` | latency-sensitive classification or extraction |
-| `medium` | default for general production tasks |
-| `high` | agentic coding or complex reasoning |
-| `max` | deep research or hardest analysis |
+| `low` | latency-sensitive classification or extraction; on 4.8 scopes strictly to what was asked |
+| `medium` | cost-sensitive general production tasks |
+| `high` | minimum for intelligence-sensitive work; balances tokens and intelligence |
+| `xhigh` | **default**; best for most coding/agentic use cases |
+| `max` | deep research or hardest analysis; can overthink (diminishing returns) |
 
 Rules:
 - prefer `"think thoroughly"` over brittle hand-written reasoning scripts;
 - ask Claude to self-check against explicit criteria;
-- if overthinking appears, tell it to choose and commit unless new evidence appears.
+- if overthinking appears, tell it to choose and commit unless new evidence appears;
+- on 4.8, **raise effort** before prompting around shallow reasoning or low tool usage — effort is the stronger lever.
 
-### Opus 4.7 Defaults That Change Prompt Shape
+### Opus 4.8 Defaults That Change Prompt Shape
 
-Opus 4.7 calibrates output length to context and restrains tool calls more aggressively than earlier 4.x. Three concrete consequences for prompt design:
+Opus 4.8 keeps the 4.7 shape (existing 4.7 prompts work) but sharpens it. Six concrete consequences for prompt design:
 
-1. **State an output-length envelope explicitly** ("Output is `5-10` lines / ≤ `300` tokens"). Without it, Opus 4.7 will over- or under-shoot based on its own estimate of the task.
-2. **State the tool-use directive explicitly** ("Read every file in scope before answering" vs "Do not read files until the design is locked"). Opus 4.7 reads fewer files by default than Sonnet 4.x; orchestrators that assume eager reads will regress.
-3. **State the thinking nudge at high-stakes decisions** ("Think step-by-step before classifying"). Opus 4.7 already reasons internally; the nudge is a quality lever, not a workaround for a missing capability.
+1. **State an output-length envelope explicitly** ("Output is `5-10` lines / ≤ `300` tokens"). Without it, 4.8 over- or under-shoots from its own estimate; prefer positive concision examples over "do not" rules.
+2. **State the tool-use directive explicitly** ("Read every file in scope before answering" vs "Do not read files until the design is locked"). 4.8 reads fewer files by default; raise `effort` to `high`/`xhigh` to increase tool usage.
+3. **State the thinking nudge at high-stakes decisions** ("Think step-by-step before classifying"). The nudge is a quality lever, not a workaround for a missing capability.
+4. **State scope explicitly for broad instructions** ("apply to every section, not just the first"). 4.8 follows instructions literally and won't silently generalize across items or infer unrequested work.
+5. **For review/detection prompts, separate finding from filtering.** 4.8 obeys "only high-severity / don't nitpick" faithfully, which can drop low-severity findings; instruct coverage at the finding stage and rank downstream.
+6. **Re-check voice and frontend defaults.** Prose trends direct/opinionated; frontend defaults to a fixed cream/serif house style — break it with concrete specs or option-proposal, not negation.
 
-These match `_common/OPUS_47_AUTHORING.md` principles P2 / P3 / P5.
+These match `_common/OPUS_48_AUTHORING.md` principles P2 / P3 / P5 / P8 / P10 / P11.
 
 ### Structured Outputs
 
@@ -140,7 +147,7 @@ Rules:
 - call independent tools in parallel only when there are no dependencies;
 - call dependent tools sequentially;
 - never guess missing parameters;
-- **on Opus 4.7**: state the parallel trigger explicitly in the prompt ("Spawn each independent track as a separate subagent in the same turn"); the model fans out less aggressively than 4.6 by default.
+- **on Opus 4.8**: state the parallel trigger explicitly in the prompt ("Spawn each independent track as a separate subagent in the same turn") and pair with the inverse guard ("don't spawn a subagent for work doable in one response"); the model fans out less aggressively than 4.6 by default.
 
 ### Autonomy vs Safety
 
