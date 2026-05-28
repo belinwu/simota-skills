@@ -325,6 +325,25 @@ fn send_email(from: EmailAddress, to: EmailAddress, subject: Subject) { ... }
 // Compiler prevents argument swaps
 ```
 
+### Edition 2024 / 1.85+ Deep-Dive
+
+The patterns above are the cross-language quick reference. For refactor-specific Rust idioms (Edition 2024 baseline) — including:
+
+- Nested `if let` → `?` / `let-else`, RPIT `use<…>` capture, AFIT vs `#[async_trait]`
+- `lazy_static!` → `std::sync::LazyLock` (1.80+), `bon::builder` over hand-rolled builders
+- Renaming hygiene per Rust API Guidelines (C-CASE, C-NEWTYPE, C-COMMON-CONVERSIONS)
+- Magic-number cleanup with `const` vs `let`, `Duration::from_secs(N)`
+- Macro hygiene refactors (`$crate::`, `$(,)?` trailing commas)
+- Refactor anti-patterns: `Arc<Mutex<T>>`-as-DI, clone-to-silence-borrowck, generic-everywhere bloat
+
+→ Read [`rust-cheatsheet.md`](./rust-cheatsheet.md).
+
+Upstream sources of truth (do not duplicate):
+
+- Bad-pattern catalog: [`builder/references/rust-anti-patterns.md`](../../builder/references/rust-anti-patterns.md)
+- Target idioms / API Guidelines: [`builder/references/rust-best-practices.md`](../../builder/references/rust-best-practices.md)
+- Edition 2024 language surface: [`builder/references/rust-language-spec.md`](../../builder/references/rust-language-spec.md)
+
 ---
 
 ## Java Patterns

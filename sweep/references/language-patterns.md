@@ -96,6 +96,25 @@ cargo +nightly udeps --workspace
 cargo clippy -- -W dead_code
 ```
 
+### Edition 2024 / 1.85+ Deep-Dive
+
+The table above is the language-patterns quick lookup. For Rust-specific cleanup landmines — including:
+
+- Full tooling matrix (`cargo machete`, `cargo unused-features`, `cargo bloat`, `cargo-modules`, `cargo expand`)
+- Safe-to-remove vs tread-carefully categories
+- FFI symbol landmines (`#[no_mangle]`, `#[unsafe(no_mangle)]`, `#[used]`, `#[link_section]`)
+- `#[cfg(feature = "...")]` / `#[cfg(test)]` / `#[derive]`-fed / `Drop` impl pitfalls
+- Workspace-wide cleanup, version drift in `[workspace.dependencies]`
+- Feature flag cleanup workflow
+
+→ Read [`rust-cheatsheet.md`](./rust-cheatsheet.md).
+
+Upstream sources of truth (do not duplicate):
+
+- Cargo / dependency pitfalls: [`builder/references/rust-anti-patterns.md`](../../builder/references/rust-anti-patterns.md) §10
+- Cargo & toolchain 2026 stack: [`builder/references/rust-best-practices.md`](../../builder/references/rust-best-practices.md) §4
+- Edition 2024 cleanup nuances: [`builder/references/rust-language-spec.md`](../../builder/references/rust-language-spec.md)
+
 ## Language-Agnostic Risk Patterns
 
 Files frequently misdetected across stacks:
