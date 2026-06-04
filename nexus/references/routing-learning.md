@@ -169,6 +169,9 @@ CES = Success_Rate × 0.35 + Recovery_Efficiency × 0.20 + Step_Economy × 0.20 
 | Lore sync mandatory | All extracted patterns shared with Lore before adaptation | Ecosystem knowledge consistency |
 | Minimum evidence | No adaptation without ≥ 3 data points | Prevent premature changes |
 | Hub-spoke invariant | No adaptation may introduce direct agent-to-agent routing | Architectural constraint |
+| Like-for-like baseline | CES comparison requires the same task-type/chain definition on both sides; never compare against a redefined or cherry-picked baseline | Apparent gains often come from a shifted denominator, not a better chain |
+| Proxy-vs-outcome | Distinguish proxy signals (step count, token count, completion flag) from outcome signals (task actually solved, no user re-execution); a proxy improvement without an outcome improvement does not justify adaptation | Proxy metrics are gameable and overstate progress |
+| Selection-bias check | Reject evidence drawn only from favorable slices (e.g. "hard cases where the old chain had room to improve"); require a representative sample of the task type | Measuring only improvable cases inflates the win rate |
 
 ### Rollback Protocol
 
@@ -177,6 +180,19 @@ CES = Success_Rate × 0.35 + Recovery_Efficiency × 0.20 + Step_Economy × 0.20 
 3. If CES drops by ≥ 0.10 from pre-adaptation baseline → auto-rollback
 4. Rollback restores exact pre-adaptation state
 5. Record rollback event in journal with cause analysis
+
+### Evidence-Quality Guard
+
+Before any CES claim or adaptation is trusted, run this checklist. It exists because self-measured improvement is systematically over-optimistic — proxy metrics, redefined baselines, and favorable sampling each manufacture gains that do not survive real use. [Source: anthropic.com/institute/recursive-self-improvement — caveats on lines-of-code as an imperfect measure, upward-biased productivity self-estimates, and non-like-for-like comparison]
+
+| Check | Pass condition | Fail action |
+|-------|----------------|-------------|
+| Like-for-like | Baseline and candidate share identical task-type/chain definition and data window | Discard the comparison; recollect against a fixed baseline |
+| Proxy guard | The improvement shows up in an outcome metric (Success_Rate / User_Satisfaction), not only a proxy (Step_Economy / token count) | Downgrade to "provisional"; do not adapt on proxy alone |
+| Sample representativeness | Evidence covers a representative slice of the task type, not only hand-picked hard/improvable cases | Re-sample; flag selection bias in the journal |
+| Self-report discount | Any agent-self-reported quality score is corroborated by an independent signal (Judge score, regression result, user non-correction) | Treat the self-report as unverified; require corroboration |
+
+An adaptation proposal that fails any check is capped at **provisional** confidence and MUST NOT auto-apply, regardless of CES grade. Record which checks passed in the Adaptation Log.
 
 ## Integration Points
 
