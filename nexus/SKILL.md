@@ -341,7 +341,7 @@ max_depth = 3
 
 | Layer | Method | When | API |
 |-------|--------|------|-----|
-| **L1: Direct Spawn** | `/agent <name> "<task>"` (TUI) or `agy -p "<prompt>"` (one-shot) | 1-4 step sequential chains | TUI: `/agent <slug> "<prompt>"` / Headless: `agy -p "<prompt>" --dangerously-skip-permissions --output-format json` (use `@<path>` to inject file context — see "agy headless silent-failure root causes" below) |
+| **L1: Direct Spawn** | `/agent <name> "<task>"` (TUI) or `agy -p "<prompt>"` (one-shot) | 1-4 step sequential chains | TUI: `/agent <slug> "<prompt>"` / Headless: `agy -p "<prompt>" --dangerously-skip-permissions` (use `@<path>` to inject file context; **deliverable captured via prompt-mandated artifact file, NOT stdout** — see "agy headless silent-failure root causes" below + `_common/CLI_COMPATIBILITY.md §9.2`) |
 | **L2: Parallel Spawn** | Multiple `/agent` invocations (async, each own context) | 2-3 independent branches | Aggregate via `/tasks`; no explicit `wait` primitive |
 | **L3: Role-Driven Team** | Plugin-installed team pack (`oh-my-antigravity` etc. via `agy plugin install <url>`) | 4+ workers, complex ownership | Community pattern — `/oma:taskboard` priority queue + approval gates (no Rally equivalent documented) |
 
@@ -360,28 +360,36 @@ max_depth = 3
 
 **⚠ MANDATORY Pre-flight Notification**: before the first `agy -p ... --dangerously-skip-permissions` spawn of a session, Nexus MUST emit the Pre-flight Notification defined in `_common/CLI_COMPATIBILITY.md §9.1`. Rationale: spawning agy headless from Claude Code's `Bash` tool creates a two-layer autonomous loop that bypasses both sides' approval gates. The notification recommends running the `update-config` skill once to allowlist the specific Bash pattern in `settings.json permissions.allow`. The notification fires in AUTORUN / AUTORUN_FULL too (informational, not a gate). See §9.1 for canonical template.
 
-**agy headless silent-failure root causes (v1.0.2, verified 2026-05)**: the `exit 0 + empty stdout` pattern detected by `_common/MULTI_ENGINE_RECIPE.md §3.5` typically has one of four root causes, with mitigations:
+**agy headless silent-failure root causes (v1.0.5, verified 2026-06)**: the `exit 0 + empty stdout` pattern detected by `_common/MULTI_ENGINE_RECIPE.md §3.5` has five root causes, with mitigations. The first is the most consequential: **empty stdout no longer implies failure** — a successful run looks identical when stdout is piped.
 
 | Root cause | Mechanism | Mitigation |
 |------------|-----------|------------|
+| **Non-TTY stdout flush bug (affects SUCCESSFUL runs too)** | `agy -p` renders output via TUI drip (`text_drip.go`) and never flushes to a non-TTY stdout — redirection/`tee` capture nothing even when the model responded (official issue #115, OPEN; unfixed through v1.0.5) | **Never use stdout as the deliverable channel.** Mandate an absolute-path artifact write + sentinel in the prompt per `_common/CLI_COMPATIBILITY.md §9.2`; pseudo-TTY reattach (`script -q /dev/null agy ...`) helps the status line but artifact verification stays mandatory |
 | **File path written as plain string** | agy treats `docs/foo.md` (no `@`) as literal text; main agent delegates the read to an internal subagent | **Always use `@<path>` syntax** to inject file context directly into the main agent (e.g. `Compare @docs/a.md and @docs/b.md ...`) |
 | **Internal subagent 60s timeout** | v1.0.2 changelog restricts the 60s timeout to subagents only (main agent is no longer capped); long-file reads via delegated subagents still die silently | `@` syntax avoids subagent delegation entirely; for unavoidable delegation, split prompt into multiple smaller `agy -p` calls |
 | **`--print-timeout` exceeded** | Default 5min on the main agent's wait; long syntheses can hit it | Pass `--print-timeout 15m` (or appropriate) for heavy reviews |
 | **Quota / OAuth expiry** | Silent runtime failure with no stderr emission | `--log-file <path>` + post-run `grep -i "quota\|auth\|expired"` per `_common/MULTI_ENGINE_RECIPE.md §3.5` |
 
-**`--output-format json` status (hidden flag, verified 2026-05)**: the flag is **not** in `agy --help` v1.0.2 output, but is demonstrated in the official Google DEV.to article (`agy -p "List all TODOs in this codebase" --output-format json`). Treat as **supported but undocumented in `--help`** — use freely, but pin schema expectations in the prompt as a defense against future schema drift.
+**`--output-format json` status (re-verified 2026-06, v1.0.5)**: availability is **inconsistent across installs** — demonstrated in a community guide, but "flag not defined" errors are reported on the same guide, and no JSON schema is documented anywhere. **Do not depend on it.** Request structured JSON inside the §9.2 artifact file instead.
 
-**Recommended headless template:**
+**Recommended headless template** (full protocol + verification chain: `_common/CLI_COMPATIBILITY.md §9.2`):
 ```bash
-agy -p --dangerously-skip-permissions --output-format json "$(cat <<'EOF'
+SLUG="<task-slug>"
+script -q /dev/null agy -p --dangerously-skip-permissions "$(cat <<EOF
 [Role and task]
 
 Primary: @<path>
 References: @<path1>, @<path2>
 
-Output: <strict schema description>
+MANDATORY OUTPUT PROTOCOL:
+- Write your COMPLETE deliverable to the absolute path /tmp/agy-${SLUG}.md (create or overwrite).
+- End that file with a final line containing exactly: <<<END_OF_OUTPUT>>>
+- To stdout, print only a single status line: DONE /tmp/agy-${SLUG}.md
 EOF
-)" --print-timeout 15m --log-file /tmp/agy-<slug>.log 2>&1 | tee /tmp/agy-<slug>.out
+)" --print-timeout 15m --log-file /tmp/agy-${SLUG}.log >/dev/null 2>&1 || true
+# Then run the §9.2 verification chain: [ -s /tmp/agy-${SLUG}.md ] && sentinel grep;
+# fallback 1 = transcript harvest (brain/<conv-id>/.../transcript.jsonl last PLANNER_RESPONSE);
+# fallback 2 = --log-file grep → RUNTIME-BROKEN. Typed retry: max 1.
 ```
 
 **Cross-CLI mapping:** see `_common/CLI_COMPATIBILITY.md`.
@@ -451,7 +459,7 @@ close_agent(id)                         # release context when the branch is don
 
 Prereqs (C1): `[features] multi_agent = true` + `[agents] max_depth >= 2`. `spawn_agent` may be lazily hidden — attempt the call when prereqs hold (C5).
 
-**agy variant**: same prompt body; invoke via `/agent [agent]-[task-slug] "<body>"` (TUI) or `agy -p "<body>" --dangerously-skip-permissions --output-format json` (headless). The `--dangerously-skip-permissions` flag is mandatory in headless mode — without it, `request-review` will block the spawn. `--output-format json` is a hidden flag (absent from `--help` v1.0.2 but confirmed in official DEV.to examples). **Reference files in the prompt body with `@<path>`** (e.g. `@docs/spec.md`) to inject context into the main agent — bare path strings trigger silent subagent timeouts (60s cap, see Antigravity CLI section above). Replace skill path with `~/.gemini/antigravity-cli/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`.
+**agy variant**: same prompt body; invoke via `/agent [agent]-[task-slug] "<body>"` (TUI) or `agy -p "<body>" --dangerously-skip-permissions` (headless). The `--dangerously-skip-permissions` flag is mandatory in headless mode — without it, `request-review` will block the spawn. **Headless capture is file-handoff, not stdout**: append the `_common/CLI_COMPATIBILITY.md §9.2` MANDATORY OUTPUT PROTOCOL block to the prompt body (absolute-path artifact + `<<<END_OF_OUTPUT>>>` sentinel) and run the §9.2 verification chain after exit — `agy -p` never flushes to non-TTY stdout (issue #115, unfixed v1.0.5), so the `_STEP_COMPLETE` block is read from the artifact file. Do not rely on `--output-format json` (inconsistent availability). **Reference files in the prompt body with `@<path>`** (e.g. `@docs/spec.md`) to inject context into the main agent — bare path strings trigger silent subagent timeouts (60s cap, see Antigravity CLI section above). Replace skill path with `~/.gemini/antigravity-cli/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`.
 
 Detailed execution flows: `references/execution-phases.md`, `references/orchestration-patterns.md`
 

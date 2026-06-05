@@ -17,7 +17,7 @@ Arena directly invokes external AI engine CLIs to generate implementation varian
 - **Engine-agnostic evaluation** — Same scoring criteria regardless of which engine produced the code
 - **Dual paradigm** — Same CLI commands for both COMPETE (compare variants) and COLLABORATE (integrate subtasks). See `collaborate-mode-guide.md` for COLLABORATE-specific prompt templates.
 
-> **Important — agy v1.0.0 silent-failure detection (mandatory).** Every `agy -p ... --dangerously-skip-permissions` invocation in this guide must add `--log-file <path>` and treat `exit 0 + empty stdout` as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error). See `_common/MULTI_ENGINE_RECIPE.md §3.5 Engine Runtime Failure Detection` for the canonical pattern. Without this guard, agy failures are silently misread as "variant produced nothing", corrupting branch comparison and integration.
+> **Important — agy v1.0.5 output capture + silent-failure detection (mandatory).** Every `agy -p ... --dangerously-skip-permissions` invocation in this guide must add `--log-file <path>` and capture the deliverable via the file-handoff protocol in `_common/CLI_COMPATIBILITY.md §9.2` (prompt-mandated absolute-path artifact + sentinel + verification chain) — `agy -p` never flushes to non-TTY stdout even on success (issue #115, unfixed through v1.0.5), so `exit 0 + empty stdout` is ambiguous between success and silent failure. Only when both the artifact and the §9.2 transcript fallback are empty, grep the log per `_common/MULTI_ENGINE_RECIPE.md §3.5` and treat as `RUNTIME-BROKEN` (quota / OAuth expiry / executor error). Without this guard, agy failures are silently misread as "variant produced nothing", corrupting branch comparison and integration.
 >
 > **Note:** Antigravity CLI v1.0.0 does NOT support `--sandbox`. Any example below using `agy ... --sandbox` is a transcription bug from the Codex CLI feature set and should be ignored.
 
@@ -173,7 +173,7 @@ agy -p "implement the following: {spec_prompt}" --dangerously-skip-permissions -
 |------|-------------|
 | `-p "<prompt>"` | Non-interactive prompt mode |
 | `--dangerously-skip-permissions` | No confirmation prompts — required for Arena automation. **⚠ Mandatory Pre-flight Notification** before first spawn — see `_common/CLI_COMPATIBILITY.md §9.1`. Recommends `/update-config` to allowlist the Bash pattern in `settings.json` because the agy autonomous loop + Claude Code Bash spawn create a two-layer approval-gate bypass |
-| `--output-format json` | Structured output (hidden flag — absent from `agy --help` but confirmed by official DEV.to examples) |
+| `--output-format json` | **Do not depend on it (2026-06)** — availability inconsistent across installs, schema undocumented. Request JSON inside the §9.2 artifact file instead |
 | `--sandbox` | Run in sandboxed environment (safer but limited) |
 
 **Notes:**

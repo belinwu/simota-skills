@@ -64,7 +64,7 @@ Non-interactive review always uses `-p` (prompt) plus `--dangerously-skip-permis
 |------|---------|----------------------|
 | `-p, --print, --prompt <STR>` | Headless prompt — runs once and exits | Yes |
 | `--dangerously-skip-permissions` | Auto-approve all tool actions (needed for headless) | Yes for headless |
-| `--output-format <FMT>` | Structured output (e.g. `json`) — **hidden flag**, absent from `agy --help` but confirmed by Google DEV.to article | Yes for CI / programmatic consumption |
+| `--output-format <FMT>` | Structured output (e.g. `json`) — **UNRELIABLE (2026-06)**: availability inconsistent across installs ("flag not defined" reports), schema undocumented | No — request JSON inside the §9.2 artifact file instead |
 | `--add-dir <PATH>` | Add a directory to the workspace (repeatable) | When review spans multiple repos |
 | `--sandbox` | Run in a sandbox with terminal restrictions enabled | For isolated/risky reviews |
 | `-c, --continue` | Continue the most recent conversation | For iterative review sessions |
@@ -88,8 +88,9 @@ agy -p "Activate the code review skill and review all code changes on the curren
 # Write the review to a file for downstream processing
 agy -p "Activate the code review skill, review the current branch diff, and write the findings to code-review.md." --dangerously-skip-permissions
 
-# Structured JSON output (for CI pipelines — hidden but supported flag)
-agy -p "Review the current branch diff. Return findings as JSON with fields: severity, file, line, issue, suggested_fix." --dangerously-skip-permissions --output-format json
+# Structured JSON output (for CI pipelines — write JSON to an ABSOLUTE-path artifact file;
+# stdout never flushes to non-TTY (issue #115) and --output-format json is unreliable)
+agy -p "Review the current branch diff. Write findings as JSON ({severity, file, line, issue, suggested_fix}) to the absolute path /tmp/agy-review.json, ending the file with a final line <<<END_OF_OUTPUT>>>. Print only 'DONE /tmp/agy-review.json' to stdout." --dangerously-skip-permissions
 
 # Plan mode (read-only, no writes to disk)
 agy -p "Review the current branch diff and summarize risks; do not modify any files."
@@ -219,7 +220,8 @@ Apply the multi-agent verification rules in `codex-integration.md` — findings 
 ### 13. Structured JSON Output for CI
 
 ```bash
-agy -p "Activate the code review skill. Review the current branch diff. Return strict JSON: {\"findings\":[{\"severity\":\"CRITICAL|HIGH|MEDIUM|LOW|INFO\",\"file\":\"...\",\"line\":N,\"issue\":\"...\",\"evidence\":\"...\",\"suggested_fix\":\"...\"}]}" --dangerously-skip-permissions
+# Write JSON to an absolute-path artifact — stdout is not a reliable channel (issue #115)
+agy -p "Activate the code review skill. Review the current branch diff. Write strict JSON to the absolute path /tmp/agy-review-ci.json: {\"findings\":[{\"severity\":\"CRITICAL|HIGH|MEDIUM|LOW|INFO\",\"file\":\"...\",\"line\":N,\"issue\":\"...\",\"evidence\":\"...\",\"suggested_fix\":\"...\"}]}. End the file with a final line <<<END_OF_OUTPUT>>>." --dangerously-skip-permissions
 ```
 
 ---
@@ -309,22 +311,22 @@ Always pair the prompt with `--dangerously-skip-permissions` for headless runs u
 
 ### Silent Failure Detection
 
-`agy` v1.0.0 silently swallows several runtime-fatal errors to its log file while exiting 0 with empty stdout. The most common cause is **quota exhaustion** on the Google Antigravity subscription (`RESOURCE_EXHAUSTED` code 429 with a `Resets in NhNm` window). Other observed causes: OAuth token expiry mid-session, upstream model unavailability, and corrupt `mcp_config.json`.
+`agy` silently swallows several runtime-fatal errors to its log file while exiting 0 with empty stdout — quota exhaustion (`RESOURCE_EXHAUSTED` 429 with a `Resets in NhNm` window), OAuth token expiry, upstream model unavailability, corrupt `mcp_config.json`. **Additionally (unfixed through v1.0.5, issue #115): `agy -p` never flushes its response to a non-TTY stdout, so a SUCCESSFUL review also produces `exit 0 + empty stdout` when piped.** Capture must therefore use the file-handoff protocol (`_common/CLI_COMPATIBILITY.md §9.2`), not stdout.
 
-**Mandatory pattern for headless invocations:**
+**Mandatory pattern for headless invocations** (prompt must mandate the artifact write per §9.2):
 
 ```bash
-LOG="$(mktemp -t agy_review.XXXXXX)"
-OUT="$(mktemp -t agy_review_out.XXXXXX)"
-trap 'rm -f "$LOG" "$OUT"' EXIT
-agy -p "<prompt>" --dangerously-skip-permissions --log-file "$LOG" > "$OUT"
-RC=$?
-OUT_BYTES=$(wc -c < "$OUT")
+OUT="/tmp/agy-review.md"; LOG="/tmp/agy-review.log"
+rm -f "$OUT"
+# Prompt ends with: "Write your COMPLETE findings to the absolute path /tmp/agy-review.md,
+#   final line <<<END_OF_OUTPUT>>>; print only a one-line status to stdout."
+script -q /dev/null agy -p "<prompt>" --dangerously-skip-permissions --log-file "$LOG" \
+  --print-timeout 15m >/dev/null 2>&1 || true
 
-if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
-  # Silent failure — surface the real cause
+if ! { [ -s "$OUT" ] && grep -q '<<<END_OF_OUTPUT>>>' "$OUT"; }; then
+  # Fallback: transcript harvest, then log grep (full chain: CLI_COMPATIBILITY §9.2)
   grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON input" "$LOG" | head -5
-  echo "VERDICT: agy ran but produced no output. Treat as RUNTIME-BROKEN (not UNAVAILABLE). Skip this engine for this review and surface the log excerpt in the integration report."
+  echo "VERDICT: agy produced no verifiable artifact. Treat as RUNTIME-BROKEN (not UNAVAILABLE). Skip this engine for this review and surface the log excerpt in the integration report."
 fi
 ```
 

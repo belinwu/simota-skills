@@ -2,7 +2,7 @@
 
 Cross-CLI compatibility reference for Claude Code / Codex CLI / Antigravity CLI (`agy`). SKILL.md authors consult this file before assuming any specific CLI's API, configuration path, or spawn syntax.
 
-> **Date stamps**: As of 2026-05. Antigravity CLI (`agy`) launched 2026-05-19 (Google I/O 2026, alongside Antigravity 2.0 GA — shared agent harness across desktop app + CLI + workflow SDK); Gemini CLI personal-tier service stops 2026-06-18. **Latest CLI release: v1.0.3** (per `google-antigravity/antigravity-cli` CHANGELOG.md). Re-verify against current docs before relying on any "未確認" item. Update in place via `agy update`.
+> **Date stamps**: As of 2026-06. Antigravity CLI (`agy`) launched 2026-05-19 (Google I/O 2026, alongside Antigravity 2.0 GA — shared agent harness across desktop app + CLI + workflow SDK); Gemini CLI personal-tier service stops 2026-06-18. **Latest CLI release: v1.0.5** (per `google-antigravity/antigravity-cli` CHANGELOG.md — 1.0.3: G1 credits UI; 1.0.4: SQLite `.db` conversation storage; 1.0.5: fixed `-p` mode writing metadata into cwd instead of `~/.gemini/antigravity-cli/cache`). **The headless stdout-flush bug (§9.2) is NOT fixed through 1.0.5.** Re-verify against current docs before relying on any "未確認" item. Update in place via `agy update`.
 
 > **Engine selection policy (2026-05 update)**: The default baseline for multi-engine recipes is **Claude + Codex (dual-engine)**. agy is an **optional addon** used only when available at PREFLIGHT — never a hard prerequisite. Reason: agy v1.0.x exhibits frequent silent runtime failures (quota, OAuth, executor errors, subagent timeouts — see §9). For canonical policy + tag conventions, see `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 
@@ -63,7 +63,7 @@ Cross-CLI compatibility reference for Claude Code / Codex CLI / Antigravity CLI 
 | Subagent control tools | `Agent` (foreground/background), TeammateTool (peer-to-peer SDK) | `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent` | `/agent <name>`, `/tasks`, `/resume`, `/rewind`, `/btw` (read-only side question) |
 | Nesting / depth control | (config-driven; see Claude Agent SDK) | `agents.max_depth` (default 1; explicit config key) | **(未確認)** — community guidance says "cap subagent depth" but no documented JSON/TOML key was found; treat as a runtime/budget concern instead of a config knob |
 | Long-running goal mode | `/goal` (Claude Code v2.1.139+) | `[features] goals = true` (experimental) | `/goal <task>` (run to completion without plan-approval pauses; experimental flag status 未確認) |
-| Headless / one-shot | `claude -p` | `codex exec` | `agy -p`, `--dangerously-skip-permissions` (mandatory for non-interactive use — bypasses default `request-review` permission gate; treat as `bypassPermissions` equivalent and restrict to sandboxed/CI/authorized-dev contexts), `--output-format json` (hidden flag — not in `agy --help` v1.0.2 but confirmed by official DEV.to examples). File references inside the prompt **must** use `@<path>` syntax — bare path strings trigger silent subagent timeouts (see §9 Known Pitfalls). |
+| Headless / one-shot | `claude -p` | `codex exec` (`-o`/`--output-last-message <path>` writes the final message to a file — official artifact channel) | `agy -p`, `--dangerously-skip-permissions` (mandatory for non-interactive use — bypasses default `request-review` permission gate; treat as `bypassPermissions` equivalent and restrict to sandboxed/CI/authorized-dev contexts). **stdout is NOT a reliable capture channel** (non-TTY flush bug, unfixed through v1.0.5 — see §9.2 for the mandatory file-handoff protocol). `--output-format json` is UNRELIABLE (conflicting availability reports, no documented schema — §9). File references inside the prompt **must** use `@<path>` syntax — bare path strings trigger silent subagent timeouts (see §9 Known Pitfalls). |
 
 > ⚠ **Naming collision**: `spawn_agent` is a Codex CLI built-in tool name. `khanhbkqt/spawn-agent` is a community Antigravity skill that delegates to other engines — they are not the same thing.
 
@@ -88,7 +88,7 @@ On completion, emit _STEP_COMPLETE with Agent / Status / Output / Next.
 Per-CLI delivery:
 - **Claude Code**: pass as `prompt:` to `Agent(...)` with `subagent_type: general-purpose`, `mode: bypassPermissions`, model `sonnet|opus|haiku`.
 - **Codex CLI**: pass as the `prompt` argument of `spawn_agent`; wait with `wait_agent(id)`; resolve `<skills_root>` from `~/.codex/skills/` or `<repo>/.agents/skills/`.
-- **agy**: paste into a `/agent <slug> "<prompt>"` invocation, or supply via `agy -p "<prompt>" --dangerously-skip-permissions --output-format json` for machine-readable non-interactive result. The skip-permissions flag is mandatory in headless mode because `request-review` cannot be answered there. `--output-format json` is a hidden flag — absent from `agy --help` v1.0.2 but confirmed in official DEV.to examples; safe to use. Always reference files with `@<path>` (e.g. `@docs/spec.md`) so the main agent ingests context directly — without `@`, agy delegates file reads to a subagent that hits the 60s timeout and silently exits. `<skills_root>` is `~/.gemini/antigravity-cli/skills/` or `<repo>/.agents/skills/`.
+- **agy**: paste into a `/agent <slug> "<prompt>"` invocation, or supply via `agy -p "<prompt>" --dangerously-skip-permissions` headless. The skip-permissions flag is mandatory in headless mode because `request-review` cannot be answered there. **Do NOT capture the result from stdout** — apply the file-handoff protocol in §9.2 (prompt-mandated absolute-path artifact write + sentinel + verification chain). `--output-format json` is unreliable (conflicting availability reports, undocumented schema — §9); request JSON inside the artifact file instead. Always reference files with `@<path>` (e.g. `@docs/spec.md`) so the main agent ingests context directly — without `@`, agy delegates file reads to a subagent that hits the 60s timeout and silently exits. `<skills_root>` is `~/.gemini/antigravity-cli/skills/` or `<repo>/.agents/skills/`.
 
 ---
 
@@ -181,8 +181,8 @@ When a skill consumes an MCP server, declare the server name + required tool set
 | File attach | `@path` | `@path` | `@filename` |
 | Side question (read-only) | — | — | `/btw` |
 | Inspect loaded rules/skills | — | — | `agy inspect` |
-| One-shot | `claude -p` | `codex exec` | `agy -p --dangerously-skip-permissions --output-format json` (use `@<path>` for files) |
-| Structured output | `--output-format json` (未確認 globally) | (未確認) | `--output-format json` |
+| One-shot | `claude -p` | `codex exec` (`-o <path>` for final-message artifact) | `agy -p --dangerously-skip-permissions` (use `@<path>` for files; capture output via §9.2 file-handoff, NOT stdout) |
+| Structured output | `--output-format json` (未確認 globally) | `--output-schema` + `-o out.json` | `--output-format json` UNRELIABLE (§9) — request JSON inside the §9.2 artifact file instead |
 
 ---
 
@@ -203,8 +203,9 @@ Surface these in any skill that targets agy. Each is sourced from the official G
 | MCP `url` → `serverUrl` rename | Silent connection failure | Always document `serverUrl` in MCP setup snippets |
 | Skill description vague → tool bloat | 40-50K token overhead | Keep `description:` ≤2 sentences with explicit trigger keywords |
 | `agy plugin import gemini` does not migrate custom themes | Cosmetic regression | Note in migration guides |
+| **Headless stdout flush bug — `-p`/`--print` emits NOTHING to non-TTY stdout even on success** (official issue #115 "Can't Capture CLI Output", OPEN; root cause per gemini-cli #27466: `text_drip.go` renders to TUI but never flushes to a non-TTY stdout; unfixed through v1.0.5) | `agy ... --print "..." > log.txt` produces an empty file with `exit 0` — a SUCCESSFUL run is indistinguishable from a silent failure when reading stdout; redirect/`tee` capture nothing | **Never use stdout as the deliverable channel.** Apply the §9.2 file-handoff protocol (prompt-mandated absolute-path artifact + sentinel + verification chain + transcript fallback). Pseudo-TTY reattach (`script -q /dev/null agy ...`) partially mitigates but artifact verification is still mandatory |
 | **Bare file paths in prompts trigger silent subagent timeouts** | Headless `agy -p` exits with `exit 0` + empty stdout when given paths without `@`; main agent delegates file reads to a subagent that dies at the 60s cap (v1.0.2 changelog: "restricted the default 60-second interaction timeout specifically to subagents") | **Always use `@<path>` syntax** to inject file context into the main agent; combine with `--log-file` + post-run grep per `_common/MULTI_ENGINE_RECIPE.md §3.5` |
-| **`--output-format json` absent from `agy --help` v1.0.2** | Flag appears unsupported via help text but is documented in official DEV.to examples (`agy -p "..." --output-format json`) | Treat as a hidden but supported flag; still pin schema in the prompt body as defense against future schema drift |
+| **`--output-format json` availability is INCONSISTENT across installs** (2026-06 re-verification: community guide demonstrates it, but a commenter on the same guide reports "flag not defined" error; no JSON schema documented anywhere; official issue #7 notes `stream-json` is Gemini CLI legacy, not agy) | A spawn script depending on the flag may hard-fail on some installs, or succeed with an unparseable schema | **Do not depend on the flag for output capture.** Request the structured JSON inside the §9.2 artifact file via the prompt instead; if the flag is used at all, treat failure as non-fatal |
 | **`--print-timeout` default 5min on heavy reviews** | Long multi-file syntheses may exceed default; main agent (not subagent) terminates | Pass `--print-timeout 15m` or larger for documents >1000 lines or multi-file comparisons |
 | **`linuxcommandlibrary` man page is for the Antigravity IDE GUI launcher**, not the CLI | Flags like `--new-window`, `--reuse-window`, `-g` are IDE-only and will fail with the CLI | Source CLI flags only from `agy --help`, official DEV.to articles, and `google-antigravity/antigravity-cli`; ignore `michaelw9999/antigravity-cli` (unofficial fork) |
 | **`agy --dangerously-skip-permissions` spawned as a Claude Code subagent (via Bash) creates an autonomous agent loop that bypasses Claude Code's approval gate** | Safety-judged unsafe: a long-running agy session can issue arbitrary tool calls (file writes, shell, MCP) with no human gate on the agy side and no per-call gate on the Claude Code side either | **Mandatory Pre-flight Notification** — see §9.1 below. Before the first `agy -p ... --dangerously-skip-permissions` of a session (or whenever the allowlist is not yet in place), emit the notification recommending `/update-config` to add the specific Bash pattern to `settings.json` `permissions.allow`. This is the SAFE configuration — without the allowlist, every spawn surfaces a Claude Code permission prompt that defeats headless autonomy; with the allowlist, the user has explicitly consented to the pattern once, scoped narrowly |
@@ -227,7 +228,7 @@ Surface these in any skill that targets agy. Each is sourced from the official G
 ```
 ⚠ Pre-flight (agy headless spawn)
 This session is about to invoke:
-    agy -p "<prompt>" --dangerously-skip-permissions [--output-format json] [--log-file ...] [--print-timeout 15m]
+    agy -p "<prompt>" --dangerously-skip-permissions [--log-file ...] [--print-timeout 15m]
 
 Running agy as a Claude Code subagent with --dangerously-skip-permissions creates an
 autonomous agent loop that bypasses approval gates on BOTH sides (no agy-side prompt,
@@ -252,6 +253,68 @@ Continuing the spawn now …
 **Confirming the allowlist is in place**: skills MAY check `~/.claude/settings.json` (`permissions.allow`) for an entry matching `Bash(agy -p*` before emitting; if present, the notification can be downgraded to a single-line reminder (`✓ agy allowlist confirmed in user settings; proceeding`).
 
 **Cross-references**: skills must point here rather than re-stating the protocol. References in `nexus/SKILL.md`, `_common/SUBAGENT.md`, `_common/MULTI_ENGINE_RECIPE.md`, `judge/references/antigravity-review-usage.md`, `orbit/references/executor-engines.md`, `arena/references/team-mode-guide.md`, `arena/references/engine-cli-guide.md`.
+
+---
+
+### 9.2. agy Headless Output-Capture Protocol (canonical)
+
+> Single source of truth for capturing deliverables from `agy -p` spawns. Verified 2026-06 against agy v1.0.5. All skills that spawn agy headless MUST follow this protocol instead of reading stdout.
+
+**Why**: agy `-p`/`--print` mode has a non-TTY stdout-flush bug (official issue #115, OPEN; root cause `text_drip.go` per gemini-cli #27466) — the run authenticates, gets the model response, and exits 0 **without writing it to stdout** when stdout is a pipe or file. Unfixed through v1.0.5; no changelog entry targets it. Redirection (`>`), `tee`, and `tail` capture nothing. Therefore `exit 0 + empty stdout` no longer implies RUNTIME-BROKEN — it is also what a *successful* run looks like. Capture must move to disk artifacts.
+
+**Capture channels, in order of authority**:
+
+1. **Prompt-mandated artifact file (primary)** — print mode executes tools (file writes) and this cannot be disabled, so instruct the agent to write its deliverable to a file. Known failure modes of this channel itself — *phantom writes* (agent claims it wrote; no file) and *sandbox-cwd path mismatch* (agent resolves a relative path against a different cwd) — are mitigated by: **absolute path only**, a **final-line sentinel**, and the **verification chain** below.
+2. **agy transcript harvest (fallback)** — every conversation persists `~/.gemini/antigravity-cli/brain/<conv-id>/.system_generated/logs/transcript.jsonl` regardless of stdout. The final answer is the last entry matching `source=MODEL, status=DONE, type=PLANNER_RESPONSE`. Resolve `<conv-id>` via `~/.gemini/antigravity-cli/cache/last_conversations.json` (fallback: newest-mtime `brain/` dir). ⚠ Undocumented internal paths — expect bitrot across versions; re-verify on `agy update` (v1.0.4 also stores conversations as SQLite `.db`).
+3. **`--log-file` grep (failure diagnosis)** — quota / OAuth / executor errors per §3.5 of `_common/MULTI_ENGINE_RECIPE.md`. Only after channels 1-2 are both empty does RUNTIME-BROKEN apply.
+
+**Mandatory prompt block** (append to every headless agy prompt; `<slug>` = task slug, absolute path required):
+
+```
+MANDATORY OUTPUT PROTOCOL:
+- Write your COMPLETE deliverable to the absolute path /tmp/agy-<slug>.md (create or overwrite).
+- End that file with a final line containing exactly: <<<END_OF_OUTPUT>>>
+- To stdout, print only a single status line: DONE /tmp/agy-<slug>.md
+```
+
+**Canonical spawn + verification chain**:
+
+```bash
+SLUG="<task-slug>"
+OUT="/tmp/agy-${SLUG}.md"          # ABSOLUTE path — agy sandbox cwd ≠ orchestrator cwd
+LOG="/tmp/agy-${SLUG}.log"
+rm -f "$OUT"
+# Pseudo-TTY reattach dodges the non-TTY flush bug for the status line (macOS/BSD syntax;
+# Linux: script -qfc "agy -p ... " /dev/null). Exit code is NOT trusted either way.
+script -q /dev/null agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions \
+  --log-file "$LOG" --print-timeout 15m >/dev/null 2>&1 || true
+
+# Verification chain — ALL must pass before the artifact is trusted
+if [ -s "$OUT" ] && grep -q '<<<END_OF_OUTPUT>>>' "$OUT"; then
+  echo "OK: deliverable at $OUT"
+else
+  # Fallback: harvest agy's own transcript (undocumented internal path — bitrot risk)
+  BRAIN="$HOME/.gemini/antigravity-cli/brain"
+  CONV="$(ls -td "$BRAIN"/*/ 2>/dev/null | head -1)"
+  TR="${CONV}.system_generated/logs/transcript.jsonl"
+  if [ -f "$TR" ]; then
+    grep '"type":"PLANNER_RESPONSE"' "$TR" | grep '"status":"DONE"' | tail -1 > "${OUT}.transcript.json"
+  fi
+  if [ ! -s "$OUT" ] && [ ! -s "${OUT}.transcript.json" ]; then
+    grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON|subagent.*timeout|interaction timeout" "$LOG" | head -5
+    echo "VERDICT: agy RUNTIME-BROKEN"
+    exit 42   # caller treats non-0 as RUNTIME-BROKEN; do not silently aggregate
+  fi
+fi
+```
+
+**Typed retry rule**: if the artifact is missing/empty but the transcript shows the model produced content, retry ONCE with an explicit repair directive ("the previous run did not write the file — rewrite your full output to /tmp/agy-<slug>.md"). Max 1 retry; do not loop blindly.
+
+**Structured output**: request JSON *inside the artifact file* ("write a single JSON object to /tmp/agy-<slug>.json, then the sentinel on its own final line"). Do not rely on `--output-format json` (§9 pitfall: inconsistent availability, undocumented schema).
+
+**Precedent**: Codex CLI solves the same problem class officially via `codex exec -o/--output-last-message <path>` (artifact-as-source-of-truth; stdout may contain progress noise and exit 0 can coexist with semantic failure). agy has no `-o` equivalent — the prompt-mandated write is the substitute.
+
+**Cross-references**: `_common/MULTI_ENGINE_RECIPE.md §3.5` (failure-detection contract), `_common/SUBAGENT.md` Dispatch Examples (same snippet — keep in sync), `nexus/SKILL.md` Antigravity CLI section.
 
 ---
 
@@ -281,7 +344,9 @@ These are referenced in community sources but lack a confirmed official document
 - agy "Deep Think" CLI flag (distinct from `/model` Claude *(Thinking)* variants).
 - agy MCP tool description hash-pin built-in (none confirmed; SHA-256 manifest must be self-built).
 - agy managed-settings / MDM-tier equivalent.
-- ~~agy `--output-format json` schema stability across versions.~~ **Re-verified (v1.0.2, 2026-05)**: flag is **supported but hidden** — absent from `agy --help` but documented in official Google DEV.to examples. Schema stability across future versions remains open; pin expected fields in the prompt body. Help-output flags confirmed via `agy --help`: `--add-dir`, `-c`/`--continue`, `--conversation`, `--dangerously-skip-permissions`, `-i`/`--prompt-interactive`, `--log-file`, `-p`/`--print`/`--prompt`, `--print-timeout`, `--sandbox`. Help-omitted but confirmed flags: `--output-format`. Earlier 2026-05 note in this file incorrectly claimed `--output-format` was absent — that was based on `--help` alone and did not cross-check official examples.
+- agy `--output-format json` — **status downgraded (2026-06, v1.0.5)**: availability is INCONSISTENT across installs (the DEV.to guide demonstrates it; a commenter on the same guide reports "flag not defined"; no schema documented; official issue #7 notes `stream-json` is Gemini CLI legacy). Earlier 2026-05 note in this file calling it "supported but hidden" overstated confidence. Do not depend on it — use the §9.2 artifact-file protocol for structured output. Help-output flags confirmed via `agy --help` (v1.0.2): `--add-dir`, `-c`/`--continue`, `--conversation`, `--dangerously-skip-permissions`, `-i`/`--prompt-interactive`, `--log-file`, `-p`/`--print`/`--prompt`, `--print-timeout`, `--sandbox`.
+- Whether `--dangerously-skip-permissions` actually gates anything in `-p` print mode — one community bridge reports it is a no-op there (print mode executes tools regardless); a legacy Gemini CLI note claims the opposite. Keep passing the flag (harmless if no-op, required if not), but do not assume omitting it sandboxes a headless run.
+- agy transcript internals (`brain/<conv-id>/.system_generated/logs/transcript.jsonl`, `cache/last_conversations.json`, v1.0.4 SQLite `.db`) — used by §9.2 fallback; undocumented and version-fragile.
 
 When you find a confirmed answer, update this file with a `Source: <URL>` (date) citation and remove the item from this list.
 

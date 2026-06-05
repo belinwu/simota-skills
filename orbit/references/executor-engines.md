@@ -155,7 +155,7 @@ Subcommands: `changelog`, `help`, `install` (configure environment paths), `plug
 
 **Not supported in Antigravity CLI** (vs Gemini CLI): `--yolo` (renamed to `--dangerously-skip-permissions`), `-e`/`--extensions` (use `agy plugin install` instead), `--approval-mode`, `-m`/`--model`, `--include-directories` (use `--add-dir`), `--all-files`, `--allowed-tools`, `--checkpointing`.
 
-**Supported but hidden in `agy --help` v1.0.2** (confirmed via official Google DEV.to examples, 2026-05): `--output-format <fmt>` — use `--output-format json` for CI / programmatic consumption. Pin expected schema fields in the prompt body as a defense against future schema drift.
+**`--output-format <fmt>` — UNRELIABLE (re-verified 2026-06, v1.0.5)**: availability is inconsistent across installs ("flag not defined" reports) and no schema is documented. Do not depend on it. **stdout itself is also not a capture channel** — `agy -p` never flushes to non-TTY stdout even on success (issue #115, unfixed through v1.0.5). For any flow that must consume agy output, mandate an absolute-path artifact write + sentinel in the prompt and verify per `_common/CLI_COMPATIBILITY.md §9.2`; loop runners that verify goal completion via files/git state (not stdout) are unaffected.
 
 **File context injection**: always reference files in the prompt with `@<path>` syntax (e.g. `@docs/spec.md`). Without `@`, agy treats the path as plain text and delegates the read to an internal subagent that hits the 60s timeout cap (v1.0.2 changelog: "restricted the default 60-second interaction timeout specifically to subagents"), producing the `exit 0 + empty stdout` silent-failure pattern.
 
@@ -227,7 +227,7 @@ Note: `--permission-mode bypassPermissions` is deprecated. Use `--dangerously-sk
 | cost | low to medium | low to medium | medium to high |
 | autonomy | high | high | high |
 | sandbox | Seatbelt/Landlock | Docker/Podman | git worktree |
-| structured output | `--json` (JSONL) | `--output-format json/stream-json` | `--output-format json/stream-json` |
+| structured output | `--json` (JSONL) + `-o <path>` artifact | prompt-mandated artifact file per `CLI_COMPATIBILITY.md §9.2` (`--output-format json` unreliable; stdout never flushes to non-TTY) | `--output-format json/stream-json` |
 | budget control | — | — | `--max-budget-usd`, `--max-turns` |
 | special control | cloud exec, MCP server | approval modes, extensions | tool restrictions, effort levels, agents |
 

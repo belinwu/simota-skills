@@ -137,7 +137,7 @@ Multiple AI engines independently work on the same task, leveraging diverse know
 | Engine | Command | Fallback (when `which` fails) |
 |--------|---------|-------------------------------|
 | Codex | `codex exec --full-auto` | Claude subagent (Task) |
-| Antigravity | `agy -p --dangerously-skip-permissions --output-format json --log-file <path> --print-timeout 15m` (use `@<path>` for file refs; silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection`) | Claude subagent (Task) |
+| Antigravity | `agy -p --dangerously-skip-permissions --log-file <path> --print-timeout 15m` (use `@<path>` for file refs; **capture output via prompt-mandated artifact file, NOT stdout** — `_common/CLI_COMPATIBILITY.md §9.2`; silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection`) | Claude subagent (Task) |
 | Claude | Claude subagent (Task) | — |
 
 #### Loose Prompt Rules
@@ -157,25 +157,33 @@ External engines (Codex, Antigravity) must receive **minimal, unbiased prompts**
 # Codex
 codex exec --full-auto "$(cat /tmp/prompt.md)"
 
-# Antigravity — silent-failure detection MANDATORY
-# (agy v1.0.2 returns exit 0 + empty stdout on quota / auth / MCP / executor errors
-#  AND on internal subagent 60s timeout when files are referenced as bare paths)
-# In the prompt itself, reference files as @<path> (e.g. @docs/spec.md) so the main
-# agent ingests them directly — bare path strings trigger the subagent-delegate
-# silent-timeout pattern.
+# Antigravity — file-handoff capture MANDATORY (stdout never flushes to non-TTY:
+# issue #115, unfixed v1.0.5 — a SUCCESSFUL run also produces empty piped stdout).
+# In the prompt itself:
+#   1. Reference files as @<path> (e.g. @docs/spec.md) — bare path strings trigger the
+#      subagent-delegate silent-timeout pattern.
+#   2. End with the §9.2 MANDATORY OUTPUT PROTOCOL block: write the COMPLETE deliverable
+#      to /tmp/agy-<slug>.md (ABSOLUTE path) + final line <<<END_OF_OUTPUT>>>.
 # ⚠ Pre-flight Notification REQUIRED before the first headless spawn of a session —
 # see _common/CLI_COMPATIBILITY.md §9.1. Recommends /update-config to allowlist
 # the Bash pattern in settings.json (the spawn creates a two-layer autonomous loop).
-LOG="$(mktemp -t agy_run.XXXXXX)"
-OUT="$(mktemp -t agy_run_out.XXXXXX)"
-trap 'rm -f "$LOG" "$OUT"' EXIT
-agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions --output-format json --log-file "$LOG" --print-timeout 15m > "$OUT"
-RC=$?; OUT_BYTES=$(wc -c < "$OUT")
-if [ "$RC" -eq 0 ] && [ "$OUT_BYTES" -eq 0 ]; then
-  grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON|subagent.*timeout|interaction timeout" "$LOG" | head -5
-  echo "VERDICT: agy RUNTIME-BROKEN — record in rejection ledger, exclude from aggregation"
+SLUG="<task-slug>"
+OUT="/tmp/agy-${SLUG}.md"; LOG="/tmp/agy-${SLUG}.log"
+rm -f "$OUT"
+script -q /dev/null agy -p "$(cat /tmp/prompt.md)" --dangerously-skip-permissions \
+  --log-file "$LOG" --print-timeout 15m >/dev/null 2>&1 || true
+if [ -s "$OUT" ] && grep -q '<<<END_OF_OUTPUT>>>' "$OUT"; then
+  echo "OK: deliverable at $OUT"
+else
+  # Fallback: transcript harvest (undocumented internal path — bitrot risk)
+  TR="$(ls -td "$HOME/.gemini/antigravity-cli/brain"/*/ 2>/dev/null | head -1).system_generated/logs/transcript.jsonl"
+  [ -f "$TR" ] && grep '"type":"PLANNER_RESPONSE"' "$TR" | grep '"status":"DONE"' | tail -1 > "${OUT}.transcript.json"
+  if [ ! -s "$OUT" ] && [ ! -s "${OUT}.transcript.json" ]; then
+    grep -E "RESOURCE_EXHAUSTED|Resets in|error getting token|agent executor error|unexpected end of JSON|subagent.*timeout|interaction timeout" "$LOG" | head -5
+    echo "VERDICT: agy RUNTIME-BROKEN — record in rejection ledger, exclude from aggregation"
+  fi
 fi
-# Full pattern + rationale: _common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection
+# Full pattern + rationale: _common/CLI_COMPATIBILITY.md §9.2 + _common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection
 ```
 
 ```yaml
