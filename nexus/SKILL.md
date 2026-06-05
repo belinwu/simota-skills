@@ -600,6 +600,7 @@ Read only the files that match the current decision point.
 | `references/podium-recipe.md` | `/nexus podium` — five-team content workflow (Research / Narrative / Production / Verification / Improvement) for doc + high-quality slide creation. Engine × team matrix (Claude prose / Codex compile / agy imagery), phase contracts with output_format variants (doc / slide / both / notebooklm / figma-slides), claim-grounding via Attest, 6×6 + WCAG-AA + persona walkthrough gates, max-2 improvement loop, decision tree vs single-skill / atelier / summit |
 | `_common/OPUS_48_AUTHORING.md` | **Claude Code hub** — designing spawn prompts, planning output envelopes, or selecting per-step model effort. Critical for orchestrators: P4 (parallel subagents), P6 (effort), P7 (delegation) |
 | `_common/CODEX_ORCHESTRATION.md` | **Codex CLI hub** — spawn-depth budget (C1), synchronous fan-out/join via `spawn_agent`/`wait_agent` (C2), reasoning-effort-by-model routing (C3), checkpoint-resume via `send_input`/`resume_agent`/`close_agent` (C6). The Codex-hub counterpart to OPUS_48_AUTHORING |
+| `_common/IMAGE_INPUT.md` | A routing request carries an image (bug screenshot, mockup, diagram) — run the five-stage image pipeline at CLASSIFY to produce a structured reading, then pass that reading (not the raw image) in `_AGENT_CONTEXT` handoffs so spawned specialists inherit a verified interpretation rather than re-reading pixels. |
 
 ## Operational Notes
 
