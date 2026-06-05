@@ -212,7 +212,7 @@ Spawn **three Agent calls in a single message** for genuine parallel execution. 
 
 | Subagent | Engine | Baseline command |
 |----------|--------|------------------|
-| `{verb}-codex` | Codex CLI | `codex exec --full-auto "<prompt>"` |
+| `{verb}-codex` | Codex CLI | `codex exec --full-auto -o /tmp/codex-<slug>.md "<prompt>"` (artifact file is the source of truth; **keep the spawn foreground** — detached-TTY silently crashes with no output, #19945 unfixed through 0.137.0 — see `_common/CLI_COMPATIBILITY.md §9.3`) |
 | `{verb}-agy` | Antigravity CLI | `agy -p "<prompt>" --dangerously-skip-permissions --log-file <path>` (use `@<path>` to inject files; **output captured via file-handoff, NOT stdout** — prompt must mandate an absolute-path artifact + sentinel per `_common/CLI_COMPATIBILITY.md §9.2`; request JSON inside the artifact, not via the unreliable `--output-format json` flag; silent-failure detection mandatory — see §Engine Runtime Failure Detection below; **Pre-flight Notification required** before first spawn — see `_common/CLI_COMPATIBILITY.md §9.1`) |
 | `{verb}-claude` | Claude Code CLI (subagent) | Agent tool with `subagent_type: general-purpose` |
 
@@ -243,7 +243,7 @@ Some CLIs report runtime failures (quota exhaustion, auth expiry, executor error
 | Engine | Failure mode | Detection contract (subagent MUST follow) |
 |--------|--------------|--------------------------------------------|
 | `agy` v1.0.5 | `exit 0` + empty stdout on any of: **non-TTY stdout-flush bug — a SUCCESSFUL run also emits nothing to piped stdout** (official issue #115, OPEN; unfixed through 1.0.5) / `RESOURCE_EXHAUSTED` 429 / OAuth revoked / `agent executor error` / corrupt `~/.gemini/config/mcp_config.json` / **internal subagent 60s timeout when bare file paths are used instead of `@<path>` syntax** (v1.0.2 changelog: timeout cap restricted to subagents only — main agent escapes it, but delegated file reads still die silently) / **`--print-timeout` (default 5min) exceeded on heavy multi-file synthesis** | **stdout is not the deliverable channel** — apply `_common/CLI_COMPATIBILITY.md §9.2`: prompt-mandated absolute-path artifact + sentinel, verify file exists / non-empty / sentinel present; fallback to transcript harvest (`brain/<conv-id>/.../transcript.jsonl` last `PLANNER_RESPONSE`); ONLY if both artifact and transcript are empty, `grep -E "RESOURCE_EXHAUSTED\|Resets in\|error getting token\|agent executor error\|unexpected end of JSON\|subagent.*timeout\|interaction timeout"` against `--log-file` and report `RUNTIME-BROKEN` with the matched excerpt; retry with `--print-timeout 15m` if heavy synthesis is suspected. Pass file refs as `@<path>` |
-| `codex` | non-zero exit code on most failures | Standard `RC != 0` check; capture stderr |
+| `codex` 0.137.0 | non-zero exit code on most failures; **EXCEPTION: detached-TTY + non-trivial prompt silently crashes with no output** (#19945, regression 0.124.0+, unfixed) — triggered by `setsid` / background-Bash spawns; also `--json`/`--output-schema` silently ignored when MCP tools are active (#15451) | Keep the spawn **foreground**; pass `-o <abs path>` and treat a missing/empty artifact as `RUNTIME-BROKEN` even on `RC == 0`; validate `--output-schema` artifacts parse before aggregating; capture stderr. See `_common/CLI_COMPATIBILITY.md §9.3` |
 | Claude subagent | structured Agent-tool errors | Surface verbatim |
 
 **Canonical agy headless pattern** (`_common/SUBAGENT.md` Dispatch Examples carries the same snippet — keep them in sync; full rationale + prompt block: `_common/CLI_COMPATIBILITY.md §9.2`):
@@ -358,8 +358,9 @@ Return ONLY JSON matching this exact schema (no commentary outside the JSON):
 Engine-specific invocation:
 
 ```bash
-# Codex (subagent runs this)
-codex exec --full-auto "$(cat /tmp/prompt.md)"
+# Codex (subagent runs this) — foreground only (#19945); artifact file is the source of truth
+codex exec --full-auto -o "/tmp/codex-<slug>.md" "$(cat /tmp/prompt.md)"
+[ -s "/tmp/codex-<slug>.md" ] || echo "VERDICT: codex RUNTIME-BROKEN (empty artifact despite RC=$?)"
 
 # Antigravity (subagent runs this) — file-handoff capture MANDATORY (stdout never flushes
 # to non-TTY: issue #115, unfixed v1.0.5). Prompt must end with the §9.2 OUTPUT PROTOCOL

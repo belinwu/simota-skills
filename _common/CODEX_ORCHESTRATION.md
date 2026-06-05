@@ -16,7 +16,7 @@ Engine-selection rule for orchestrators:
 
 ## Why This Exists
 
-The Nexus stack historically assumed Claude Code is the hub: the canonical spawn template is `Agent(...)`, model selection is `sonnet/opus/haiku`, parallelism is `run_in_background`, and the authoring protocol is Opus-4.8-specific (effort levels, P4 parallel triggers). None of those map cleanly to a Codex CLI hub, which spawns via `spawn_agent`/`wait_agent`, selects `gpt-5.1` / `gpt-5.1-codex-max`, has **no background-spawn primitive**, and gates fan-out via `agents.max_depth` rather than a soft "max 3" convention.
+The Nexus stack historically assumed Claude Code is the hub: the canonical spawn template is `Agent(...)`, model selection is `sonnet/opus/haiku`, parallelism is `run_in_background`, and the authoring protocol is Opus-4.8-specific (effort levels, P4 parallel triggers). None of those map cleanly to a Codex CLI hub, which spawns via `spawn_agent`/`wait_agent`, selects `gpt-5.5` / `gpt-5.4` / `gpt-5.4-mini` (see C3), has **no background-spawn primitive**, and gates fan-out via `agents.max_depth` rather than a soft "max 3" convention.
 
 When Codex drives the hub, apply the eight principles below instead of the Opus principles. They are grounded only in verified repository facts (`_common/CLI_COMPATIBILITY.md`, `nexus/SKILL.md` Execution Layers); items with no confirmed source are marked **未確認** and must not be speculatively completed.
 
@@ -26,7 +26,7 @@ When Codex drives the hub, apply the eight principles below instead of the Opus 
 
 ### C1. Spawn-Depth Budget
 
-Codex gates nested spawning with `agents.max_depth` (default `1`). A hub that itself was spawned (e.g. Nexus launched from a slash command) may already sit at depth 1 and be unable to recurse.
+Codex gates nested spawning with `agents.max_depth` (default `1` — root is depth 0, so the default allows one child layer and blocks deeper nesting) and caps concurrently-open agents with `agents.max_threads` (default `6`). A hub that itself was spawned (e.g. Nexus launched from a slash command) may already sit at depth 1 and be unable to recurse. Fan-out plans wider than 6 branches queue against `max_threads` — size parallel phases accordingly or raise the key. [Verified 2026-06 against developers.openai.com/codex/config-reference; CLI 0.137.0 "Multi-agent v2" adds per-thread runtime choice but changes neither default.]
 
 **Apply by:**
 - Before the first `spawn_agent` of a chain, verify both prereqs hold: `codex features list | grep multi_agent` → `true` (default since v0.115+), and `~/.codex/config.toml` has `[agents] max_depth >= 2`.
@@ -46,10 +46,11 @@ Codex has **no background-spawn primitive**. Parallelism = issue N `spawn_agent`
 
 Apply Plan-and-Execute across Codex models: a high-reasoning model plans, a cheaper default model executes (Core Contract cost principle).
 
-**Apply by:**
-- Planning / high-complexity design steps → `gpt-5.1-codex-max` (reasoning).
-- Standard implementation / execution steps → `gpt-5.1` (default).
-- The exact Codex reasoning-effort config key name and its level names are **未確認** in current docs — express effort as model choice (codex-max vs default), not as an invented effort enum.
+**Apply by (model lineup verified 2026-06 against developers.openai.com/codex/models — `gpt-5.1`/`gpt-5.1-codex-max` and `gpt-5.2`/`gpt-5.3-codex` are legacy/deprecated):**
+- Planning / high-complexity design steps → `gpt-5.5` (recommended frontier coding model, Apr 2026).
+- Standard implementation / execution steps → `gpt-5.4` (flagship professional); lightweight steps → `gpt-5.4-mini` (fast).
+- `gpt-5.3-codex-spark` is a ChatGPT-Pro research preview — do not hard-code it into recipes.
+- Reasoning effort is additionally tunable via the **`model_reasoning_effort`** config key (`config.toml` or `-c model_reasoning_effort="..."`), values `minimal | low | medium | high | xhigh` (default `medium`; `xhigh` model-dependent). [Verified — config-reference; resolves the former 未確認 marker.] Combine both axes: model choice sets the capability tier, `model_reasoning_effort` tunes depth within it.
 
 ### C4. Loose-Prompt Spawning
 
@@ -116,7 +117,7 @@ When validating a skill's Codex-orchestrator path, use the eight checks below (A
 
 - R-C1 Spawn-depth prereqs verified before fan-out; concrete internal fall-back reason
 - R-C2 Parallel branches use N `spawn_agent` → `wait_agent` join (no assumed background execution)
-- R-C3 Effort expressed as model choice (codex-max plan / default execute); no invented effort enum
+- R-C3 Effort routed by model choice (`gpt-5.5` plan / `gpt-5.4`-family execute) plus `model_reasoning_effort` (`minimal|low|medium|high|xhigh`); no invented level names beyond these
 - R-C4 Loose-prompt spawn (Role/Target/Output); no methodology padding
 - R-C5 Lazy-visibility handling (attempt call when prereqs hold)
 - R-C6 Checkpoint-resume via `send_input`/`resume_agent`/`close_agent` for 4+ step chains

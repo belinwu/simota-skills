@@ -2,7 +2,7 @@
 
 Cross-CLI compatibility reference for Claude Code / Codex CLI / Antigravity CLI (`agy`). SKILL.md authors consult this file before assuming any specific CLI's API, configuration path, or spawn syntax.
 
-> **Date stamps**: As of 2026-06. Antigravity CLI (`agy`) launched 2026-05-19 (Google I/O 2026, alongside Antigravity 2.0 GA — shared agent harness across desktop app + CLI + workflow SDK); Gemini CLI personal-tier service stops 2026-06-18. **Latest CLI release: v1.0.5** (per `google-antigravity/antigravity-cli` CHANGELOG.md — 1.0.3: G1 credits UI; 1.0.4: SQLite `.db` conversation storage; 1.0.5: fixed `-p` mode writing metadata into cwd instead of `~/.gemini/antigravity-cli/cache`). **The headless stdout-flush bug (§9.2) is NOT fixed through 1.0.5.** Re-verify against current docs before relying on any "未確認" item. Update in place via `agy update`.
+> **Date stamps**: As of 2026-06. Latest releases — **Claude Code 2.1.163**; **Codex CLI 0.137.0** (2026-06-04 — "Multi-agent v2": per-thread runtime choice; 0.136: session archiving; 0.135: named permission profiles); **agy v1.0.5** (per `google-antigravity/antigravity-cli` CHANGELOG.md — 1.0.3: G1 credits UI; 1.0.4: SQLite `.db` conversation storage; 1.0.5: fixed `-p` mode writing metadata into cwd instead of `~/.gemini/antigravity-cli/cache`). Antigravity CLI launched 2026-05-19 (Google I/O 2026, alongside Antigravity 2.0 GA); Gemini CLI personal-tier service stops 2026-06-18. **The agy headless stdout-flush bug (§9.2) is NOT fixed through 1.0.5; the Codex detached-TTY silent-crash #19945 is NOT fixed through 0.137.0 (§9.3).** Re-verify against current docs before relying on any "未確認" item. Update in place via `agy update`.
 
 > **Engine selection policy (2026-05 update)**: The default baseline for multi-engine recipes is **Claude + Codex (dual-engine)**. agy is an **optional addon** used only when available at PREFLIGHT — never a hard prerequisite. Reason: agy v1.0.x exhibits frequent silent runtime failures (quota, OAuth, executor errors, subagent timeouts — see §9). For canonical policy + tag conventions, see `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy`.
 
@@ -61,9 +61,9 @@ Cross-CLI compatibility reference for Claude Code / Codex CLI / Antigravity CLI 
 | L2 (parallel 2-3 branches) | multiple `Agent(..., run_in_background: true)` calls in one turn | multiple `spawn_agent` → `wait_agent` all | multiple `/agent` invocations in TUI (each runs in its own context window asynchronously) |
 | L3 (4+ workers, complex ownership) | spawn Rally as Agent | `spawn_agent` with Rally prompt | (未確認 — no published Rally-equivalent; community packs like `oh-my-antigravity` use role-driven team patterns with `/oma:taskboard` priority queues) |
 | Subagent control tools | `Agent` (foreground/background), TeammateTool (peer-to-peer SDK) | `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent` | `/agent <name>`, `/tasks`, `/resume`, `/rewind`, `/btw` (read-only side question) |
-| Nesting / depth control | (config-driven; see Claude Agent SDK) | `agents.max_depth` (default 1; explicit config key) | **(未確認)** — community guidance says "cap subagent depth" but no documented JSON/TOML key was found; treat as a runtime/budget concern instead of a config knob |
-| Long-running goal mode | `/goal` (Claude Code v2.1.139+) | `[features] goals = true` (experimental) | `/goal <task>` (run to completion without plan-approval pauses; experimental flag status 未確認) |
-| Headless / one-shot | `claude -p` | `codex exec` (`-o`/`--output-last-message <path>` writes the final message to a file — official artifact channel) | `agy -p`, `--dangerously-skip-permissions` (mandatory for non-interactive use — bypasses default `request-review` permission gate; treat as `bypassPermissions` equivalent and restrict to sandboxed/CI/authorized-dev contexts). **stdout is NOT a reliable capture channel** (non-TTY flush bug, unfixed through v1.0.5 — see §9.2 for the mandatory file-handoff protocol). `--output-format json` is UNRELIABLE (conflicting availability reports, no documented schema — §9). File references inside the prompt **must** use `@<path>` syntax — bare path strings trigger silent subagent timeouts (see §9 Known Pitfalls). |
+| Nesting / depth control | (config-driven; see Claude Agent SDK). Dynamic Workflows (research preview, v2.1.154+): up to 16 concurrent agents, 1,000 total per run | `agents.max_depth` (default 1; root=depth 0, one child layer) + `agents.max_threads` (default 6 — concurrent open-agent cap; verified 2026-06 config-reference) | **(未確認)** — community guidance says "cap subagent depth" but no documented JSON/TOML key was found; treat as a runtime/budget concern instead of a config knob |
+| Long-running goal mode | `/goal` (Claude Code v2.1.139+; completion-condition form added v2.1.141) | `[features] goals = true` (experimental & persistent; requires CLI ≥0.128.0 — official docs still frame it experimental as of 0.137.0; community "default-on since ~0.131" claims are UNCONFIRMED) | `/goal <task>` (run to completion without plan-approval pauses; experimental flag status 未確認) |
+| Headless / one-shot | `claude -p` (`--output-format json` + **file redirect** recommended — pipe-capture hits buffering/truncation bugs, §9.3; `--json-schema '<schema>'` for structured output in `.structured_output`; `--bare` for deterministic scripted runs — skips hooks/skills/plugins/MCP/CLAUDE.md; piped stdin capped at 10MB since v2.1.128; **no `-o` artifact flag** — use shell redirect) | `codex exec` (`-o`/`--output-last-message <path>` writes the final message to a file — official artifact channel; `--json` JSONL stream; `--output-schema <file>` structured final JSON; `--ephemeral` skips session persistence for automation. ⚠ **Keep spawns foreground**: detached-TTY + non-trivial prompt silently crashes with no output — #19945, 0.124.0+, unfixed through 0.137.0, §9.3) | `agy -p`, `--dangerously-skip-permissions` (mandatory for non-interactive use — bypasses default `request-review` permission gate; treat as `bypassPermissions` equivalent and restrict to sandboxed/CI/authorized-dev contexts). **stdout is NOT a reliable capture channel** (non-TTY flush bug, unfixed through v1.0.5 — see §9.2 for the mandatory file-handoff protocol). `--output-format json` is UNRELIABLE (conflicting availability reports, no documented schema — §9). File references inside the prompt **must** use `@<path>` syntax — bare path strings trigger silent subagent timeouts (see §9 Known Pitfalls). |
 
 > ⚠ **Naming collision**: `spawn_agent` is a Codex CLI built-in tool name. `khanhbkqt/spawn-agent` is a community Antigravity skill that delegates to other engines — they are not the same thing.
 
@@ -98,14 +98,16 @@ Direct model names are CLI-specific. Authoring tip: write SKILL.md with role nam
 
 | Role | Claude Code | Codex CLI | agy |
 |------|-------------|-----------|-----|
-| Default / balanced | `sonnet` (claude-sonnet-4-6) | `gpt-5.1` (or current default) | Gemini 3.5 Flash (High/Medium) |
-| High-reasoning / precision | `opus` (claude-opus-4-7) | `gpt-5.1-codex-max` (reasoning) | Gemini 3.1 Pro (High/Low), Claude Sonnet 4.6 (Thinking), Claude Opus 4.6 (Thinking) |
-| Fast / cheap | `haiku` (claude-haiku-4-5) | (lighter variants per docs) | Gemini 3.5 Flash (Medium), GPT-OSS 120B (Medium) |
+| Default / balanced | `sonnet` (claude-sonnet-4-6) | `gpt-5.4` (flagship professional) | Gemini 3.5 Flash (High/Medium) |
+| High-reasoning / precision | `opus` (claude-opus-4-8) | `gpt-5.5` (recommended frontier coding, Apr 2026) | Gemini 3.1 Pro (High/Low), Claude Sonnet 4.6 (Thinking), Claude Opus 4.6 (Thinking) |
+| Fast / cheap | `haiku` (claude-haiku-4-5) | `gpt-5.4-mini` (fast) | Gemini 3.5 Flash (Medium), GPT-OSS 120B (Medium) |
 | Switching command | per-Agent `model:` parameter | per-`spawn_agent` (未確認) | `/model` inside TUI |
 
 > agy explicitly lists Claude Sonnet 4.6 / Opus 4.6 (Thinking) and GPT-OSS 120B in `/model`. Source: Medium "Getting Started" + tutorial series (2026-05).
 
-> **Codex-as-orchestrator effort routing**: when Codex CLI drives the hub, apply Plan-and-Execute by **model choice** — planning / high-complexity steps → `gpt-5.1-codex-max`, execution steps → `gpt-5.1`. The exact Codex reasoning-effort config key name and its level names are **未確認**; do not invent an effort enum. Full Codex-hub authoring protocol: `_common/CODEX_ORCHESTRATION.md` (C3).
+> **Codex model lineup (verified 2026-06, developers.openai.com/codex/models)**: `gpt-5.5` (recommended) / `gpt-5.4` / `gpt-5.4-mini` / `gpt-5.3-codex-spark` (research preview, ChatGPT Pro). **Legacy/deprecated: `gpt-5.1`, `gpt-5.1-codex-max`, `gpt-5.2`, `gpt-5.3-codex`** — update any skill that hard-codes them. Claude Code effort levels: `low → medium → high → xhigh → max`; default `high` on Opus 4.8 / Sonnet 4.6 (`xhigh` was the 4.7 default); `/effort ultracode` = `xhigh` + auto workflow orchestration (session-scoped).
+
+> **Codex-as-orchestrator effort routing**: when Codex CLI drives the hub, apply Plan-and-Execute by **model choice** — planning / high-complexity steps → `gpt-5.5`, execution steps → `gpt-5.4` / `gpt-5.4-mini` — plus the **`model_reasoning_effort`** config key (`config.toml` or `-c model_reasoning_effort="..."`), values `minimal | low | medium | high | xhigh`, default `medium`. [Verified 2026-06 — config-reference; resolves the former 未確認 marker.] Full Codex-hub authoring protocol: `_common/CODEX_ORCHESTRATION.md` (C3).
 
 ---
 
@@ -181,8 +183,8 @@ When a skill consumes an MCP server, declare the server name + required tool set
 | File attach | `@path` | `@path` | `@filename` |
 | Side question (read-only) | — | — | `/btw` |
 | Inspect loaded rules/skills | — | — | `agy inspect` |
-| One-shot | `claude -p` | `codex exec` (`-o <path>` for final-message artifact) | `agy -p --dangerously-skip-permissions` (use `@<path>` for files; capture output via §9.2 file-handoff, NOT stdout) |
-| Structured output | `--output-format json` (未確認 globally) | `--output-schema` + `-o out.json` | `--output-format json` UNRELIABLE (§9) — request JSON inside the §9.2 artifact file instead |
+| One-shot | `claude -p` (file redirect, not pipe — §9.3) | `codex exec` (`-o <path>` for final-message artifact; keep foreground — §9.3) | `agy -p --dangerously-skip-permissions` (use `@<path>` for files; capture output via §9.2 file-handoff, NOT stdout) |
+| Structured output | `--output-format json` + `--json-schema '<schema>'` → `.structured_output` (redirect to file — §9.3) | `--output-schema <file>` + `-o out.json` (⚠ silently ignored when MCP active, #15451) | `--output-format json` UNRELIABLE (§9) — request JSON inside the §9.2 artifact file instead |
 
 ---
 
@@ -315,6 +317,28 @@ fi
 **Precedent**: Codex CLI solves the same problem class officially via `codex exec -o/--output-last-message <path>` (artifact-as-source-of-truth; stdout may contain progress noise and exit 0 can coexist with semantic failure). agy has no `-o` equivalent — the prompt-mandated write is the substitute.
 
 **Cross-references**: `_common/MULTI_ENGINE_RECIPE.md §3.5` (failure-detection contract), `_common/SUBAGENT.md` Dispatch Examples (same snippet — keep in sync), `nexus/SKILL.md` Antigravity CLI section.
+
+---
+
+### 9.3. Codex CLI / Claude Code Headless Output Capture (canonical)
+
+> Companion to §9.2. Verified 2026-06 against Codex CLI 0.137.0 / Claude Code 2.1.163. Every CLI in this matrix has an output-capture failure class — none of the three may be captured naively from a pipe.
+
+**Codex CLI (`codex exec`)**:
+
+- **Artifact-first**: always pass `-o`/`--output-last-message <abs path>` — the final message goes to the file AND stdout. Treat the file as the source of truth; stdout may carry progress noise, and exit 0 can coexist with semantic failure.
+- **⚠ Detached-TTY silent crash (#19945, OPEN)**: `codex exec` with stdio detached from a controlling TTY + a non-trivial prompt silently crashes with no output (regression 0.124.0+, unfixed through 0.137.0). Spawning via `setsid` / background-Bash triggers it. Mitigation: keep the process **foreground** with stdout redirected to a file; pseudo-TTY reattach (`script -qfc "codex exec ..." /dev/null`) works but emits a spurious `failed to record rollout items` error. Verification: `[ -s "$ARTIFACT" ]` after exit; empty artifact → RUNTIME-BROKEN.
+- **Structured output**: `--output-schema <schema-file>` + `-o out.json`. ⚠ `--json`/`--output-schema` are silently ignored when MCP servers/tools are active (#15451, resolution unconfirmed) — validate the artifact parses before aggregating.
+- `--ephemeral` skips session persistence (useful in CI). Official exec docs live at developers.openai.com/codex/noninteractive (`docs/exec.md` in-repo is a stub). Exit-code semantics are undocumented — verify artifacts, not exit codes.
+
+**Claude Code (`claude -p`)**:
+
+- **File redirect over pipe-capture**: Node's 64KB stdout highWaterMark + `process.exit()`-before-drain silently truncates large piped output (#36685 family, closed "not planned"), and `--output-format stream-json` is block-buffered when piped (~4-8KB stalls, #25670 closed as duplicate, effectively unresolved). **Redirect to a file** (`claude -p '...' --output-format json > out.json`) — file redirect bypasses the kernel pipe buffer.
+- **Recommended pattern**: `--output-format json` + file redirect, then parse `.result` (or `.structured_output` when using `--json-schema '<JSON Schema>'`). `--bare` for deterministic scripted runs (skips hooks/skills/plugins/MCP/CLAUDE.md auto-discovery; docs note it "will become default for `-p`").
+- **Empty-result class partially live**: `-p` occasionally returns an empty `result` while tokens are billed (#38623 closed; successor reports #38805, #38651 — the latter triggered by Stop hooks). Treat `result == ""` as a retryable failure (max 1 typed retry), not as "no findings".
+- **No artifact flag**: there is no `codex exec -o` equivalent — shell redirect is the artifact channel. Piped **stdin** is capped at 10MB since v2.1.128 (non-zero exit past the cap; pass a file path instead).
+
+**Shared rule**: for all three CLIs, the deliverable artifact (explicit file, `-o` file, or redirect target) is the source of truth; verify non-empty (+ schema/sentinel where applicable) before aggregating, and never infer engine failure from stdout alone.
 
 ---
 

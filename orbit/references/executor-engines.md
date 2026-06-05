@@ -91,9 +91,9 @@ EXEC_CMD='codex exec --full-auto "Read goal.md and complete the task described i
 
 | Engine | Base command | Non-interactive flag | Auto-approve flag | Model override | Output format |
 |--------|--------------|----------------------|-------------------|----------------|---------------|
-| Codex | `codex exec` | default | `--full-auto` | `-m <model>` (default: auto) | `--json` |
+| Codex | `codex exec` | default | `--full-auto` | `-m <model>` (default: auto) | `--json` + `-o <path>` artifact. ⚠ Keep spawns **foreground** — detached-TTY silently crashes with no output (#19945, unfixed 0.137.0; `_common/CLI_COMPATIBILITY.md §9.3`) |
 | Antigravity | `agy` | `-p "prompt"` | `--dangerously-skip-permissions` | not supported (always default) | not supported (pin schema in prompt) |
-| Claude Code | `claude` | `-p "prompt"` | `--dangerously-skip-permissions` | `--model <model>` (default: auto) | `--output-format json` |
+| Claude Code | `claude` | `-p "prompt"` | `--dangerously-skip-permissions` | `--model <model>` (default: auto) | `--output-format json` (capture via file redirect, not pipe — §9.3) |
 
 All engines use their default model when no model flag is specified. Do not specify a model unless there is a specific reason to override the default.
 
@@ -201,9 +201,9 @@ EXEC_CMD='claude -p "Read goal.md and complete the task described in it" --dange
 | `--dangerously-skip-permissions` | Yes | skip all permission prompts |
 | `--allowedTools "Tool1,Tool2"` | No | auto-approve specific tools only |
 | `--disallowedTools "Tool1"` | No | block specific tools |
-| `--max-budget-usd <amount>` | No | cost cap per session |
-| `--max-turns <N>` | No | limit agent turns |
-| `--output-format <fmt>` | No | `text` / `json` / `stream-json` |
+| `--max-budget-usd <amount>` | No | cost cap per session — ⚠ absent from the current headless docs (2026-06 re-verification); confirm via `claude --help` before relying on it in a loop contract |
+| `--max-turns <N>` | No | limit agent turns — ⚠ same caveat as `--max-budget-usd` |
+| `--output-format <fmt>` | No | `text` / `json` / `stream-json` — capture via **file redirect**, not pipe (64KB pipe truncation + stream-json block-buffering; `_common/CLI_COMPATIBILITY.md §9.3`) |
 | `--json-schema <schema>` | No | enforce structured output via JSON Schema |
 | `--effort <level>` | No | `low` / `medium` / `high` / `max` (Opus only) |
 | `--add-dir <dir>` | No | additional working directories |

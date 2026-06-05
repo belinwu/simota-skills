@@ -136,7 +136,7 @@ Multiple AI engines independently work on the same task, leveraging diverse know
 
 | Engine | Command | Fallback (when `which` fails) |
 |--------|---------|-------------------------------|
-| Codex | `codex exec --full-auto` | Claude subagent (Task) |
+| Codex | `codex exec --full-auto -o /tmp/codex-<slug>.md` (artifact = source of truth; keep foreground — detached-TTY silent crash #19945, see `_common/CLI_COMPATIBILITY.md §9.3`) | Claude subagent (Task) |
 | Antigravity | `agy -p --dangerously-skip-permissions --log-file <path> --print-timeout 15m` (use `@<path>` for file refs; **capture output via prompt-mandated artifact file, NOT stdout** — `_common/CLI_COMPATIBILITY.md §9.2`; silent-failure detection mandatory — see `_common/MULTI_ENGINE_RECIPE.md §Engine Runtime Failure Detection`) | Claude subagent (Task) |
 | Claude | Claude subagent (Task) | — |
 
@@ -154,8 +154,9 @@ External engines (Codex, Antigravity) must receive **minimal, unbiased prompts**
 #### Dispatch Examples
 
 ```bash
-# Codex
-codex exec --full-auto "$(cat /tmp/prompt.md)"
+# Codex — foreground only (#19945 detached-TTY silent crash); artifact = source of truth
+codex exec --full-auto -o "/tmp/codex-<slug>.md" "$(cat /tmp/prompt.md)"
+[ -s "/tmp/codex-<slug>.md" ] || echo "VERDICT: codex RUNTIME-BROKEN (empty artifact despite RC=$?)"
 
 # Antigravity — file-handoff capture MANDATORY (stdout never flushes to non-TTY:
 # issue #115, unfixed v1.0.5 — a SUCCESSFUL run also produces empty piped stdout).

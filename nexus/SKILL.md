@@ -64,7 +64,7 @@ Route elsewhere when the task is primarily:
 - Verify acceptance criteria before delivery; pair quantitative metrics with human evaluation for high-stakes tasks. [Source: aws.amazon.com — Evaluating AI agents at Amazon]
 - Adapt routing from execution evidence with safety constraints; track OE (orchestration efficiency) per chain type.
 - Leverage standardized inter-agent protocols where available: MCP (Anthropic), A2A (Google), ACP (IBM). [Source: arxiv.org/html/2601.13671v1]
-- Apply Plan-and-Execute pattern: capable models for planning, cheaper models for execution — up to 90% cost reduction. Per hub engine: Claude Code = opus plan / sonnet-haiku execute; Codex CLI = `gpt-5.1-codex-max` plan / `gpt-5.1` execute (`CODEX_ORCHESTRATION.md` C3). [Source: machinelearningmastery.com]
+- Apply Plan-and-Execute pattern: capable models for planning, cheaper models for execution — up to 90% cost reduction. Per hub engine: Claude Code = opus plan / sonnet-haiku execute; Codex CLI = `gpt-5.5` plan / `gpt-5.4`-family execute (`CODEX_ORCHESTRATION.md` C3). [Source: machinelearningmastery.com]
 - Use Anthropic's **Managed Agents** vocabulary (SF 2026): **Multiagent Orchestration** for hub-and-spoke fan-out, **Outcomes** for rubric-scored Evaluator Loops, **Dreaming** for Lore-driven memory curation, **Webhooks** for completion notifications via Mend / Beacon. Surface escalation recommendation in `NEXUS_COMPLETE` when the workload pattern (unattended multi-day runs, cross-user knowledge persistence, platform-level audit) justifies the managed platform. [Source: claude.com — *New in Claude: Managed Agents*; *Code with Claude SF 2026*]
 - Prefer **Dynamic Workflows** (Claude Code-native, research preview) as the *execution substrate* for large homogeneous parallel sweeps — codebase-wide audits, thousand-file migrations, verification-critical runs — and keep Nexus as the routing/recipe layer (which specialists, what shape). A Recipe step that is a large parallel sweep may delegate execution to a native dynamic workflow (or the `ultracode` setting: `xhigh` + auto-deploy) when available; fall back to L2/L3 spawn + hierarchical decomposition otherwise. See `references/managed-agents-mapping.md` §5. [Source: claude.com — *Introducing Dynamic Workflows in Claude Code*]
 - Output language follows the CLI global config (`settings.json` `language` field, `CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`); identifiers and technical terms remain in English.
@@ -82,7 +82,7 @@ Route elsewhere when the task is primarily:
 9. **Hierarchical decomposition for scale.** For chains with 6+ agents, spawn feature-lead agents that each coordinate 2-3 specialists. [Source: addyosmani.com]
 10. **Author for the active orchestrator engine.** Detect which CLI drives the hub (see **Execution Model → Orchestrator Detection**) and apply the matching authoring protocol:
     - **Claude Code hub** → `_common/OPUS_48_AUTHORING.md` principles **P4 (parallel subagent triggers), P6 (effort-level awareness), P7 (delegation framing), P9 (effort-calibrated tool use)**. Opus 4.8 spawns fewer subagents and reasons more by default, respects `effort` strictly, and follows instructions literally — explicit fan-out triggers, per-step model/effort selection, and explicit step scope are mandatory. Spawn prompts must state thinking nudges (P5) and length envelopes (P2).
-    - **Codex CLI hub** → `_common/CODEX_ORCHESTRATION.md` principles **C1 (spawn-depth budget), C2 (synchronous fan-out/join), C6 (checkpoint-resume)**, plus C3/C7 for model and approval posture. Codex has no background-spawn primitive (parallel = N `spawn_agent` → `wait_agent` all), gates fan-out via `agents.max_depth`, and routes effort by model choice (`gpt-5.1-codex-max` plan / `gpt-5.1` execute) — not by an Opus `effort` enum.
+    - **Codex CLI hub** → `_common/CODEX_ORCHESTRATION.md` principles **C1 (spawn-depth budget), C2 (synchronous fan-out/join), C6 (checkpoint-resume)**, plus C3/C7 for model and approval posture. Codex has no background-spawn primitive (parallel = N `spawn_agent` → `wait_agent` all), gates fan-out via `agents.max_depth`, and routes effort by model choice (`gpt-5.5` plan / `gpt-5.4`-family execute) plus the `model_reasoning_effort` config key (`minimal|low|medium|high|xhigh`) — not by an Opus `effort` enum.
     - **agy hub** → best-effort; apply the C-principles by analogy under `_common/CLI_COMPATIBILITY.md §3, §9` constraints.
 
 ## Boundaries
@@ -282,7 +282,7 @@ Before the first spawn, determine which CLI drives **this hub session**, then bi
 | Signal | Hub engine | Spawn API | Authoring protocol | Model map |
 |--------|-----------|-----------|--------------------|-----------|
 | `Agent` tool present | **Claude Code** | `Agent(...)` (L1 fg / L2 `run_in_background`) | `_common/OPUS_48_AUTHORING.md` (P-principles) | sonnet / opus / haiku (see Model Selection) |
-| `spawn_agent` callable (C1 prereqs hold) | **Codex CLI** | `spawn_agent` → `wait_agent` (parallel = N spawn → join all) | `_common/CODEX_ORCHESTRATION.md` (C-principles) | `gpt-5.1` / `gpt-5.1-codex-max` (see `CLI_COMPATIBILITY.md §4`) |
+| `spawn_agent` callable (C1 prereqs hold) | **Codex CLI** | `spawn_agent` → `wait_agent` (parallel = N spawn → join all) | `_common/CODEX_ORCHESTRATION.md` (C-principles) | `gpt-5.4` / `gpt-5.5` (see `CLI_COMPATIBILITY.md §4`) |
 | `/agent` in TUI main session | **agy** | `/agent` or `agy -p` headless | C-principles by analogy | per `/model` (see `CLI_COMPATIBILITY.md §4`) |
 
 Codex-hub prereqs (C1): `codex features list \| grep multi_agent` → `true`, and `~/.codex/config.toml` `[agents] max_depth >= 2`. If unmet → internal execution with a concrete reason (`agents.max_depth=1, nested hub cannot recurse`), never a generic "spawn tool not found". `spawn_agent` may be lazily hidden from the tool inventory — attempt the call when prereqs hold (C5). Full per-CLI prereqs and fall-back log forms: **Execution Layers** below + `_common/CLI_COMPATIBILITY.md`.
@@ -400,12 +400,12 @@ Model names are hub-engine-specific. The role → tier mapping is stable; the co
 
 | Agent Role | Tier | Claude Code hub | Codex CLI hub | Rationale |
 |-----------|------|-----------------|---------------|-----------|
-| Investigation / read-only (Scout, Lens, Trail) | balanced | sonnet | `gpt-5.1` | Cost-efficient |
-| Standard implementation (Builder, Artisan, Radar) | balanced | sonnet | `gpt-5.1` | Balanced |
-| High-complexity design (Sentinel, Atlas) | high-reasoning | opus | `gpt-5.1-codex-max` | Precision-critical |
-| Lightweight tasks (Quill, Morph) | fast | haiku | lighter variant per docs | Minimal cost |
+| Investigation / read-only (Scout, Lens, Trail) | balanced | sonnet | `gpt-5.4` | Cost-efficient |
+| Standard implementation (Builder, Artisan, Radar) | balanced | sonnet | `gpt-5.4` | Balanced |
+| High-complexity design (Sentinel, Atlas) | high-reasoning | opus | `gpt-5.5` | Precision-critical |
+| Lightweight tasks (Quill, Morph) | fast | haiku | `gpt-5.4-mini` | Minimal cost |
 
-> Codex hub: route planning / high-complexity steps to `gpt-5.1-codex-max` and execution steps to `gpt-5.1` (Plan-and-Execute, `CODEX_ORCHESTRATION.md` C3). The exact Codex reasoning-effort config key/levels are **未確認** — select effort via model choice, not an invented enum. agy hub: switch via `/model` in TUI (per-session, not per-agent).
+> Codex hub: route planning / high-complexity steps to `gpt-5.5` and execution steps to `gpt-5.4` / `gpt-5.4-mini` (Plan-and-Execute, `CODEX_ORCHESTRATION.md` C3); tune depth within a tier via `model_reasoning_effort` (`minimal|low|medium|high|xhigh`, default `medium` — verified 2026-06). Legacy IDs `gpt-5.1`/`gpt-5.1-codex-max`/`gpt-5.2`/`gpt-5.3-codex` are deprecated. agy hub: switch via `/model` in TUI (per-session, not per-agent).
 
 ### Agent Spawn Template
 
@@ -440,7 +440,7 @@ Agent(
 
 > **Opus 4.8 note**: The four directive fields above (acceptance criteria / output length / tool-use / thinking) are not optional. Opus 4.8 calibrates output length to context, restrains tool calls by default (raise `effort` to increase tool use), and interprets each field literally, so both under- and over-shoot occur when these are implicit. For parallel spawns, see **Core Rule #10** and **`_common/SUBAGENT.md`**, and issue multiple `Agent(... run_in_background: true)` calls in the same turn. Shared protocol: `_common/OPUS_48_AUTHORING.md`.
 
-**Codex CLI variant**: same prompt body; resolve the skill path to `~/.codex/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`. The four directive fields stay required (they are CLI-agnostic), but Codex authoring follows `_common/CODEX_ORCHESTRATION.md` (C-principles), not the Opus note above — Codex routes effort by **model choice** (`gpt-5.1-codex-max` plan / `gpt-5.1` execute, C3), not an `effort` enum, and gates fan-out via `agents.max_depth` (C1), not a soft "max 3".
+**Codex CLI variant**: same prompt body; resolve the skill path to `~/.codex/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`. The four directive fields stay required (they are CLI-agnostic), but Codex authoring follows `_common/CODEX_ORCHESTRATION.md` (C-principles), not the Opus note above — Codex routes effort by **model choice** (`gpt-5.5` plan / `gpt-5.4`-family execute, C3) plus `model_reasoning_effort`, not an Opus `effort` enum, and gates fan-out via `agents.max_depth` + `agents.max_threads` (C1), not a soft "max 3".
 
 ```
 # L1 sequential

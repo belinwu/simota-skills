@@ -78,7 +78,7 @@ Emit `PLATFORM = claude-code | codex | both` for downstream phases.
 
 | Use Case | When | Boundaries | Key Features |
 |---|---|---|---|
-| `ci-headless` | Unattended CI/CD, GitHub Actions, scheduled tasks, cron | Hard turn/budget limits, no interactive approval, structured output | `claude -p` / `codex exec`, `--max-turns`, `--max-budget-usd`, `--output-format json` / `--json`, exit code propagation |
+| `ci-headless` | Unattended CI/CD, GitHub Actions, scheduled tasks, cron | Hard turn/budget limits, no interactive approval, structured output | `claude -p` / `codex exec`, `--output-format json` (+ file redirect) / `--json` + `-o <path>`, exit code propagation. ⚠ `--max-turns` / `--max-budget-usd` absent from current headless docs (2026-06) — verify via `claude --help` before use |
 | `long-dev` | Multi-hour refactor, migration, large feature work | Resumable sessions, context compaction, project context | CLAUDE.md / AGENTS.md, `/compact`, `--resume <name>` / `codex resume --last`, named sessions, status line |
 | `parallel-experiment` | A/B approach comparison, alt-design exploration, spike runs | Isolated sessions, branched goals, worktrees | `/branch` (Claude Code), `/fork` (Codex), git worktree isolation, parallel `/goal` in separate sessions |
 | `safe-bounded` | Production-adjacent, sensitive repo, junior operator | Strict permissions, sandboxed filesystem, gated approvals, explicit deny rules | Permission rules with `deny` (Claude Code), Codex `sandbox_mode = workspace-write` + `approval_policy = on-request`, profile lock |
@@ -221,12 +221,14 @@ The script receives `agent-turn-complete` and similar events as JSON on stdin.
 ### ci-headless — Claude Code
 
 ```bash
+# ⚠ 2026-06 re-verification: --max-turns / --max-budget-usd are NOT in the current
+# headless docs (code.claude.com/docs/en/headless) — verify with `claude --help` before
+# relying on them; cost is surfaced read-only via total_cost_usd in the JSON output.
+# Capture: --output-format json + FILE REDIRECT (not pipe) per _common/CLI_COMPATIBILITY.md §9.3.
 claude -p \
   --permission-mode auto \
-  --max-turns 20 \
-  \
-  --max-budget-usd 5 \
-  "/goal all tests in tests/ pass and lint is clean"
+  --output-format json \
+  "/goal all tests in tests/ pass and lint is clean" > /tmp/goal-run.json
 ```
 
 ### ci-headless — Codex CLI
