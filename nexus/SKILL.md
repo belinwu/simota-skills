@@ -154,6 +154,7 @@ Agent disambiguation → `references/agent-disambiguation.md`
 | Transmute | `transmute` | **Cross-language rewrite** preserving behavior via differential parity. 8-20 agents. **Confirm before big-bang.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/transmute-recipe.md` |
 | Venture | `venture` | **Business documentation package** from one idea — ~11 parallel doc tracks + traceability barrier. Depth 6-28 agents. **Confirm full.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/venture-recipe.md`, `references/package-recipe.md` |
 | Package | `package` | **Generalized document-package generator** — 12-domain preset registry. Depth 5-28 agents. **Confirm full.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/package-recipe.md` |
+| Pack | `pack` | **Skill ecosystem control** (meta) — switch active Claude Code skill profile per workstream. Forms: `list` / `current` / `<name>` / `reset`. **Confirms diff before writing `settings.json`.** | Inline edit (no spawn) | `references/pack-subcommand.md`, `_common/SKILL_PACKS.md` |
 
 ### Signal Keywords → Recipe
 
@@ -182,6 +183,7 @@ For natural-language input without an explicit subcommand. **Subcommand match al
 | `transmute`, `rewrite in <lang>`, `language rewrite`, `differential parity` | `transmute` |
 | `venture`, `business plan`, `MVP dossier`, `pitch package` | `venture` (= `package domain=startup`) |
 | `package`, `document package`, `generate a full package` | `package` (auto-detect preset) |
+| `pack`, `skill pack`, `skill profile`, `enable skills`, `switch profile` | `pack` |
 | `/Nexus` (no arguments) | `proactive` |
 | unclear or multi-domain request | `classify` → `references/intent-clarification.md` |
 
@@ -378,10 +380,7 @@ Read only the files that match the current decision point.
 | `references/context-strategy.md` | Decide how context flows between agents |
 | `references/routing-learning.md` | Adapting routing from execution evidence |
 | `references/quality-iteration.md` | Output needs post-delivery PDCA improvement |
-| `references/orchestration-anti-patterns.md` | Plan may be overbuilt, bottlenecked, too expensive |
-| `references/task-routing-anti-patterns.md` | Decomposition or routing looks too shallow, deep, or dynamic |
-| `references/production-reliability-anti-patterns.md` | High-volume or failure-sensitive conditions |
-| `references/agent-communication-anti-patterns.md` | Handoffs, schemas, ownership, state integrity look weak |
+| `references/{orchestration,task-routing,production-reliability,agent-communication}-anti-patterns.md` | Anti-pattern catalogs — orchestration / routing / reliability / handoff (load when chain ≥ 4 agents) |
 | `references/execution-layers.md` | Per-CLI prereqs, runtime notes, agy headless mitigations + template |
 | `references/hub-authoring.md` | Per-engine authoring (Claude/Codex/agy), spawn-template variants, model selection table, execution-layer key rules |
 | `references/recipes-detail.md` | Extended Recipe descriptions + full chain templates (kaizen, apex, essential, killer, acceptance, growth-acceptance, summit, podium, transmute, venture, package) |
@@ -391,17 +390,13 @@ Read only the files that match the current decision point.
 | `references/managed-agents-mapping.md` | Managed Agents / Outcomes / Dreaming / Webhooks mapping + Dynamic Workflows |
 | `references/apex-recipe.md` | `/nexus apex` — phase contracts, sub-orchestration topology, Risk Gate |
 | `references/apex-walkthrough.md` | Human-facing apex — Mermaid flowcharts, storyboards, failure paths |
-| `references/goal-recipe.md` | `/nexus goal` — platform detection, use-case templates, hook templates |
-| `_common/PROOF_CARRYING.md` | `/nexus acceptance` — Tier policy, evidence package, G1-G10. **Mandatory before `acceptance`.** |
-| `references/acceptance-recipe.md` | `/nexus acceptance` — Layer A/B chain template, phase contracts, cost profile |
-| `_common/GROWTH_BRAND_PROOF.md` | `/nexus growth-acceptance` — Layer C, Insight Ledger, Brand Compiler, G11-G15 |
-| `references/growth-acceptance-recipe.md` | `/nexus growth-acceptance` — Phase 0-3 lifecycle, Phase 4 audits, cost profile |
+| `references/{goal,acceptance,growth-acceptance,summit,transmute,venture,package,podium}-recipe.md` | Per-Recipe specs — phase contracts, chain templates, cost profiles |
+| `_common/PROOF_CARRYING.md` | `/nexus acceptance` Tier policy + G1-G10. **Mandatory before `acceptance`.** |
+| `_common/GROWTH_BRAND_PROOF.md` | `/nexus growth-acceptance` Layer C + Insight Ledger + Brand Compiler + G11-G15 |
 | `references/feature-impact-simulate.md` | Feature impact prediction (Persona+Journey+Product v4) |
-| `references/summit-recipe.md` | `/nexus summit` — engine × team matrix, phase contracts, quorum rules |
-| `references/transmute-recipe.md` | `/nexus transmute` — migration strategy table, Phase 0-6, Transmutation Map |
-| `references/venture-recipe.md` | `/nexus venture` — 14-directory blueprint, depth/mode tiers, feature_id barrier |
-| `references/package-recipe.md` | `/nexus package` — engine + 12 domain presets, entity-id barrier, risk gates |
-| `references/podium-recipe.md` | `/nexus podium` — five-team workflow, output_format variants, claim-grounding |
+| `references/apex-recipe.md`, `references/apex-walkthrough.md` | `/nexus apex` phase contracts + Mermaid walkthroughs |
+| `references/pack-subcommand.md` | `/nexus pack` — skill profile switch, settings.json edit, backup, diff, confirm |
+| `_common/SKILL_PACKS.md` | Pack membership matrix (10 packs × 148 skills), profile catalog, routing protocol |
 | `_common/OPUS_48_AUTHORING.md` | **Claude Code hub** — P4 / P6 / P7 spawn prompts, output envelopes, effort |
 | `_common/CODEX_ORCHESTRATION.md` | **Codex CLI hub** — C1 spawn-depth, C2 sync fan-out, C3 effort-by-model, C6 checkpoint-resume |
 | `_common/IMAGE_INPUT.md` | Routing request carries an image — five-stage pipeline at CLASSIFY |
