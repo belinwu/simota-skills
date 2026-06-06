@@ -202,7 +202,6 @@ Owner skill: `guild`. Distinctive: `recruitment_strategy.md`, `job_descriptions.
 |-----------|-------------------|------|
 | legal | legal (always); any preset with legal drafts | Mandatory "not legal advice / expert review required" disclaimer on every legal doc; Phase 5 fails on missing `lawyer_review_points` reference |
 | medical / finance / safety | any (from theme) | Phase 0 surfaces high-risk; mark all domain claims as hypotheses; recommend domain-expert review in final report |
-| public-equity / procurement-law / accessibility | local-gov | All such content framed only + "requires expert + legal review"; accessibility/inclusion + procurement checklist mandatory; surfaced in final report |
 | labor-law / anti-discrimination | hiring | Every hiring-law doc carries "requires lawyer review"; protected-class screening criteria removed, not encoded (Phase 5 fails on encoded criteria) |
 | alignment (learning) | learning | Phase 5 fails on `ALIGNMENT_GAP` (objective w/o assessment) or `ORPHAN_ASSESSMENT` (assessment w/o objective); regulated domains need official-syllabus confirmation |
 | hallucination / data-sensitivity | ai-adoption, saas | Every use case requires an eval case + human-review rule; forbidden-use entries for high-risk use cases |
@@ -287,7 +286,6 @@ Same guardrails as venture (5+ agent chain confirmation, full-depth confirmation
 | 03 career_strategy | career | ✅ (owner skill `ascent`; irreversible-move + salary-source gates) |
 | 04 learning | learning | ✅ (owner skill `mentor`; Bloom's alignment gate) |
 | 06 hiring_org | hiring | ✅ (owner skill `guild`; labor-law lawyer-review gate) |
-| 08 local_government | local-gov | ✅ (owner skill `civic`; public-equity/procurement/accessibility gate) |
 | 00 pdca_prompt | — | ❌ out of scope (prompt-improvement meta — route to `architect` / `quality-iteration`) |
 | 12 templates (input sheet / quality gate) | — | ♻️ folded into Phase 0 framing contract / Phase 5 validation contract |
 
