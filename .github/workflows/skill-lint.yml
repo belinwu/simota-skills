@@ -1,0 +1,38 @@
+name: skill-lint
+
+on:
+  pull_request:
+    paths:
+      - '**/SKILL.md'
+      - '_common/scripts/lint-frontmatter.py'
+      - '.github/workflows/skill-lint.yml'
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint-frontmatter:
+    name: Frontmatter / structure / size lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # need HEAD~1 for --changed-only on PRs
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Lint all SKILL.md (warning baseline)
+        # Always run a full scan for visibility. Severity: warning => exit 0.
+        # This surfaces the ecosystem-wide state without blocking merges on legacy issues.
+        run: python3 _common/scripts/lint-frontmatter.py --severity warning
+
+      - name: Lint changed SKILL.md (hard fail on P0/P1)
+        # Block merges that introduce or worsen P0/P1 findings in changed files.
+        # PR-only: pushes to main already passed this gate.
+        if: github.event_name == 'pull_request'
+        run: python3 _common/scripts/lint-frontmatter.py --severity error --changed-only
