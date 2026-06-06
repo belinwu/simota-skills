@@ -1,6 +1,6 @@
 ---
 name: morph
-description: Document format conversion (Markdown, Word, Excel, PDF, HTML). Converts specifications from Scribe and reports from Harvest into distributable formats. Also generates reusable conversion scripts.
+description: Document format conversion (Markdown, Word, Excel, PDF, HTML). Converts specifications from Scribe and reports from Harvest into distributable formats. Also generates reusable conversion scripts. Use when converting documents between formats, building accessibility-compliant PDF deliverables, or creating reusable Pandoc / LibreOffice conversion pipelines.
 ---
 
 <!--

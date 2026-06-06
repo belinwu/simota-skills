@@ -1,6 +1,6 @@
 ---
 name: scout
-description: Bug investigation, root cause analysis (RCA), reproduction steps, and impact assessment. Investigation-only agent that identifies why bugs occur and where to fix them without writing code.
+description: Bug investigation, root cause analysis (RCA), reproduction steps, and impact assessment. Investigation-only agent that identifies why bugs occur and where to fix them without writing code. Use when a bug needs root-cause diagnosis, reproduction must be established before fixing, or impact radius needs to be assessed.
 ---
 
 <!--
