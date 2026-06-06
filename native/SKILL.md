@@ -95,53 +95,53 @@ Route elsewhere when:
 
 ### Always
 
-- Detect target platform(s) before writing any code. Implement iOS and Android as **two separate codebases**, each idiomatic.
-- Follow Apple Human Interface Guidelines (Liquid Glass on iOS 26, classic HIG on iOS 17/18) and Material Design 3 Expressive (Android).
+- Detect target platform(s) before writing any code. iOS + Android = **two separate codebases**, each idiomatic.
+- Follow Apple HIG (Liquid Glass on iOS 26, classic HIG on iOS 17/18) and Material 3 Expressive (Android).
 - Implement an offline fallback (minimum T0) for any network-dependent feature.
 - Use platform-native navigation: `NavigationStack` / `NavigationSplitView` + Coordinator on iOS; Navigation Compose 2.8+ type-safe on Android.
 - Handle every permission with a soft pre-prompt UX and graceful denial path.
-- Write strict-typed code: Swift 6 strict concurrency, Kotlin explicit nullability, Compose Strong Skipping with `@Immutable` where instance-equality recomposition is a risk.
-- Draft Privacy Manifest (iOS) and Data Safety form (Android) alongside the feature. Hand off to `Cloak` for privacy review.
-- Plan store compliance from MVP: Privacy Manifest, Data Safety, Sign in with Apple alongside any third-party login, AI disclosure UI for any third-party AI usage, Photo Picker (Android), Liquid Glass icon variants (iOS 26).
-- For sign-in flows, default to **Passkey** (iOS 26 `ASAuthorizationAccountCreationProvider` for new-account + passkey provisioning in one UI / iOS 17-18 `ASAuthorizationController` / Android Credential Manager); use `preferImmediatelyAvailableCredentials` for silent fallback on existing users; fall back to OAuth/OIDC via `ASWebAuthenticationSession` (iOS, `prefersEphemeralWebBrowserSession=true` + PKCE) or AppAuth + Custom Tabs (Android) only when an existing IdP requires it.
-- **In-flow passkey nudge**: trigger passkey creation immediately after OTP / password sign-in success (KAYAK / eBay-validated UX — 75% of new passkeys come from this flow, vs ~3% for non-nudged DIY implementations like Best Buy).
-- **SwiftData**: define `Schema` + `VersionedSchema` + `SchemaMigrationPlan` from the first release. Retrofitting versioning after shipping is undocumented and breaks relationship integrity on production data.
-- **Liquid Glass scope**: apply `.glassEffect()` only to navigation chrome (NavigationBar / TabBar / Toolbar / Sheet / Popover). Never to content (lists, cards, body) — degrades legibility. Standard SwiftUI components on iOS 26 receive Liquid Glass automatically on Xcode 26 recompile; do not force-opacify them.
-- **`@Observable` ownership**: declare with `@State` only in the view that owns the lifetime; pass to children via plain `let` / `@Bindable` / `@Environment`. `@Observable` is NOT a drop-in `ObservableObject` replacement — child-side `@State` triggers re-init and duplicate observation.
+- Write strict-typed code: Swift 6 strict concurrency; Kotlin explicit nullability; Compose Strong Skipping with `@Immutable` where instance-equality recomposition is a risk.
+- Draft Privacy Manifest (iOS) and Data Safety form (Android) alongside the feature. Hand off to `Cloak`.
+- Plan store compliance from MVP: Privacy Manifest, Data Safety, Sign in with Apple alongside any third-party login, AI disclosure UI, Photo Picker (Android), Liquid Glass icon variants (iOS 26).
+- Default sign-in to **Passkey** (iOS 26 `ASAuthorizationAccountCreationProvider` / iOS 17-18 `ASAuthorizationController` / Android Credential Manager); `preferImmediatelyAvailableCredentials` for silent fallback; OAuth/OIDC (`ASWebAuthenticationSession` + PKCE on iOS, AppAuth + Custom Tabs on Android) only when an existing IdP requires it.
+- **In-flow passkey nudge** after OTP/password success (KAYAK/eBay pattern → 75% creation vs ~3% non-nudged).
+- **SwiftData**: define `Schema` + `VersionedSchema` + `SchemaMigrationPlan` from first release — retrofitting breaks production relationship integrity.
+- **Liquid Glass scope**: apply `.glassEffect()` to navigation chrome only (NavigationBar / TabBar / Toolbar / Sheet / Popover). Never content. Standard SwiftUI components auto-adopt on Xcode 26 recompile.
+- **`@Observable` ownership**: declare with `@State` only in the owning view; pass to children via `let` / `@Bindable` / `@Environment`. Child-side `@State` re-inits the model.
 - Reference `references/` for detail patterns; keep SKILL.md procedural and routable.
 
 ### Ask First
 
-- Target platform ambiguous (iOS only / Android only / both) — confirm before any code.
+- Target platform ambiguous (iOS only / Android only / both).
 - Offline tier unclear (T0-T3 selection).
 - IAP design involves server-side receipt validation architecture.
-- Feature requires custom native module beyond standard SDKs (e.g., 3rd-party SDK without Privacy Manifest).
-- iOS minimum version: default iOS 17; iOS 16 acceptable; iOS 26+ required for Liquid Glass / Foundation Models; iOS 15 needs explicit justification.
-- Android minimum API: default API 28; API 31+ required for Material You / SplashScreen / Photo Picker.
-- **targetSdk 36 timing** — Google Play mandates targetSdk 36 by 2026-08-31 for new apps and updates. Plan migration before deadline.
+- Feature requires custom native module (e.g., 3rd-party SDK without Privacy Manifest).
+- iOS baseline: default 17; 16 acceptable; 26+ required for Liquid Glass / Foundation Models; 15 needs justification.
+- Android baseline: default API 28; API 31+ required for Material You / SplashScreen / Photo Picker.
+- **targetSdk 36 timing** — mandatory by 2026-08-31; plan migration before deadline.
 
 ### Never
 
-- Implement React Native, Flutter, Kotlin Multiplatform, or Compose Multiplatform. **Out of scope**. Route to Forge for prototypes or external workflows.
+- Implement React Native / Flutter / Kotlin Multiplatform / Compose Multiplatform. **Out of scope** — route to Forge.
 - Ship without testing on both platforms when both are in scope.
-- Hard-code API keys / secrets in client-side code (MASWE-0005) — Keychain (iOS) or Tink-encrypted DataStore (Android). Zimperium 2025 finds hardcoded secrets in ~50% of mobile apps and they are trivially extracted by MobSF / APKLeaks. Proxy through a BFF instead.
-- Use `UserDefaults` / `SharedPreferences` for tokens or any sensitive data — Keychain (`.biometryCurrentSet` + `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`) on iOS / Tink-encrypted DataStore on Android.
-- Apply Liquid Glass (`.glassEffect()`) to content layers (lists, cards, body) — legibility breaks. Restrict to navigation chrome.
-- Force TabBar / NavigationBar opaque on iOS 26 to "hide" Liquid Glass — collides with system behavior and produces visual glitches. Adapt content instead.
-- Declare `@unchecked Sendable` to silence strict-concurrency errors — preserves the data race. Fix isolation via `actor` / `@MainActor` / `Sendable` conformance.
-- Treat `@Observable` as a drop-in `ObservableObject` replacement — child-side `@State` / `@StateObject`-style ownership re-inits the model and duplicates observation.
-- Use `EncryptedSharedPreferences` on Android — officially deprecated in `androidx.security:security-crypto:1.1.0-alpha07`. Migrate to Tink-encrypted DataStore or `androidx.datastore:datastore-encrypted` 1.3.0-alpha07+.
-- Keep `onBackPressed()` / `KEYCODE_BACK` handling once targeting Android 16 (targetSdk 36) — not invoked. Migrate to `OnBackPressedDispatcher` / Compose `PredictiveBackHandler` and set `android:enableOnBackInvokedCallback="true"`.
-- Lock `screenOrientation="portrait"` or `resizeableActivity="false"` on Android 16 — ignored for `sw600dp+`. `PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY` is temporary and disappears at API 37.
-- Pin third-party domains via certificate pinning — you cannot control their rotation. Restrict pinning to first-party endpoints, use public-key pinning with ≥ 2 backups, and reserve it for high-risk apps (finance / health). OWASP 2025 explicitly toned down general pinning recommendations.
-- Hardcode `messageformat` strings or use English plural rules — Russian/Arabic have 6 forms. Always use ICU `{count, plural, ...}` via String Catalogs (iOS) / `plurals.xml` (Android), and hand untranslated resources off to Polyglot.
-- Bypass App Review or Play Policy guidelines for faster release.
+- Hard-code API keys / secrets client-side (MASWE-0005; Zimperium 2025: ~50% of apps, trivially extracted by MobSF / APKLeaks). Use Keychain (iOS) / Tink-encrypted DataStore (Android); proxy via BFF.
+- Store tokens in `UserDefaults` / `SharedPreferences` — use Keychain (`.biometryCurrentSet` + `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`) / Tink-encrypted DataStore.
+- Apply `.glassEffect()` to content layers (lists, cards, body) — restrict to navigation chrome.
+- Force TabBar / NavigationBar opaque on iOS 26 to hide Liquid Glass — adapt content instead.
+- Declare `@unchecked Sendable` to silence strict-concurrency — fix isolation via `actor` / `@MainActor` / `Sendable`.
+- Treat `@Observable` as drop-in `ObservableObject` — child-side `@State` re-inits and duplicates observation.
+- Use `EncryptedSharedPreferences` on Android — deprecated in `security-crypto:1.1.0-alpha07`. Migrate to Tink-encrypted DataStore / `datastore-encrypted` 1.3.0-alpha07+.
+- Keep `onBackPressed()` / `KEYCODE_BACK` on targetSdk 36 — not invoked. Migrate to `OnBackPressedDispatcher` / `PredictiveBackHandler` + `android:enableOnBackInvokedCallback="true"`.
+- Lock `screenOrientation="portrait"` / `resizeableActivity="false"` on Android 16 — ignored for `sw600dp+`. `PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY` disappears at API 37.
+- Pin third-party domains via cert pinning — restrict to first-party endpoints, public-key pinning with ≥ 2 backups, reserve for finance/health (OWASP 2025 toned down general recommendation).
+- Hardcode `messageformat` or English plural rules — Russian/Arabic have 6 forms. Use ICU `{count, plural, ...}` via String Catalogs / `plurals.xml`; hand off to Polyglot.
+- Bypass App Review or Play Policy for faster release.
 - Apply web-only patterns (`localStorage`, `window.location`, cookie-bearing fetch) on mobile.
 - Skip offline handling for network-dependent features.
-- Hide platform divergence — if iOS and Android need different solutions, document and ship them separately.
-- Promise OTA updates of native code. **OTA in pure-native is not supported** by App Store / Play (only metadata / web content updates). Use Phased Release / Staged Rollout instead.
-- Ignore platform-specific lifecycle events (backgrounding, memory warnings, doze mode, app standby).
-- Ship UI without Privacy Manifest declarations on iOS or Data Safety form completion on Android (both stores reject submissions otherwise).
+- Hide platform divergence — if iOS and Android need different solutions, document and ship separately.
+- Promise OTA updates of native code. **Not supported** by App Store / Play — use Phased Release / Staged Rollout.
+- Ignore platform lifecycle events (backgrounding, memory warnings, Doze, app standby).
+- Ship UI without Privacy Manifest / Data Safety completion — both stores reject submissions.
 
 ---
 
@@ -174,30 +174,12 @@ DETECT → SCAFFOLD → IMPLEMENT → ADAPT → VERIFY
 | `ADAPT` | Platform tuning | Platform-specific adjustments, permission flows with soft pre-prompt, Privacy Manifest declarations, Data Safety form, AI disclosure UI, edge-to-edge / predictive back, accessibility (Dynamic Type, fontScale, VoiceOver / TalkBack) |
 | `VERIFY` | Quality gate | Build check, lint, type check, cold start < 2 s (target < 500 ms), crash-free ≥ 99.85%, Privacy Manifest completeness, store-compliance dry run |
 
-### Native Stack Defaults (2026) — Summary
+### Native Stack Defaults (2026)
 
-Full per-layer details with citations, deprecated APIs, and platform deadlines → `references/modern-stack.md`.
+Full per-layer table with citations, deprecated APIs, and platform deadlines → `references/modern-stack.md` § Native Stack Defaults Quick-Reference Table.
 
-| Layer | iOS | Android |
-|-------|-----|---------|
-| Language | Swift 6.3 (Approachable Concurrency / default MainActor, Xcode 26) | Kotlin 2.4+ (K2 default) |
-| UI | SwiftUI + **Liquid Glass** on iOS 26 (`.glassEffect()` for chrome only); classic SwiftUI on iOS 17/18 | Jetpack Compose 1.11 + **Material 3 Expressive** (BOM 2026.05 / Material 3 1.4+); Strong Skipping default |
-| Architecture | MV / MVVM / MVVM-C / TCA; `@Observable` default | MVVM (Now-in-Android) for standard / MVI for complex-state |
-| Async | async/await + AsyncSequence + structured concurrency | Coroutines + Flow + `collectAsStateWithLifecycle()` (mandatory) |
-| DI | swift-dependencies / Factory / manual composition root | Hilt (enterprise) or Koin (KMP-friendly) |
-| Navigation | `NavigationStack` + Coordinator; `NavigationSplitView` for iPad / foldable | Navigation Compose 2.8+ type-safe (Kotlin Serialization) |
-| Networking | URLSession + async/await; Apollo iOS (GraphQL Persisted Queries) | Retrofit + OkHttp / Ktor; Apollo Kotlin |
-| Persistence | **SwiftData** (iOS 17+, `VersionedSchema` from day one) or Core Data; Keychain + Secure Enclave for secrets | **Room 2.8+** + DataStore; secrets via Tink-encrypted DataStore (EncryptedSharedPreferences deprecated) |
-| Auth | **Passkeys (FIDO2) first**: iOS 26 `ASAuthorizationAccountCreationProvider`; iOS 17/18 `ASAuthorizationController`; Sign in with Apple required alongside third-party | **Credential Manager** (Passkey + Password + Sign-in-with-Google); ~15min biometric re-auth |
-| Push | APNs + **Live Activities** (ActivityKit) | FCM + **Notification Channels** (mandatory) |
-| Deep links | Universal Links (AASA) + scheme fallback | App Links (assetlinks.json); Firebase Dynamic Links retired |
-| Biometrics | LocalAuthentication (re-auth only) | BiometricPrompt (re-auth only) |
-| Widgets | WidgetKit + iOS 18 Control Center API | **Jetpack Glance** for new widgets |
-| AI (on-device) | **Foundation Models** + Apple Intelligence | **ML Kit GenAI APIs** + Gemini Nano (AICore) |
-| Adaptive | NavigationSplitView + Window Size Classes | Compose Adaptive 1.2+; WSC (compact/medium/expanded/large/extra-large) |
-| Privacy | **`PrivacyInfo.xcprivacy`** Required Reasons API (3rd-party SDKs since 2025-02-12) | **Data Safety form** (all tracks) |
-| Build | Xcode 26 + SPM (iOS 26 SDK required 2026-04-28) | Gradle + Kotlin DSL + **AGP 8.5.1+ / NDK r28+**; **16KB native libs required since 2025-11-01** |
-| Min-OS / target | iOS 17 default (iOS 16 acceptable) | API 28 default; **targetSdk 36 mandatory by 2026-08-31** (edge-to-edge enforced, predictive back default ON, sw600dp+ forces resizeable) |
+- **iOS**: Swift 6.3 (Xcode 26, default MainActor) · SwiftUI + Liquid Glass on iOS 26 (chrome only) · `@Observable` + MVVM-C / TCA · `NavigationStack` + Coordinator · SwiftData (`VersionedSchema` day-one) or Core Data · Passkeys via `ASAuthorizationAccountCreationProvider` (iOS 26) / `ASAuthorizationController` (17/18) · APNs + Live Activities · WidgetKit + Control Center · Foundation Models · `PrivacyInfo.xcprivacy` Required Reasons (3rd-party SDKs since 2025-02-12) · iOS 17 default · **Xcode 26 + iOS 26 SDK required 2026-04-28**.
+- **Android**: Kotlin 2.4+ (K2) · Compose 1.11 + Material 3 Expressive (BOM 2026.05) + Strong Skipping · MVVM / MVI · Navigation Compose 2.8+ type-safe · Room 2.8+ + DataStore (Tink-encrypted; EncryptedSharedPreferences deprecated) · Credential Manager (Passkey + Password + Sign-in-with-Google) · FCM + Notification Channels · Jetpack Glance · ML Kit GenAI + Gemini Nano (AICore) · Data Safety form (all tracks) · AGP 8.5.1+ / NDK r28+ · **16KB native libs since 2025-11-01** · API 28 default · **targetSdk 36 mandatory by 2026-08-31** (edge-to-edge enforced, predictive back default ON, sw600dp+ forces resizeable).
 
 ---
 
@@ -235,21 +217,7 @@ Parse the first token of user input.
 - If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
 - Otherwise → default Recipe is **`swiftui`** for iOS-only context, **`compose`** for Android-only context, or both in parallel for cross-platform context. Apply normal DETECT → SCAFFOLD → IMPLEMENT → ADAPT → VERIFY workflow.
 
-Behavior notes per Recipe (1-line summaries; load the "Read First" reference for full detail):
-
-- `swiftui` — iOS Swift 6.3 + `@Observable` + SwiftData/Core Data, T1 offline default, Liquid Glass on iOS 26.
-- `compose` — Android Material 3 Expressive + Strong Skipping + Type-safe Navigation 2.8+, targetSdk 35/36, edge-to-edge day 1.
-- `liquidglass` — iOS 26 adoption: new SwiftUI material APIs + 4-variant icons (Icon Composer) + dynamic tab-bar shrink + iOS 17/18 fallback.
-- `expressive` — M3 Expressive: replace deprecated BottomAppBar/indeterminate CircularProgressIndicator with FloatingToolbar/LoadingIndicator, spring motion, new shape library.
-- `offline` — Per-domain T0-T3 tier → local DB → write queue → conflict policy (LWW / CRDT / server reconciliation).
-- `push` — iOS APNs + UNUserNotificationCenter + Live Activities (max 8h + 4h stale, ~4KB, no ads); Android FCM + Notification Channels + POST_NOTIFICATIONS runtime perm. Soft pre-prompt mandatory.
-- `deeplink` — Universal Links (AASA) + App Links (assetlinks.json) + Coordinator/NavController routing. Firebase Dynamic Links retired. Custom scheme = fallback only.
-- `bg` — iOS BGTaskScheduler, Android WorkManager/JobScheduler. ~80% of OS window budget; plan Doze/App Standby/Low Power; Foreground Service Types on Android 14+.
-- `passkey` — Passkey (FIDO2/WebAuthn) default for new flows. iOS `ASAuthorizationController` + Secure Enclave + Keychain; Android Credential Manager. Sign in with Apple alongside any third-party social.
-- `privacy` — Apple Privacy Manifest + Required Reasons API (3rd-party SDKs since 2025-02-12); Google Data Safety form (all tracks). Hand off to Cloak.
-- `rollout` — iOS TestFlight phased (1/10/50/100% over 7d); Android Play Staged (5/20/50/100%). Halt + hotfix on regression; server-driven flags as primary kill switch.
-- `store` — Pre-submission compliance: Privacy Manifest, Data Safety, 5-tier Age Rating (by 2026-01-31), DSA, DMA, Sign in with Apple, AI disclosure (5.1.2(i) + Play AI Content), Photo Picker, Foreground Service Types, Liquid Glass icon variants.
-- `cli` — Terminal automation. iOS: `references/xcrun-cli.md` (simctl/devicectl/xctrace/xcresulttool/notarytool/atos). Android: `references/adb-cli.md` (pm/am/logcat/dumpsys/pair/Perfetto/monkey). adb reference includes iOS↔Android command map.
+Per-Recipe behavior notes (key gotchas + thresholds) → `references/recipes.md`.
 
 ## Output Routing
 
@@ -305,6 +273,7 @@ Every Native deliverable must include:
 | `references/ios-hig.md` | Apple HIG reference — Foundations / Patterns / Components, iOS 26 Liquid Glass adoption rules, Dynamic Type / SF Pro / accessibility |
 | `references/android-material3.md` | M3 + M3 Expressive — Foundations / Styles / Components (Compose API), design tokens, Expressive new components, Compose BOM 2026.05 |
 | `references/patterns.md` | Navigation, state management, offline-first, Compose recomposition, SwiftUI body invalidation, platform adaptation |
+| `references/recipes.md` | Per-Recipe behavior notes — key gotchas + runtime thresholds for each subcommand |
 | `references/examples.md` | Representative use cases and output format examples |
 | `references/handoffs.md` | Incoming / outgoing handoff templates for all collaboration partners |
 | `references/store-compliance.md` | App Store / Google Play policy, Privacy Manifest, Data Safety, AI disclosure, Age Rating, Fintech, DMA, EAA, IAP, Sign in with Apple |

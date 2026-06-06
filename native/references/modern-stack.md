@@ -492,4 +492,29 @@ For new widgets, prefer Glance (Compose runtime). Hand-written RemoteViews are l
 
 ---
 
+## Native Stack Defaults Quick-Reference Table (2026)
+
+| Layer | iOS | Android |
+|-------|-----|---------|
+| Language | Swift 6.3 (Approachable Concurrency / default MainActor, Xcode 26) | Kotlin 2.4+ (K2 default) |
+| UI | SwiftUI + **Liquid Glass** on iOS 26 (`.glassEffect()` chrome only); classic SwiftUI on iOS 17/18 | Compose 1.11 + **Material 3 Expressive** (BOM 2026.05 / M3 1.4+); Strong Skipping default |
+| Architecture | MV / MVVM / MVVM-C / TCA; `@Observable` default | MVVM (Now-in-Android) / MVI for complex-state |
+| Async | async/await + AsyncSequence + structured concurrency | Coroutines + Flow + `collectAsStateWithLifecycle()` (mandatory) |
+| DI | swift-dependencies / Factory / manual composition root | Hilt (enterprise) or Koin (KMP-friendly) |
+| Navigation | `NavigationStack` + Coordinator; `NavigationSplitView` for iPad / foldable | Navigation Compose 2.8+ type-safe (Kotlin Serialization) |
+| Networking | URLSession + async/await; Apollo iOS (GraphQL Persisted Queries) | Retrofit + OkHttp / Ktor; Apollo Kotlin |
+| Persistence | **SwiftData** (iOS 17+, `VersionedSchema` from day one) or Core Data; Keychain + Secure Enclave for secrets | **Room 2.8+** + DataStore; secrets via Tink-encrypted DataStore (EncryptedSharedPreferences deprecated) |
+| Auth | **Passkeys (FIDO2) first**: iOS 26 `ASAuthorizationAccountCreationProvider`; iOS 17/18 `ASAuthorizationController`; Sign in with Apple required alongside third-party | **Credential Manager** (Passkey + Password + Sign-in-with-Google); ~15min biometric re-auth |
+| Push | APNs + **Live Activities** (ActivityKit) | FCM + **Notification Channels** (mandatory) |
+| Deep links | Universal Links (AASA) + scheme fallback | App Links (assetlinks.json); Firebase Dynamic Links retired |
+| Biometrics | LocalAuthentication (re-auth only) | BiometricPrompt (re-auth only) |
+| Widgets | WidgetKit + iOS 18 Control Center API | **Jetpack Glance** for new widgets |
+| AI (on-device) | **Foundation Models** + Apple Intelligence | **ML Kit GenAI APIs** + Gemini Nano (AICore) |
+| Adaptive | NavigationSplitView + Window Size Classes | Compose Adaptive 1.2+; WSC (compact/medium/expanded/large/extra-large) |
+| Privacy | **`PrivacyInfo.xcprivacy`** Required Reasons API (3rd-party SDKs since 2025-02-12) | **Data Safety form** (all tracks) |
+| Build | Xcode 26 + SPM (iOS 26 SDK required 2026-04-28) | Gradle + Kotlin DSL + **AGP 8.5.1+ / NDK r28+**; **16KB native libs required since 2025-11-01** |
+| Min-OS / target | iOS 17 default (iOS 16 acceptable) | API 28 default; **targetSdk 36 mandatory by 2026-08-31** (edge-to-edge enforced, predictive back default ON, sw600dp+ forces resizeable) |
+
+---
+
 > Out of scope: React Native, Flutter, Kotlin Multiplatform, Compose Multiplatform. This reference covers pure-native only.
