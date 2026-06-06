@@ -45,7 +45,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** orchestration + universal investigation/implementation/review primitives + skill-meta governance required for any workstream.
 
-**Members:** `nexus`, `sherpa`, `scout`, `builder`, `radar`, `zen`, `guardian`, `compass`, `architect`, `gauge`, `prune`
+**Members:** `nexus`, `sherpa`, `scout`, `builder`, `radar`, `zen`, `guardian`, `compass`, `architect`, `gauge`, `prune`, `sigil`, `titan`
 
 **Triggers:** loaded unconditionally.
 
@@ -55,9 +55,9 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** browser-tier feature work — React/Vue/Svelte/Next.js, API design, perf, E2E.
 
-**Members:** `voyager`, `pixel`, `palette`, `frame`, `forge`, `artisan`, `atelier`, `flow`, `bolt`, `atlas`, `gateway`, `prose`, `funnel`, `lure`, `growth`, `ink`, `dot`, `navigator`, `canvas`, `muse`, `vision`, `showcase`
+**Members:** `voyager`, `pixel`, `palette`, `frame`, `forge`, `artisan`, `atelier`, `flow`, `bolt`, `atlas`, `gateway`, `prose`, `funnel`, `lure`, `growth`, `ink`, `dot`, `navigator`, `canvas`, `muse`, `vision`, `showcase`, `polyglot`, `relay`
 
-**Triggers:** `react`, `vue`, `svelte`, `next.js`, `frontend`, `web`, `landing page`, `e2e`, `playwright`, `cypress`, `webdriver`, `css`, `html`, `tailwind`, `api design`, `openapi`, `rest`, `graphql`
+**Triggers:** `react`, `vue`, `svelte`, `next.js`, `frontend`, `web`, `landing page`, `e2e`, `playwright`, `cypress`, `webdriver`, `css`, `html`, `tailwind`, `api design`, `openapi`, `rest`, `graphql`, `i18n`, `l10n`, `internationalization`, `localization`, `intl api`, `translation key`, `bot framework`
 
 ---
 
@@ -85,9 +85,9 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** LLM/agent evaluation, multi-engine review, observability, reliability eng, failure mode analysis.
 
-**Members:** `judge`, `magi`, `arena`, `attest`, `oracle`, `beacon`, `mend`, `siege`, `specter`, `omen`, `ripple`, `void`, `warden`
+**Members:** `judge`, `magi`, `arena`, `attest`, `oracle`, `beacon`, `mend`, `siege`, `specter`, `omen`, `ripple`, `void`, `warden`, `drill`, `matrix`, `mint`
 
-**Triggers:** `llm`, `rag`, `prompt engineering`, `ai safety`, `evaluation`, `eval`, `slo`, `sli`, `observability`, `tracing`, `incident`, `chaos`, `mutation testing`, `load test`, `pre-mortem`, `race condition`, `memory leak`, `deadlock`, `multi-engine review`
+**Triggers:** `llm`, `rag`, `prompt engineering`, `ai safety`, `evaluation`, `eval`, `slo`, `sli`, `observability`, `tracing`, `incident`, `chaos`, `mutation testing`, `load test`, `pre-mortem`, `race condition`, `memory leak`, `deadlock`, `multi-engine review`, `manual qa`, `testrail`, `zephyr`, `xray`, `qase`, `bva`, `equivalence class`, `combinatorial`, `coverage matrix`, `test data`, `fixture`, `factory pattern`
 
 ---
 
@@ -105,9 +105,9 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** infrastructure provisioning, CI/CD, observability, DB design, scheduling, repo health.
 
-**Members:** `beacon`, `mend`, `latch`, `gear`, `pipe`, `scaffold`, `triage`, `trail`, `launch`, `hearth`, `tempo`, `schema`, `tuner`, `shard`, `seek`, `stream`, `weave`, `horizon`, `shift`, `fossil`, `grok`, `grove`, `nest`, `hone`, `sweep`, `harvest`, `rally`, `darwin`, `lore`, `orbit`
+**Members:** `beacon`, `mend`, `latch`, `gear`, `pipe`, `scaffold`, `triage`, `trail`, `launch`, `hearth`, `tempo`, `schema`, `tuner`, `shard`, `seek`, `stream`, `weave`, `horizon`, `shift`, `fossil`, `grok`, `grove`, `nest`, `hone`, `sweep`, `harvest`, `rally`, `darwin`, `lore`, `orbit`, `anvil`, `relay`, `stratum`
 
-**Triggers:** `terraform`, `cloudformation`, `pulumi`, `docker`, `kubernetes`, `gha`, `github actions`, `ci/cd`, `pipeline`, `dotfiles`, `zsh`, `tmux`, `neovim`, `cron`, `timezone`, `dst`, `retry`, `backoff`, `db schema`, `migration`, `index`, `slow query`, `etl`, `kafka`, `airflow`, `dbt`, `multi-tenant`, `search engine`, `vector db`, `state machine`, `saga`, `regex`, `dsl`, `parser`, `repo structure`, `dead code`, `cli config`
+**Triggers:** `terraform`, `cloudformation`, `pulumi`, `docker`, `kubernetes`, `gha`, `github actions`, `ci/cd`, `pipeline`, `dotfiles`, `zsh`, `tmux`, `neovim`, `cron`, `timezone`, `dst`, `retry`, `backoff`, `db schema`, `migration`, `index`, `slow query`, `etl`, `kafka`, `airflow`, `dbt`, `multi-tenant`, `search engine`, `vector db`, `state machine`, `saga`, `regex`, `dsl`, `parser`, `repo structure`, `dead code`, `cli config`, `cli dev`, `tui`, `linter`, `test runner`, `build tool`, `slack bot`, `discord bot`, `webhook`, `websocket`, `c4 model`, `structurizr`
 
 ---
 
