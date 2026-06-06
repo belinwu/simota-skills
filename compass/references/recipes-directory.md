@@ -36,7 +36,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **crypt**: algorithm★ / key / e2ee / tls / signature / password / kms / pqc
 - **cue**: script★ / storyboard / narration / explainer / shorts / captions / localize
 - **darwin**: health★ / fitness / evolve / sunset
-- **dawn**: propose★ / morning / weekend / brief / stack / constraint / viral
 - **director**: demo★ / scenario / record / onboard / voiceover / captions / thumbnail
 - **dot**: svg★ / canvas / phaser / pillow / css / animation / palette / tilesheet
 - **drill**: author★ / regress / charter / trace / prioritize / convert
@@ -56,7 +55,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **growth**: seo★ / smo / cro / geo / keyword / audit / vitals
 - **guardian**: pr★ / commit / naming / strategy / reshape / audit / split / health
 - **harvest**: weekly★ / monthly / release / retro / dora / okr / prstats
-- **haul**: catalog★ / lookup / refresh / reverse / brand / audit
 - **hearth**: zsh★ / tmux / neovim / ghostty / vscode / git / shellfn / audit
 - **helm**: scenario★ / swot / pestle / porter / forecast / jtbd / blue-ocean / wardley
 - **hone**: audit★ / codex / agy / claude / diff
@@ -68,7 +66,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **launch**: plan★ / changelog / notes / rollback / flag / hotfix / canary
 - **ledger**: estimate★ / rightsizing / anomaly / ri-sp / gpu-cost / tagging / finops-framework / unit-economics / greenops
 - **lens**: map★ / discover / trace / responsibility / dependency / hotspot / evolution
-- **loom**: guidelines★ / analyze / prompt / validate / variants / motion / rtl
 - **lore**: curate★ / decay / propagate / extract
 - **lure**: premium★ / lead-gen / saas / ecom / event / magnet
 - **magi**: decide★ / tradeoff / arbitrate / strategic / sixhat / devil / delphi
@@ -94,7 +91,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **probe**: zap★ / burp / nuclei / pentest / api / mobile / recon
 - **prose**: microcopy★ / errors / onboarding / a11y / tone / empty-state / notification / status
 - **pulse**: kpi★ / funnel / cohort / event / dashboard / northstar / retention / activation
-- **quest**: gdd★ / balance / narrative / economy / psychology / gameplay-loop / level-design / monetization
 - **quill**: docstring★ / readme / types / comments / adr / migrate / tutorial
 - **radar**: edge★ / flaky / coverage / regression / ci / unit / integration / mutation
 - **rally**: parallel★ / teams / codex-subagents / coordinate
@@ -146,7 +142,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 
 ---
 
-**Total**: 134 skills with Recipes.
+**Total**: 129 skills with Recipes.
 
 Auto-generated from SKILL.md `## Recipes` tables by `_common/scripts/generate-recipes-directory.py`. Do not edit by hand.
 

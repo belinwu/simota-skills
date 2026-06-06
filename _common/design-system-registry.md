@@ -2,7 +2,7 @@
 
 **Purpose**: Persist per-project design systems (colors, typography, components, brand rules) so design-related skills can resume context across chains and sessions. Inspired by Claude Design by Anthropic Labs (2026-04-17): "During onboarding, Claude builds a design system for your team by reading your codebase and design files."
 
-**Scope**: This protocol is used by `atelier`, `muse`, `frame`, `loom`, `ink`, `palette`, and `artisan`. Other skills may read but should not write.
+**Scope**: This protocol is used by `atelier`, `muse`, `frame`, `ink`, `palette`, and `artisan`. Other skills may read but should not write.
 
 ---
 
@@ -124,7 +124,7 @@ JSON with the following top-level keys. All keys optional except `name`, `versio
 
 ### Onboarding (first use on a project)
 
-When any registered skill (atelier/muse/frame/loom/ink/palette/artisan) is invoked on a project without `.agents/design-system/default.json`:
+When any registered skill (atelier/muse/frame/ink/palette/artisan) is invoked on a project without `.agents/design-system/default.json`:
 
 1. Detect source files: `tailwind.config.*`, `theme.ts`, `tokens.json`, `*.css` with CSS variables, Figma file IDs in README/package.json
 2. If Figma access is available, use `frame` to extract via MCP
@@ -173,7 +173,6 @@ When source files drift from registry:
 | atelier | ✓ | ✓ | ✓ (with user confirm) | ✗ |
 | muse | ✓ | ✓ | ✓ (tokens only, bump version) | ✗ |
 | frame | ✓ | ✓ | ✓ (Figma-sourced fields) | ✗ |
-| loom | ✓ | ✗ | ✗ | ✗ |
 | ink | ✓ | ✗ | ✓ (assets.icons only) | ✗ |
 | palette | ✓ | ✗ | ✓ (a11y fields) | ✗ |
 | artisan | ✓ | ✗ | ✓ (components source paths) | ✗ |

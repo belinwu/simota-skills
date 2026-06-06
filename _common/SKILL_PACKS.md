@@ -1,12 +1,12 @@
 # Skill Packs
 
-Skill membership matrix for selective enablement across the 145-skill ecosystem.
+Skill membership matrix for selective enablement across the 134-skill ecosystem.
 
 ## Why this exists
 
-Anthropic guidance is **8-12 skills** before "context tax" (token overhead per turn) starts to dominate; routing degradation begins in the **dozens**, and a **15,000-character cap** on the available skills list is a hard ceiling. This repository's 145 skills exceed all three thresholds.
+Anthropic guidance is **8-12 skills** before "context tax" (token overhead per turn) starts to dominate; routing degradation begins in the **dozens**, and a **15,000-character cap** on the available skills list is a hard ceiling. This repository's 134 skills exceed all three thresholds.
 
-This file defines **10 Packs** (overlapping subsets of the ecosystem) so that any single workstream can enable ~20-30 skills instead of the full 145. Selective enablement is driven by the Claude Code `skills` filter in `~/.claude/settings.json` (`"all"` / `[list]` / `[]`); Codex CLI and agy use equivalent allowlist mechanisms when available.
+This file defines **10 Packs** (overlapping subsets of the ecosystem) so that any single workstream can enable ~20-30 skills instead of the full 134. Selective enablement is driven by the Claude Code `skills` filter in `~/.claude/settings.json` (`"all"` / `[list]` / `[]`); Codex CLI and agy use equivalent allowlist mechanisms when available.
 
 **Sources:**
 - claude.com/blog/lessons-from-building-claude-code-how-we-use-skills (8-12 sweet spot, context tax)
@@ -35,7 +35,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 | `infra-ops` | `core + infra` | ~40 |
 | `research` | `core + research` | ~35 |
 | `package-author` | `core + package-gen + design + research` | ~75 |
-| `all` | `"all"` (no filter) | 145 (debugging / discovery only) |
+| `all` | `"all"` (no filter) | 134 (debugging / discovery only) |
 
 ---
 
@@ -115,7 +115,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** design system construction, visual asset generation, slide/video production, brand work.
 
-**Members:** `muse`, `vision`, `atelier`, `canvas`, `frame`, `showcase`, `palette`, `prose`, `flow`, `pixel`, `forge`, `artisan`, `ink`, `dot`, `haul`, `sketch`, `clay`, `loom`, `saga`, `cue`, `director`, `reel`, `stage`, `prism`, `quest`
+**Members:** `muse`, `vision`, `atelier`, `canvas`, `frame`, `showcase`, `palette`, `prose`, `flow`, `pixel`, `forge`, `artisan`, `ink`, `dot`, `sketch`, `saga`, `cue`, `director`, `reel`, `stage`, `prism`
 
 **Triggers:** `design system`, `design tokens`, `figma`, `figjam`, `figma make`, `storybook`, `mermaid`, `draw.io`, `ascii diagram`, `svg`, `icon`, `pixel art`, `3d`, `meshy`, `tripo`, `slide`, `marp`, `reveal.js`, `slidev`, `keynote`, `presentation`, `notebooklm`, `video`, `screencast`, `cli demo`, `vhs`, `terminalizer`, `asciinema`, `audio`, `bgm`, `sfx`, `voice synthesis`, `aituber`, `vtuber`, `game design`, `gdd`
 
@@ -125,7 +125,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** discovery-side work — user research, brainstorming, strategic decisions, career/learning/hiring/civic content generation, prose authoring.
 
-**Members:** `researcher`, `plea`, `lens`, `cast`, `voice`, `echo`, `trace`, `compete`, `spark`, `riff`, `flux`, `omen`, `magi`, `rank`, `ascent`, `crest`, `mentor`, `guild`, `dawn`, `sage`, `helm`, `harvest`, `tome`, `scribe`, `accord`, `void`, `quill`, `zine`, `saga`
+**Members:** `researcher`, `plea`, `lens`, `cast`, `voice`, `echo`, `trace`, `compete`, `spark`, `riff`, `flux`, `omen`, `magi`, `rank`, `ascent`, `crest`, `mentor`, `guild`, `sage`, `helm`, `harvest`, `tome`, `scribe`, `accord`, `void`, `quill`, `zine`, `saga`
 
 **Triggers:** `user research`, `interview`, `usability test`, `persona`, `journey map`, `jtbd`, `brainstorm`, `ideate`, `reframe`, `assumption challenge`, `pre-mortem`, `deliberation`, `prioritization`, `career`, `job change`, `side business`, `learning`, `curriculum`, `hiring`, `interview rubric`, `local government`, `civic`, `side project idea`, `office hours`, `advisory`, `strategy simulation`, `yagni`, `scope cut`, `documentation`, `jsdoc`, `tsdoc`, `tech blog`, `note`, `zenn`, `qiita`, `tax filing`, `tome`
 

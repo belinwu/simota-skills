@@ -217,17 +217,11 @@ This repository contains 145 specialized AI agents covering various aspects of s
 |-------|-------------|--------|
 | **Canvas** | _"A diagram is worth a thousand lines of documentation."_ - Design visualization. Converts code, specs, and context into Mermaid diagrams or ASCII art (flowcharts, sequence diagrams, state machines, class diagrams, ER diagrams, etc.) | Mermaid diagrams / ASCII Art |
 | **Sketch** | _"From words to worlds, prompt to pixel."_ - AI image generation code craftsman. Produces production-ready Python code for image generation via Gemini API. Prompt engineering, batch generation, cost estimation | Python code |
-| **Realm** | _"Every company tells a story — let the agents write theirs."_ - Gamification meta-visualization agent. Phaser 3 2D office simulation, real-time XP growth and rank-up effects, interactive HTML maps, character sheets, quest boards, and badge systems for ecosystem state visualization and team morale | RPG-style dashboards, game visualizations |
 | **Dot** | _"Every pixel is a decision. Every constraint is a creative opportunity."_ - Pixel art specialist. Generates pixel art via code (SVG/Canvas/Phaser 3/Pillow/CSS). Palette design, spritesheets, tilesets, frame animation, Antigravity CLI delegation for SVG generation | Pixel art code (SVG/Canvas/CSS) |
-| **Clay** | _"From prompt to polygon, every vertex earns its place."_ - AI 3D model generation agent. Produces code (Python/JS/OpenSCAD) for text-to-3D and image-to-3D via Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, Stability APIs. Game pipeline: LOD, retopology, UV, texture baking, QC validation | 3D pipeline code (Python/JS/SCAD) |
-| **Tone** | _"Sound is the invisible architecture of emotion."_ - Game audio generation agent. Produces code (Python/JS/TS/Shell) for SFX, BGM, voice, ambient, and UI sounds via ElevenLabs, Stable Audio, MusicGen, OpenAI TTS, JSFXR. LUFS normalization, format optimization, middleware integration | Audio pipeline code (Python/JS/Shell) |
 | **Cue** | _"Every frame tells a story."_ - Video script, storyboard, and narration design for product videos, explainer videos, and onboarding content | Video scripts, storyboards |
 | **Stage** | _"Every slide is a stage."_ - Marp/reveal.js/Slidev slide generation, story composition design, conference talk optimization | Slide decks |
-| **Lyric** | _"From theme to anthem, verse by verse."_ - Songwriting agent for Suno AI. Composes lyrics with metatags and style prompts from theme, genre, and mood | Lyrics with metatags |
 
 **Vision > Dot > Forge chain**: Vision (art direction) > Dot (pixel art code) > Forge (prototype integration)
-**Dot > Realm chain**: Dot (Phaser 3 textures) > Realm (ecosystem visualization)
-**Vision > Clay > Builder chain**: Vision (art direction) > Clay (3D asset code) > Builder (game logic integration)
 
 ### Architecture
 
@@ -724,11 +718,9 @@ skills/
 ├── canon/SKILL.md      # Standards compliance (OWASP/WCAG/OpenAPI/ISO)
 ├── canvas/SKILL.md     # Visualization
 ├── cast/SKILL.md       # Persona casting & registry management
-├── clay/SKILL.md       # AI 3D model generation
 ├── compass/SKILL.md    # Skill ecosystem navigator and onboarding guide
 ├── compete/SKILL.md    # Competitive research
 ├── darwin/SKILL.md     # Ecosystem self-evolution orchestrator
-├── dawn/SKILL.md       # Personal side-project idea proposer
 ├── director/SKILL.md   # Demo video recording
 ├── dot/SKILL.md        # Pixel art generation (SVG/Canvas/Phaser 3)
 ├── echo/SKILL.md       # Persona validation
@@ -737,7 +729,6 @@ skills/
 ├── forge/SKILL.md      # Prototyping
 ├── funnel/SKILL.md     # LP structure design and conversion strategy
 ├── frame/SKILL.md      # Figma design-to-code bridge
-├── loom/SKILL.md       # Figma Make optimization agent
 ├── gauge/SKILL.md      # SKILL.md normalization audit & self-evolution
 ├── gateway/SKILL.md    # API design
 ├── gear/SKILL.md       # DevOps
@@ -772,7 +763,6 @@ skills/
 ├── pipe/SKILL.md       # GitHub Actions workflow design
 ├── probe/SKILL.md      # Dynamic security testing (DAST)
 ├── pulse/SKILL.md      # Metrics design
-├── quest/SKILL.md      # Game planning & production
 ├── quill/SKILL.md      # Documentation
 ├── radar/SKILL.md      # Testing
 ├── rally/SKILL.md      # Multi-session parallel orchestrator

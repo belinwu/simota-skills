@@ -711,11 +711,9 @@ skills/
 ├── canvas/SKILL.md     # 可視化
 ├── canon/SKILL.md      # 世界標準・業界標準準拠検証
 ├── cast/SKILL.md       # ペルソナキャスティング＆レジストリ管理
-├── clay/SKILL.md       # AI 3Dモデル生成
 ├── compass/SKILL.md    # スキルエコシステムナビゲーター・オンボーディングガイド
 ├── compete/SKILL.md    # 競合調査
 ├── darwin/SKILL.md     # エコシステム自己進化オーケストレーター
-├── dawn/SKILL.md       # 個人サイドプロジェクトのアイデア提案
 ├── director/SKILL.md   # デモ動画撮影
 ├── dot/SKILL.md        # ピクセルアート生成（SVG/Canvas/Phaser 3）
 ├── echo/SKILL.md       # ペルソナ検証
@@ -724,7 +722,6 @@ skills/
 ├── forge/SKILL.md      # プロトタイプ
 ├── funnel/SKILL.md     # LP構造設計・コンバージョン戦略
 ├── frame/SKILL.md      # Figmaデザイン・コード変換ブリッジ
-├── loom/SKILL.md       # Figma Make最適化エージェント
 ├── gauge/SKILL.md      # SKILL.md正規化監査・自己進化
 ├── gateway/SKILL.md    # API設計
 ├── gear/SKILL.md       # DevOps
@@ -759,7 +756,6 @@ skills/
 ├── probe/SKILL.md      # セキュリティ動的テスト（DAST）
 ├── prose/SKILL.md      # UXライティング＆コンテンツ戦略
 ├── pulse/SKILL.md      # メトリクス設計
-├── quest/SKILL.md      # ゲーム企画・プロダクション
 ├── quill/SKILL.md      # ドキュメント
 ├── radar/SKILL.md      # テスト
 ├── rally/SKILL.md      # マルチセッション並列オーケストレーター

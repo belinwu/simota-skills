@@ -31,7 +31,7 @@ project_signals:
   frameworks: [<string>, ...]
   domains: [<string>, ...]
   detected_from: [<path or glob>, ...]
-universal_skills: [scout, judge, zen, builder, scribe, sherpa, void, magi, riff, dawn, architect, nexus]
+universal_skills: [scout, judge, zen, builder, scribe, sherpa, void, magi, riff, architect, nexus]
 ---
 
 # Compass Repo Cache
@@ -81,9 +81,9 @@ Bias toward H and M. Reserve L for filler when `top_n` is large and signal cover
 
 ## 5. Universal Inclusions
 
-These 12 skills are always considered candidates regardless of repo signals:
+These 11 skills are always considered candidates regardless of repo signals:
 
-`scout`, `judge`, `zen`, `builder`, `scribe`, `sherpa`, `void`, `magi`, `riff`, `dawn`, `architect`, `nexus`
+`scout`, `judge`, `zen`, `builder`, `scribe`, `sherpa`, `void`, `magi`, `riff`, `architect`, `nexus`
 
 They cover universal tasks (debugging, review, refactor, build, doc, planning, removal, decision, brainstorm, ideation, meta-design, orchestration). They are listed in the `universal_skills` frontmatter array, not in the per-skill table, to keep the table focused.
 
@@ -131,7 +131,7 @@ project_signals:
   frameworks: [Next.js, Tailwind, Prisma, next-auth]
   domains: [Frontend, Auth, DB, SaaS]
   detected_from: [package.json, prisma/schema.prisma, src/app/**/*.tsx, .github/workflows/ci.yml]
-universal_skills: [scout, judge, zen, builder, scribe, sherpa, void, magi, riff, dawn, architect, nexus]
+universal_skills: [scout, judge, zen, builder, scribe, sherpa, void, magi, riff, architect, nexus]
 ---
 
 # Compass Repo Cache

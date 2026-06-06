@@ -513,10 +513,4 @@ When Rally is activated for parallel execution, standard chains transform into p
 | MOBILE_NATIVE/both | Rally(Native[swiftui], Native[compose]) → Radar → Showcase | Platform Split (iOS / Android) |
 | MOBILE_NATIVE/full | Port[blueprint] → Rally(Native[swiftui], Native[compose]) → Radar → Voyager → Cloak → Launch | Platform Split |
 
-### ASSET_IMAGE Parallel Chains
-
-| Base Chain | Rally Parallel Chain | Team Pattern |
-|------------|---------------------|--------------|
-| ASSET_IMAGE/catalog (≥ 50 products, ≥ 3 sources) | Haul (skill-internal subagents per source) → Cloak | Skill-internal subagents (intra-Haul) — see haul SKILL.md Parallel Sourcing |
-
 See `rally/references/integration-patterns.md` for detailed team composition and handoff formats.

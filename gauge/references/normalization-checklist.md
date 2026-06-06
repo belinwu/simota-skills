@@ -211,18 +211,18 @@
 
 ---
 
-## Quest Exemplar Reference
+## Architect Exemplar Reference
 
-Quest (`quest/SKILL.md`) is the reference standard for all 16 items. When generating fix snippets, cite the corresponding Quest section as exemplar:
+Architect (`architect/SKILL.md`) is the reference standard for all 16 items. When generating fix snippets, cite the corresponding Architect section as exemplar:
 
-| Item | Quest Section Reference |
-|------|------------------------|
-| F1 | Lines 1-4 (YAML frontmatter, kebab-case name) |
-| F2 | Line 3 `description:` (WHAT capability + WHEN trigger phrase) |
+| Item | Architect Section Reference |
+|------|------------------------------|
+| F1 | YAML frontmatter block (kebab-case name) |
+| F2 | `description:` field (WHAT capability + WHEN trigger phrase) |
 | L1 | Full file (English description, English body) |
-| H1 | Lines 6-17 (CAPABILITIES_SUMMARY) |
-| H2 | Lines 19-32 (COLLABORATION_PATTERNS) |
-| H3 | Lines 38 (PROJECT_AFFINITY) |
+| H1 | `CAPABILITIES_SUMMARY` comment block |
+| H2 | `COLLABORATION_PATTERNS` comment block |
+| H3 | `PROJECT_AFFINITY` comment line |
 | S1 | "Trigger Guidance" section |
 | S2 | "Core Contract" section |
 | S3 | "Boundaries" section (Always/Ask First/Never) |
@@ -232,7 +232,7 @@ Quest (`quest/SKILL.md`) is the reference standard for all 16 items. When genera
 | S7 | "Collaboration" section (Receives/Sends + overlap boundaries) |
 | S8 | "Reference Map" section |
 | S9 | "Operational" section |
-| S10 | Body size ≤ 500 lines / ~5000 tokens (Quest itself is within target) |
+| S10 | Body size ≤ 500 lines / ~5000 tokens |
 | A1 | "AUTORUN Support" section (_STEP_COMPLETE YAML) |
 | A2 | "Nexus Hub Mode" section (NEXUS_HANDOFF block) |
 

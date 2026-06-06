@@ -181,10 +181,8 @@ Apply the following rules. A skill may be triggered by multiple signals; combine
 | i18n (next-intl, i18next, react-intl) | polyglot | prose |
 | Mobile (iOS Swift / SwiftUI, Android Kotlin / Compose) | native | flow, port |
 | Web → Native porting (React / Vue / Svelte / Angular SPA → iOS + Android) | port | native, scaffold |
-| Product image acquisition (SKU / JAN / UPC / catalog images) | haul | navigator, cloak |
 | Founder office hours / startup advisory / "what should I focus on" | sage | sherpa, plea |
-| Game (Phaser, Three.js, Unity, Godot) | quest, dot | clay |
-| 3D (Three.js, Babylon, R3F) | clay | flow |
+| Game (Phaser, Three.js, Unity, Godot) | dot | sketch |
 | CMS / Headless CMS | builder | scribe |
 | Payment (Stripe, Square) | crypt, ledger | clause |
 
@@ -249,7 +247,7 @@ find . -type f \
 
 Always recorded in the `universal_skills` array regardless of signals:
 
-`scout`, `judge`, `zen`, `builder`, `scribe`, `sherpa`, `void`, `magi`, `riff`, `dawn`, `architect`, `nexus`
+`scout`, `judge`, `zen`, `builder`, `scribe`, `sherpa`, `void`, `magi`, `riff`, `architect`, `nexus`
 
 These cover universal tasks (debug, review, refactor, build, doc, planning, removal, decision, brainstorm, ideation, meta-design, orchestration). They do not consume `top_n` slots.
 
