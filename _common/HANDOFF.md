@@ -100,7 +100,7 @@ Every `## NEXUS_HANDOFF` and `_STEP_COMPLETE` **MUST** be preceded by:
 
 **Orchestrator enforcement (Nexus/Rally):** A handoff returned without journaling evidence is treated as `PARTIAL`. The orchestrator reroutes the agent to complete the logging step before chain progression. After 2 consecutive journaling-gate failures from the same agent, escalate to the user.
 
-**Why this is a gate, not a suggestion:** Session durability (next section) depends on persistent state outside the orchestrator context. A handoff that skips journaling breaks crash recovery and routing learning — see also `_common/EVOLUTION.md` and `references/routing-learning.md` (Nexus).
+**Why this is a gate, not a suggestion:** Session durability (next section) depends on persistent state outside the orchestrator context. A handoff that skips journaling breaks crash recovery and routing learning — see also `_common/EVOLUTION.md` and `reference/routing-learning.md` (Nexus).
 
 ---
 
@@ -136,7 +136,7 @@ Based on the Managed Agents virtualization pattern (Anthropic), session state (t
 
 ## DESIGN_INTENT_HANDOFF Format
 
-**Purpose**: Specialized handoff schema for design-to-implementation pipelines (inspired by Claude Design by Anthropic Labs, 2026-04-17). Use this when atelier/Vision/Frame/Muse hand off to implementation agents (Forge/Artisan/Pixel/Showcase) or to Claude Code.
+**Purpose**: Specialized handoff schema for design-to-implementation pipelines (inspired by Claude Design by Anthropic Labs, 2026-04-17). Use this when atelier/Vision/Frame/Muse hand off to implementation agents (Forge/Artisan/Pixel/Vitrine) or to Claude Code.
 
 **When to use**:
 - atelier orchestrating design → code loops
@@ -223,7 +223,7 @@ DESIGN_INTENT_HANDOFF:
     - "Pastel colors"
     - "Illustrations or hero images"
     - '"Delightful" / "magical" / "powerful" in copy'
-  Next: Artisan (implement) → Showcase (catalog)
+  Next: Artisan (implement) → Vitrine (catalog)
 ```
 
 ### Rules
