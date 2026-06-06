@@ -3,6 +3,8 @@
 **Purpose:** Generate a comprehensive, cross-functional **business documentation package** from a single business idea — research → product spine → ~11 parallel documentation tracks → overview synthesis → traceability/validation → multi-format file tree + zip. The package is consumable by founders, PMs, designers, engineers, marketers, sales, investors, QA, and legal without further translation.
 **Read when:** User invokes `/nexus venture`, or asks for a complete business/product documentation set ("business plan package", "MVP dossier", "startup documentation set", "investor material bundle") that spans planning, branding, product, UX, LP, marketing, tech, AI policy, legal, testing, PM, mock data, and assets together.
 
+> **`venture` is the `startup` preset of the generalized `package` recipe.** `/nexus venture` ≡ `/nexus package domain=startup`. The shared engine (domain-agnostic Phase 0-6) and the full domain-preset registry live in `references/package-recipe.md`; this file is the startup preset's detailed 14-directory blueprint and per-file → agent mapping. Read this file for startup detail, package-recipe.md for the engine and other domains.
+
 > **Generated-content language:** the documents written into the package follow the CLI output-language config (`settings.json` `language`). This reference file and all recipe instructions are English; the produced package is in the user's configured output language. File names, IDs, schema keys, and code stay English.
 
 ## Contents
