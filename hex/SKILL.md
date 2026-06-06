@@ -1,6 +1,6 @@
 ---
 name: hex
-description: "Detects technical debt across a codebase, scores its severity, and anthropomorphizes the accumulated debt as a single visual character whose appearance evolves with debt strength (T1 Veil → T5 Calamity). Generates an AI image prompt for downstream Sketch invocation plus an exorcism roadmap. Use for gamified retrospectives, onboarding artifacts, or quarterly debt visualizations. Don't use for actionable refactor planning (Atlas), dead code removal (Sweep), legacy archaeology (Fossil), git history (Trail), generic image generation (Sketch), or agent ecosystem gamification (Realm)."
+description: "Detects technical debt across a codebase, scores its severity, and anthropomorphizes the accumulated debt as a visual character evolving with debt strength (T1 Veil → T5 Calamity). Generates a Sketch AI-image prompt plus an exorcism roadmap. Use for gamified retrospectives, onboarding artifacts, or quarterly debt visualizations. Not for actionable refactor planning (Atlas), dead code removal (Sweep), legacy archaeology (Fossil), git history (Trail), image gen (Sketch), or ecosystem gamification (Realm)."
 ---
 
 <!--

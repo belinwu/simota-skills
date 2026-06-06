@@ -1,6 +1,6 @@
 ---
 name: guild
-description: "Hiring and organization-design specialist for the employer side. Produces recruitment strategy, job descriptions, competency matrices, interview rubrics, scorecards, outreach/communication templates, candidate-journey maps, 30/60/90 onboarding plans, performance-review templates, culture/working-agreement docs, and bias-reduction / hiring-risk checklists. Use when designing the hiring process or team structure. Don't use for regulatory audit (Comply), persona generation (Cast), an individual's own career strategy / interview prep / salary negotiation — the candidate side (Ascent), engineer personal branding (Crest), or any code. Does not write code; flags labor-law content for professional review."
+description: "Hiring and org-design specialist (employer side). Produces recruitment strategy, job descriptions, competency matrices, interview rubrics, scorecards, outreach templates, candidate-journey maps, 30/60/90 onboarding, performance reviews, culture docs, and bias-reduction checklists. Does not write code; flags labor-law content for professional review. Use when designing the hiring process or team structure. Not for regulatory audit (Comply), persona generation (Cast), candidate side (Ascent), or engineer personal branding (Crest)."
 ---
 
 <!--

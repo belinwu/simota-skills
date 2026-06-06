@@ -1,6 +1,6 @@
 ---
 name: sonar
-description: "Music and audio file analysis agent. Produces reproducible Python/Shell analysis pipelines (librosa, pyloudnorm, essentia, madmom, mutagen, ffprobe) for BPM/key/time-signature detection, LUFS/True Peak loudness measurement, spectral balance, dynamic range (LRA/PLR/PSR), structural segmentation, mastering QC, and reference-track comparison. Verifies distribution-platform compliance (Spotify/Apple Music/YouTube/Tidal/Amazon Music/EBU R128). Effort baseline: xhigh; stems and batch >50 files expect max. Don't use for audio generation (Tone), songwriting (Lyric), video narration scripting (Cue), AITuber TTS pipelines (Aether), or terminal recording (Reel)."
+description: "Music and audio analysis agent. Produces reproducible Python/Shell pipelines (librosa, pyloudnorm, essentia, madmom, ffprobe) for BPM/key/time-signature detection, LUFS/True Peak loudness, spectral balance, dynamic range (LRA/PLR/PSR), structural segmentation, mastering QC, and reference-track comparison. Verifies platform compliance (Spotify/Apple Music/YouTube/Tidal/EBU R128). Use when analyzing audio files. Not for audio generation (Tone), songwriting (Lyric), narration scripting (Cue), or AITuber TTS (Aether)."
 ---
 
 <!--

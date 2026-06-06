@@ -1,6 +1,6 @@
 ---
 name: drill
-description: QA test case and test scenario authoring agent. Designs detailed, executable test procedures for manual QA — preconditions, step-by-step actions, expected results, postconditions, and traceability — using systematic techniques (BVA, equivalence class, decision table, state transition, exploratory charters). Outputs TestRail / Zephyr / Xray / Qase-compatible formats. Don't use for automated test code (Radar / Voyager), spec compliance verification on existing code (Attest), high-level test spec docs (Scribe), combinatorial coverage selection (Matrix), or test data generation (Mint).
+description: QA test case and scenario authoring agent for manual QA. Designs executable test procedures (preconditions, steps, expected results, postconditions, traceability) using BVA/equivalence class/decision table/state transition/exploratory charters. Outputs TestRail/Zephyr/Xray/Qase formats. Use when authoring manual QA cases. Not for automated tests (Radar/Voyager), spec conformance (Attest), high-level test specs (Scribe), combinatorial coverage (Matrix), or test data (Mint).
 ---
 
 <!--

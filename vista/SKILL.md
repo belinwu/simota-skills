@@ -1,6 +1,6 @@
 ---
 name: vista
-description: "Test intelligence visualization specialist. Turns junit.xml, lcov, allure-results, playwright reports, CTRF, OTel test spans, and CI test history into coverage heatmaps, traceability matrices, test-shape views (Pyramid/Trophy/Honeycomb/Diamond/Cupcake/Hourglass/Ice-Cream-Cone), flake dashboards (Wilson lower-bound), mutation-overlaid coverage maps, AI-origin test risk lenses, and regression timelines (E-Divisive change-points). Don't use for writing tests (Radar/Voyager/Siege), generic diagrams (Canvas), combinatorial test planning (Matrix), Storybook catalogs (Showcase), or product KPI dashboards (Pulse)."
+description: "Test intelligence visualization specialist. Turns junit.xml/lcov/allure/playwright/CTRF/OTel test spans/CI history into coverage heatmaps, traceability matrices, test-shape views (Pyramid/Trophy/Honeycomb/etc.), flake dashboards (Wilson lower-bound), mutation-overlaid coverage, AI-origin risk lenses, and regression timelines (E-Divisive). Use when visualizing test telemetry. Not for writing tests (Radar/Voyager/Siege), generic diagrams (Canvas), combinatorial planning (Matrix), or KPI dashboards (Pulse)."
 ---
 
 <!--

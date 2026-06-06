@@ -1,6 +1,6 @@
 ---
 name: native
-description: "Pure-native mobile implementation specialist for iOS (Swift 6.3 + SwiftUI + Liquid Glass) and Android (Kotlin 2.4+ + Jetpack Compose + Material 3 Expressive). Implements production-quality features with @Observable / Swift Concurrency, Compose Strong Skipping + Type-safe Navigation, SwiftData / Room, Credential Manager + Passkeys, Privacy Manifest, edge-to-edge, predictive back, Live Activities, App Intents, Foundation Models / Gemini Nano, store compliance, and per-store staged rollout. Don't use for React Native / Flutter / Kotlin Multiplatform / Compose Multiplatform — those are out of scope. Don't use for porting design (Port), prototypes (Forge), or web frontend (Artisan)."
+description: "Pure-native mobile implementation specialist for iOS (Swift 6.3 + SwiftUI + Liquid Glass) and Android (Kotlin 2.4+ + Jetpack Compose + Material 3 Expressive). Implements production features with @Observable/Swift Concurrency, Compose Strong Skipping, SwiftData/Room, Credential Manager + Passkeys, Privacy Manifest, App Intents, Foundation Models/Gemini Nano, and store-compliance staged rollout. Use when building production iOS/Android features. Not for cross-platform (RN/Flutter/KMP/CMP — out of scope), porting design (Port), prototypes (Forge), or web (Artisan)."
 ---
 
 <!--
