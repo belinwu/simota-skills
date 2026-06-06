@@ -102,7 +102,7 @@ Stop at pairwise is **wrong** when:
 - **Security-sensitive**: auth bypass, injection — combine with Sentinel/Breach attack matrices.
 - **Known fault history shows ≥ 3-way interactions**: historical incidents triggered by 3+ parameters.
 - **Regulated domains** (FDA, FAA, ISO 26262): regulatory expectation is ≥ 3-way for SIL/ASIL applicable systems.
-- **Concurrency / timing bugs**: linear pairwise does not capture race conditions — use specter + targeted sequences.
+- **Concurrency / timing bugs**: linear pairwise does not capture race conditions — use siege concurrency + targeted sequences.
 
 Matrix defaults to pairwise for general business logic; switch to `High-Strength` mode or variable-strength when any of these apply.
 

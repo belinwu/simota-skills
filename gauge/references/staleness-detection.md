@@ -146,7 +146,7 @@ A staleness scan that flags every legitimate historical citation is worse than n
 
 | Guard | Rule |
 |-------|------|
-| **Migration-guide context** | `shift`, `horizon`, `port`, `quill`, `fossil` legitimately reference legacy versions on the SOURCE side. Skip findings in these skills when the pattern matches "X → Y" or "X to Y" syntax. |
+| **Migration-guide context** | `shift`, `horizon`, `port`, `quill`, `trail` (static-rules recipe) legitimately reference legacy versions on the SOURCE side. Skip findings in these skills when the pattern matches "X → Y" or "X to Y" syntax. |
 | **Min-version baseline** | "iOS 17+", "Node 22+", "Python 3.12+" are forward-looking floor declarations, not stale. Skip when a `+` immediately follows the version. |
 | **Historical anchor** | A version/benchmark annotated with a year and an "as of" / "historical" / "archive" qualifier is annotation-complete. Skip. |
 | **Migration-target context** | Pattern `${OLD} → ${NEW}` or `from ${OLD} to ${NEW}` legitimately names the OLD version. Skip the OLD side. |

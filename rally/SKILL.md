@@ -12,6 +12,9 @@ CAPABILITIES_SUMMARY:
 - session_monitoring: Monitor parallel session health, progress, and timeouts with escalation/replacement strategies
 - convergence_detection: Identify when all agents converge on the same blocker and diversify task targets to restore parallel gains
 - anti_pattern_detection: Identify premature parallelization, hidden dependencies, and coordination overhead that exceeds parallel gains
+- compete_paradigm: COMPETE mode — generate N variants of the same task in parallel across engines (Codex / agy / Claude), score outputs, select winner; ideal for divergent solution exploration where the "right" answer is unclear (absorbed from arena)
+- collaborate_paradigm: COLLABORATE mode — decompose a task across engines by strength (long-context to agy, strict-eval to Codex, complex-synthesis to Claude); fan-in via consensus or capability-routing (absorbed from arena)
+- cross_engine_orchestration: Mixed-engine task routing across Codex CLI / Antigravity (agy) / Claude Code with engine-strength-aware assignment and result reconciliation (absorbed from arena)
 
 COLLABORATION_PATTERNS:
 - Nexus -> Rally: Parallel execution chains with NEXUS_TO_RALLY_CONTEXT handoff
@@ -203,12 +206,16 @@ Use `references/parallel-learning.md` for full logic. Keep these rules explicit:
 | Team Design | `teams` | | Team composition and role design | `references/team-design-patterns.md` |
 | Codex Subagents | `codex-subagents` | | Codex CLI subagent parallelization | `references/orchestration-patterns.md` |
 | Coordination | `coordinate` | | Monitoring and coordinating in-flight teams | `references/lifecycle-management.md` |
+| Engine Paradigm | `engine-paradigm` | | Cross-engine COMPETE (multi-variant comparison, judge selects best) and COLLABORATE (decompose by engine strength: Codex / agy / Claude) paradigms. Solo / Team / Quick modes. Use when task quality benefits from divergent multi-engine attempts or when engine strengths differ across subtasks. (absorbed from arena) | `references/orchestration-patterns.md` |
 
 ## Subcommand Dispatch
 
 Parse the first token of user input.
 - If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
 - Otherwise → default Recipe (`parallel` = Parallel Execution). Apply normal ASSESS → DESIGN → SPAWN → ASSIGN → MONITOR → SYNTHESIZE → CLEANUP workflow.
+
+Behavior notes per Recipe:
+- `engine-paradigm`: Two sub-modes. **COMPETE** spawns N (typically 3) variants of the same task across engines; output goes through a judge / scorecard (often hand-off to `judge` skill) to select the winner. Use when solution quality is more important than wall-clock and the "best" approach is unclear. **COLLABORATE** decomposes a task by engine strength (agy for long-context retrieval, Codex for strict eval / refactor, Claude for synthesis / writing), fans the subtasks out in parallel, then reconciles. Solo / Team / Quick modes scale 1 / 3 / 5 engines respectively. Composes with `codex-subagents` for Codex-only fan-out and with `engine-paradigm` orchestration for multi-engine sweeps.
 
 ## Output Routing
 

@@ -10,6 +10,8 @@ CAPABILITIES_SUMMARY:
 - chaos_engineering: Controlled fault injection, game days, steady-state verification
 - mutation_testing: Test quality measurement via mutant generation and survivor analysis
 - resilience_verification: Retry, timeout, circuit breaker, bulkhead, fallback, and load-shedding validation
+- concurrency_invariant_hunting: Race conditions, memory leaks, resource leaks, deadlocks; TSan/MSan/Valgrind/loom/jcstress orchestration; ordering and happens-before checks (absorbed from specter)
+- async_resource_lifecycle_audit: File handle / connection / goroutine / coroutine lifecycle audit; leak detection via differential heap snapshots and stress-induced exhaustion (absorbed from specter)
 
 COLLABORATION_PATTERNS:
 - Gateway -> Siege: API boundary verification requests
@@ -162,6 +164,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Fuzz Testing | `fuzz` | | Coverage-guided fuzzing (AFL++/libFuzzer/go-fuzz/cargo-fuzz/Jazzer), corpus management, sanitizer integration | `references/fuzz-testing-guide.md` |
 | Property Testing | `property` | | Property-based testing (fast-check/Hypothesis/jqwik/PropEr), generator design, stateful/model-based properties | `references/property-based-testing.md` |
 | Smoke Test | `smoke` | | Post-deploy smoke / sanity gates, synthetic checks, ≤3-min deploy-verification suite | `references/smoke-deployment-gates.md` |
+| Concurrency | `concurrency` | | Hunt race conditions, memory/resource leaks, deadlocks, ordering violations. Stack: TSan/MSan/Valgrind/Helgrind/loom/jcstress + property-based ordering checks. Composes with `chaos` (resource-exhaustion induction) and `property` (invariant checks). (absorbed from specter) | `references/property-based-testing.md` |
 
 ## Subcommand Dispatch
 
@@ -176,6 +179,7 @@ Behavior notes per Recipe:
 - `mutation`: Select MUTATE mode. Generate mutants → classify survivors → evaluate coverage thresholds (60% project-wide / 75%+ recommended).
 - `fuzz`: Coverage-guided fuzzing of parsers, decoders, and security-sensitive surfaces with AFL++/libFuzzer/go-fuzz/cargo-fuzz/Jazzer. Always pair with a sanitizer (ASan+UBSan default), seed from a real corpus, and minimize+dedupe crashes before reporting. For unit-test coverage gaps use Radar; for test-data factory shapes use Mint; for deeper DAST on security-critical crashes hand off to Probe/Sentinel.
 - `property`: Property-based testing of invariants (round-trip, idempotent, monotonic, model-based) with fast-check/Hypothesis/jqwik/PropEr/proptest. Compose generators from primitives (no filter-heavy strategies), cap 100-1000 runs at PR tier, commit shrunk counter-examples as regression tests. For example-based unit tests use Radar; for realistic factory data use Mint; for AC-level conformance use Attest; for byte-level parser crashes use `fuzz`.
+- `concurrency`: Hunt invisible defects — race conditions (TSan/Helgrind), memory leaks (ASan/Valgrind/MSan/heap-diff), resource leaks (file/connection/goroutine), deadlocks (lock-order analysis), atomic-ordering bugs (Rust `loom` exhaustive interleavings, Java jcstress, C++ atomics). Pair with `chaos` to induce exhaustion conditions and `property` for ordering invariants. Output: defect class + reproduction trace + minimal repro + fix recommendation to Builder. Use when symptoms are flaky-only-under-load, "works on my machine", or sporadic CI failures.
 - `smoke`: Minimum viable post-deploy gate, 8-15 checks, ≤3 min budget, serial by default, synthetic-check-capable. Emits PROMOTE/HOLD/ROLLBACK verdict tied to deploy SHA. For full user-journey E2E use Voyager; for unit coverage use Radar; for AC compliance use Attest; for SLO ownership and long-term synthetic monitoring topology use Beacon.
 
 ## Output Routing

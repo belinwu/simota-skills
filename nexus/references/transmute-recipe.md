@@ -54,7 +54,7 @@ Phase 3 STRATEGY       Magi[arbitrate big-bang|strangler-fig|FFI + RISK GATE]
                        → confirm Transmutation Map (type / error / concurrency / memory) for the pair
 Phase 4 TRANSMUTE      Builder/Artisan[idiomatic target-language implementation]
                        +grok?[parser/DSL-heavy modules]  +gateway?/schema?[API/DB boundaries]
-                       arena[COMPETE] for high-risk modules → 2-3 idiomatic variants, pick best
+                       rally[engine-paradigm COMPETE] for high-risk modules → 2-3 idiomatic variants, pick best
 Phase 5 PARITY VERIFY ∥ Radar[differential + property tests against Phase 2 oracle; multi-lang incl. Rust]
                        Attest[conformance vs Accord contract]
                        judge[IDIOM review: idiomatic target-lang vs transliterated?]
@@ -132,7 +132,7 @@ The core knowledge of this recipe. Magi confirms the relevant table in Phase 3; 
 
 | Failure | Mitigation |
 |---------|-----------|
-| Transliteration ("Go-in-Rust") | `judge` idiom review (Phase 5) blocks; arena COMPETE surfaces idiomatic alternatives |
+| Transliteration ("Go-in-Rust") | `judge` idiom review (Phase 5) blocks; `rally engine-paradigm` COMPETE surfaces idiomatic alternatives |
 | Behavior regression | Mint golden oracle (Phase 2) + Radar differential/property tests (Phase 5) |
 | "Rewrite everything at once" risk blindness | Magi risk gate (Phase 3) prefers strangler-fig; big-bang needs user confirm |
 | Source memory assumptions clash with target ownership | Phase 3 explicit lifetime/ownership design (esp. Go→Rust GC→borrow) |

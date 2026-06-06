@@ -39,7 +39,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## エージェント一覧
 
-> 全 130 エージェントのカテゴリ別カタログ。
+> 全 125 エージェントのカテゴリ別カタログ。
 
 ### オーケストレーション
 
@@ -700,7 +700,6 @@ skills/
 ├── aether/SKILL.md    # AITuber/ストリーミング・オーケストレーター
 ├── architect/SKILL.md  # エージェント設計メタデザイナー
 ├── anvil/SKILL.md      # CLI/TUI構築
-├── arena/SKILL.md      # 外部エンジン競争（Solo/Team Mode）
 ├── artisan/SKILL.md    # フロントエンド実装
 ├── atelier/SKILL.md    # デザイン-実装パイプラインオーケストレーター
 ├── atlas/SKILL.md      # アーキテクチャ
@@ -776,8 +775,7 @@ skills/
 ├── showcase/SKILL.md   # Storybookストーリー管理
 ├── sketch/SKILL.md     # AI画像生成（Gemini API）
 ├── spark/SKILL.md      # 機能提案
-├── siege/SKILL.md      # 高度テスト（負荷/契約/カオス/ミューテーション）
-├── specter/SKILL.md    # 並行性・非同期問題検出
+├── siege/SKILL.md      # 高度テスト（負荷/契約/カオス/ミューテーション/並行性）
 ├── stream/SKILL.md     # データパイプライン
 ├── sweep/SKILL.md      # 不要コード検出
 ├── titan/SKILL.md      # プロダクトライフサイクル統括

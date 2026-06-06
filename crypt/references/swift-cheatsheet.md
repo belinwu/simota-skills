@@ -7,7 +7,7 @@ Focused crate/framework-selection and pattern guide for cryptographic architectu
 > - Server-side Swift (Vapor / Hummingbird) HTTP stack: [`builder/references/swift-best-practices.md` §8 Server-Side Swift](../../builder/references/swift-best-practices.md#8-server-side-swift)
 > - Memory model and ARC semantics (relevant for secret-buffer hygiene): [`builder/references/swift-language-spec.md` §9 Memory Model & ARC](../../builder/references/swift-language-spec.md#9-memory-model--arc)
 > - Concurrency model (for thread-safe key/session containers): [`builder/references/swift-language-spec.md` §3 Concurrency Model](../../builder/references/swift-language-spec.md#3-concurrency-model)
-> - Sibling reviewers: [`sentinel/references/swift-cheatsheet.md`](../../sentinel/references/swift-cheatsheet.md), [`specter/references/swift-cheatsheet.md`](../../specter/references/swift-cheatsheet.md)
+> - Sibling reviewers: [`sentinel/references/swift-cheatsheet.md`](../../sentinel/references/swift-cheatsheet.md)
 > - Crypt deep-dive references (cross-language): [`password-hashing.md`](./password-hashing.md), [`kms-integration.md`](./kms-integration.md), [`post-quantum-migration.md`](./post-quantum-migration.md)
 
 **Do not duplicate the catalogs above.** This cheatsheet is the *Swift-specific crypto design decisions* Crypt makes; it links rather than restates.

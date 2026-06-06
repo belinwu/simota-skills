@@ -7,7 +7,7 @@ Focused library-selection and pattern guide for cryptographic architecture revie
 > - Server-side stack (Ktor / Spring): [`builder/references/kotlin-best-practices.md` §6 Server-side Kotlin](../../builder/references/kotlin-best-practices.md#6-server-side-kotlin)
 > - Multiplatform basics — `expect`/`actual` for platform crypto: [`builder/references/kotlin-language-spec.md` §5 Multiplatform (KMP) Basics](../../builder/references/kotlin-language-spec.md#5-multiplatform-kmp-basics)
 > - Java interop pitfalls (relevant for JCA / `KeyStore` access): [`builder/references/kotlin-anti-patterns.md` §7 Java Interop Pitfalls](../../builder/references/kotlin-anti-patterns.md#7-java-interop-pitfalls)
-> - Sibling reviewers: [`sentinel/references/kotlin-cheatsheet.md`](../../sentinel/references/kotlin-cheatsheet.md), [`specter/references/kotlin-cheatsheet.md`](../../specter/references/kotlin-cheatsheet.md)
+> - Sibling reviewers: [`sentinel/references/kotlin-cheatsheet.md`](../../sentinel/references/kotlin-cheatsheet.md)
 > - Crypt deep-dive references (cross-language): [`password-hashing.md`](./password-hashing.md), [`kms-integration.md`](./kms-integration.md), [`post-quantum-migration.md`](./post-quantum-migration.md)
 
 **Do not duplicate the catalogs above.** This cheatsheet is the *Kotlin-specific crypto design decisions* Crypt makes; it links rather than restates.

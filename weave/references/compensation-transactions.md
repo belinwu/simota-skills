@@ -186,7 +186,7 @@ On crash/restart:
 - Mend (runbook automation candidate)
 - Prose (correction email copy)
 - Builder (implementation)
-- specter (race/deadlock review of Saga log)
+- siege concurrency (race/deadlock review of Saga log)
 ```
 
 ## Common Pitfalls
@@ -212,7 +212,7 @@ When `compensation` completes, emit:
 - **Saga log schema** and **recovery protocol**.
 - **Failure-of-compensation escalation path** (retries, runbook, mark-done).
 - **Semantic compensation section** for un-undoable operations.
-- **Handoffs**: saga, retry, Triage, Mend, Prose, Builder, specter.
+- **Handoffs**: saga, retry, Triage, Mend, Prose, Builder, siege.
 
 ## References
 

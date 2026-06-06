@@ -71,12 +71,12 @@ Read `_common/PROOF_CARRYING.md` v2 Tier table. Classify the change by inspectin
 **Agents** (parallel branches):
 - `radar` — property-based + edge-case + regression tests
 - `mint` — fixture and data generation (boundary, equivalence-class)
-- `drill` — manual-equivalent E2E scenarios converted to executable form
+- `matrix qa-scenario` — manual-equivalent E2E scenarios converted to executable form
 - `voyager` — Playwright / CUA flows for UI surfaces (when `ui_dimension != none`, shared with Layer B)
 - `sentinel` — SAST + security regression oracles
 - `attest` — contract tests from API / DB invariants (if not already covered by attest in Phase 1)
 
-**Dual-Implementation Oracle (in-scope domains, G4)**: For Tier-S/A PRs touching money / authz / state-machines / inventory / regulated logic, spawn `arena` in COMPETE mode:
+**Dual-Implementation Oracle (in-scope domains, G4)**: For Tier-S/A PRs touching money / authz / state-machines / inventory / regulated logic, spawn `rally engine-paradigm` in COMPETE mode:
 - AI-A (production implementation) on engine E1
 - AI-B (reference oracle) on engine E2 (different LLM family per G4)
 - AI-C (adversarial reviewer) on engine E3 (different from both)
@@ -121,7 +121,7 @@ Read `_common/PROOF_CARRYING.md` v2 Tier table. Classify the change by inspectin
 **Agents** (parallel, different personas):
 - `vigil` — security attacker persona (auth bypass, IDOR, token replay)
 - `sentinel` — static + dynamic attack surface
-- `specter` — concurrency / race / state-machine edge cases
+- `siege concurrency` — concurrency / race / state-machine edge cases
 - `siege` — load / chaos (Tier-S only)
 
 **Engine routing for Tier-S Layer A** (G1 cross-engine diversity): Adversarial explorers → Claude (judgment + edge-case enumeration).
@@ -140,7 +140,7 @@ Read `_common/PROOF_CARRYING.md` v2 Tier table. Classify the change by inspectin
   - Locale-edge user (RTL, long-translation overflow, IME composition)
   - Adversarial user (URL tampering, replayed tokens, malformed input)
 - `voyager` + `navigator` — Playwright / CUA execution of persona scripts
-- `drill` — converts persona walkthroughs to executable test scenarios
+- `matrix qa-scenario` — converts persona walkthroughs to executable test scenarios
 
 **Engine routing for Tier-S Layer B**: Adversarial UI users → Claude (persona judgment + UX edge enumeration); deterministic UI checks (token / contract violations) → Codex.
 
@@ -247,11 +247,11 @@ Phase 1: attest[spec-diff] (+ accord[spec-amend] if spec changes; + scribe if hu
 Phase 2A (Layer A — Code Oracles, parallel, engine=agy for Tier-S when AVAILABLE; else Codex with spec-as-ground-truth framing):
   ‖ radar[property+regression]
   ‖ mint[fixtures]
-  ‖ drill[E2E scenarios]
+  ‖ matrix[qa-scenario E2E scenarios]
   ‖ sentinel[SAST + security regression]
   ‖ attest[contract tests]
   ‖ if in-scope (money/authz/state-machine/inventory/regulated):
-      arena[COMPETE, AI-A on E1 + AI-B on E2 + AI-C on E3, per G4]
+      rally[engine-paradigm COMPETE, AI-A on E1 + AI-B on E2 + AI-C on E3, per G4]
 
 Phase 2B (Layer B — Design Oracles, parallel, atelier sub-orchestration, IF ui_dimension != none):
   atelier orchestrates:
@@ -268,14 +268,14 @@ Phase 2B (Layer B — Design Oracles, parallel, atelier sub-orchestration, IF ui
 Phase 3A (Layer A — Code Adversaries, parallel, engine=claude for Tier-S):
   ‖ vigil[security attacker]
   ‖ sentinel[attack surface]
-  ‖ specter[concurrency edges]
+  ‖ siege[concurrency edges]
   ‖ if tier=S: siege[load+chaos]
 
 Phase 3B (Layer B — Design Adversaries, parallel, atelier sub-orchestration, IF ui_dimension != none):
   atelier orchestrates:
     ‖ echo[persona definition: standard / returning / impatient / mobile / screen-reader / slow-net / payment-fail / locale-edge / adversarial]
     ‖ voyager + navigator[Playwright/CUA execution of persona scripts]
-    ‖ drill[converts persona walkthroughs to test scenarios]
+    ‖ matrix[qa-scenario, converts persona walkthroughs to test scenarios]
 
 Phase 4A (Code Acceptance Gate, sequential, judge runs tri-engine):
   judge[tri-engine evidence audit] → attest[final conformance]
@@ -352,7 +352,7 @@ Phase 6 (Random Sampling Audit, async post-merge, non-blocking):
 
 **Confirm with user before launching Tier-S** — agent count and cost rival or exceed `apex` when Layer B activates. Tier-A with full UI is comparable to `kaizen` + `judge` combined.
 
-**Dual-Implementation cost overhead**: When in-scope (money / authz / state-machine / inventory / regulated), add 2-4 agents (arena COMPETE + AI-A + AI-B + AI-C) and 1.4-1.8× compute multiplier on implementation tokens. Strictly enforce per-PR compute cap.
+**Dual-Implementation cost overhead**: When in-scope (money / authz / state-machine / inventory / regulated), add 2-4 agents (rally engine-paradigm COMPETE + AI-A + AI-B + AI-C) and 1.4-1.8× compute multiplier on implementation tokens. Strictly enforce per-PR compute cap.
 
 ---
 
@@ -396,15 +396,15 @@ Phase 6 (Random Sampling Audit, async post-merge, non-blocking):
 **Layer A (Code) skill references**:
 - `judge/SKILL.md` — tri-engine evidence audit
 - `attest/SKILL.md` — spec compliance verification + final conformance
-- `arena/SKILL.md` — Dual-Implementation Oracle (COMPETE mode, G4 orchestration)
+- `rally/SKILL.md` (engine-paradigm recipe) — Dual-Implementation Oracle (COMPETE mode, G4 orchestration)
 - `radar/SKILL.md` — property-based + regression oracle generation
 - `mint/SKILL.md` — fixture / data generation
-- `drill/SKILL.md` — E2E scenario authoring
+- `matrix/SKILL.md` (qa-scenario recipe) — E2E scenario authoring
 - `sentinel/SKILL.md` — SAST + attack-surface (Layer A oracle + Layer A adversary)
 - `vigil/SKILL.md` — security attacker persona (Layer A adversary)
 - `voyager/SKILL.md` — Playwright/CUA E2E (shared Layer A + Layer B)
 - `navigator/SKILL.md` — browser automation for UI persona walkthroughs
-- `specter/SKILL.md` — concurrency / race condition edge cases
+- `siege/SKILL.md` (concurrency recipe) — concurrency / race condition edge cases
 - `siege/SKILL.md` — load + chaos (Tier-S only)
 - `beacon/SKILL.md` — runtime oracle registration
 - `mend/SKILL.md` — repair runbook with circuit-breaker semantics

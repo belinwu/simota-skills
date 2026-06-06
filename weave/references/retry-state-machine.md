@@ -9,7 +9,7 @@ Purpose: Design retry state machines with exponential backoff, jitter, max-attem
 - **weave `compensation` (elsewhere)**: Saga compensation. Retry handles transient failure; compensation handles logical undo.
 - **tempo (elsewhere)**: Schedule / cron / backoff curve details. Retry state machine consumes tempo's backoff rules.
 - **Beacon (elsewhere)**: SLO / retry-exhaustion alerts.
-- **specter (elsewhere)**: Race/deadlock analysis on retry implementations.
+- **siege concurrency (elsewhere)**: Race/deadlock analysis on retry implementations.
 
 ## Workflow
 

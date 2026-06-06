@@ -7,7 +7,7 @@ Purpose: HAZOP (Hazard and Operability study, IEC 61882) is a systematic deviati
 - **omen `hazop`**: node-by-node parameter × guideword deviation study. Systematic, team-facilitated, report-driven. Best for data pipelines, message brokers, control flows, integration boundaries.
 - **omen `mode` / `premortem` (elsewhere)**: FMEA / pre-mortem — broader and less structured than HAZOP. Use HAZOP when the system is a clearly decomposable flow; use FMEA when modes cut across many components.
 - **omen `faulttree` (elsewhere)**: deductive analysis of one undesired outcome. Complementary — HAZOP deviations often seed fault-tree top events.
-- **specter (elsewhere)**: concurrency and async edge cases. A HAZOP on a message broker surfaces "REVERSE flow" and "AS WELL AS" deviations that specter then investigates at runtime.
+- **siege concurrency (elsewhere)**: concurrency and async edge cases. A HAZOP on a message broker surfaces "REVERSE flow" and "AS WELL AS" deviations that siege concurrency then investigates at runtime.
 - **STPA (elsewhere in literature)**: Systems-Theoretic Process Analysis — better than HAZOP for software-heavy, tightly-coupled control systems with emergent behavior. When control loops dominate, prefer STPA.
 - **Magi (elsewhere)**: trade-off arbitration when HAZOP recommendations compete.
 

@@ -16,6 +16,8 @@ CAPABILITIES_SUMMARY:
 - coupling_metric_assessment: Afferent/efferent coupling, instability (I), abstractness (A), distance-from-main-sequence (D) scoring per module with actionable targets
 - module_boundary_evaluation: Bounded-context fit analysis, cross-boundary leak detection, and anti-corruption layer recommendations
 - tri_engine_architect: `multi` Recipe — parallel architecture assessment and ADR drafting across Codex + Antigravity + Claude subagents with Pattern H (hybrid) scoring; concurrence on smells calibrates the ADR Context section while divergence on architectural styles populates the Options section; emits one Consensus + Dissenting Options ADR with a load-bearing trade-off matrix; preserves single-engine architectural-style insights as named alternatives instead of strawmen
+- c4_model_authoring: C4 model 4-level decomposition (System Context → Container → Component → Code), Structurizr DSL generation, ATAM-style scenario evaluation; pairs with `adr` for decision capture (absorbed from stratum)
+- architecture_quality_attributes: Quality-attribute scenarios (performance / availability / modifiability / security / testability) per ISO/IEC 25010, tradeoff analysis via ATAM utility tree (absorbed from stratum)
 
 COLLABORATION_PATTERNS:
 - Pattern A: Analysis-to-Design (Atlas → Architect)
@@ -138,6 +140,7 @@ Single source of truth for Recipe definitions. Full phase contracts live in the 
 | Coupling Assessment | `coupling` | | Quantitative module coupling — Martin metrics (Ca/Ce/Instability/Abstractness/Distance); identify modules off the Main Sequence and present target values + improvement candidates | `references/coupling-metrics.md` |
 | Boundary Evaluation | `boundary` | | Bounded Context boundary evaluation — alignment between domain boundaries and repository structure; detect cross-boundary leak, excessive shared kernel, missing anti-corruption layers | `references/module-boundary-evaluation.md` |
 | Multi-Engine | `multi` | | Tri-engine architecture deliberation (Codex + Antigravity + Claude in parallel) with Pattern H two-axis scoring. Smells: confidence axis (`CONFIRMED` 3/3 → `LIKELY` 2/3 → `CANDIDATE` 1/3 ground-or-drop). Options: perspective axis (`CONVERGENT` 3/3 → `CONVERGENT-PARTIAL` 2/3 → `DIVERGENT-{style}` 1/3 preserved). Critical Atlas rule: options targeting the same problem with **different architectural styles** are NOT merged — they ride into the ADR as separate Options entries, replacing single-engine strawmen with a load-bearing trade-off matrix. Loose subagent prompts (Role + Target + Output format only — no MADR template or style catalog passed in). Produces one Consensus + Dissenting Options ADR (extended MADR 4.0 structure). | `references/tri-engine-architect.md`, `_common/MULTI_ENGINE_RECIPE.md` |
+| C4 Model | `c4-model` | | C4 model architecture documentation (System Context → Container → Component → Code) and Structurizr DSL generation. ATAM-style quality-attribute scenarios per ISO/IEC 25010. Composes with `adr` for decision capture and `boundary` for bounded-context alignment. (absorbed from stratum) | `references/adr-rfc-templates.md` |
 
 ### Signal Keywords → Recipe
 
@@ -152,6 +155,7 @@ For natural-language input without an explicit subcommand. Subcommand match wins
 | `technical debt`, `debt inventory` | `analyze` (debt-focused; produces inventory + repayment plan via `references/technical-debt-scoring.md`) |
 | `module boundary`, `restructure` | `boundary` |
 | `architecture health`, `metrics` | `analyze` (health-focused; score card via `references/architecture-health-metrics.md`) |
+| `C4 model`, `structurizr`, `quality attribute`, `ATAM` | `c4-model` |
 | `fitness function`, `evolutionary`, `guardrail` | `analyze` (fitness-function-focused; spec + CI integration via `references/architecture-health-metrics.md`) |
 | `coupling assessment`, Ca/Ce/I/A/D, Main Sequence | `coupling` |
 | `cycle`, SCC, strongly connected component | `cycle` |

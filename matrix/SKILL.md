@@ -13,6 +13,8 @@ CAPABILITIES_SUMMARY:
 - constraint_modeling: Model invalid pairs, exclusions, and parameter dependencies with distribution verification
 - coverage_gap_analysis: Map execution results back to uncovered t-tuples using tuple density and (p,t)-completeness metrics, propose follow-up cases
 - variable_strength_planning: Assign risk-based interaction strengths to parameter subsets (safety 3-way+, business 2-way, cosmetic 1-way)
+- qa_scenario_authoring: Author executable manual QA procedures (preconditions / steps / expected results / postconditions / traceability) via BVA + equivalence class + decision table + state transition + exploratory charters (absorbed from drill)
+- traceability_matrix_generation: Map test cases to AC/PRD/requirement IDs with bidirectional traceability for regulated-domain audits (absorbed from drill)
 
 COLLABORATION_PATTERNS:
 - Radar -> Matrix: Test coverage needs
@@ -184,6 +186,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | Pairwise / All-Pairs | `pairwise` | | IPOG algorithm, Orthogonal-Array-based test selection, 2-way 100% coverage with minimum size | `references/pairwise-ipog.md` |
 | Equivalence Class + BVA | `equiv-class` | | Myers equivalence partitioning + boundary value analysis (ON/OFF/IN/OUT points) for input-domain reduction | `references/equiv-class-bva.md` |
 | Risk-Weighted Coverage | `risk-cover` | | RPN (Severity × Occurrence × Detection) weighted coverage, FMEA-linked prioritization, risk-based test selection | `references/risk-weighted-coverage.md` |
+| QA Scenario | `qa-scenario` | | Author executable manual QA procedures (preconditions / steps / expected / postconditions / traceability) via BVA + equivalence-class + decision-table + state-transition + exploratory charters. Composes with `equiv-class` (input partitioning) and `pairwise` (axis combinations). Output: scenario table + traceability matrix to AC/PRD IDs. (absorbed from drill) | `references/equiv-class-bva.md` |
 
 ## Subcommand Dispatch
 
@@ -198,6 +201,7 @@ Behavior notes per Recipe:
 - `prioritize`: Focus on Critical/High/Medium/Low prioritization and bias detection.
 - `pairwise`: Apply IPOG / IPOG-F algorithm (NIST ACTS) or Orthogonal Array Testing (OATS) to produce the smallest 2-way 100%-covering test set. Output: test-case table + uncovered 3-way tuple list + reduction ratio. Hand off to Radar (unit/integration), Voyager (E2E), or Siege (load). Use `cover` instead when the user wants a general n-wise selection without the IPOG-specific method rationale.
 - `equiv-class`: Partition input domain into equivalence classes (valid/invalid), derive representative test cases, and add boundary value analysis (BVA) with ON/OFF/IN/OUT points for each class boundary. Emit one-defect-per-case negative test rule (never mask defects by combining invalid values). Use when axes are primarily *input ranges* rather than enumerated values. Hand off to Radar (unit), Builder (input validator), Probe (negative security cases).
+- `qa-scenario`: Manual QA scenario authoring for human testers and regulated-domain audits. Compose techniques: BVA (boundaries), equivalence class (input domain), decision table (rule combinations), state transition (workflow), exploratory charter (time-boxed discovery). Output: numbered procedures (Preconditions → Steps → Expected Results → Postconditions) + traceability matrix (test ID ↔ AC/PRD ID) + regression suite seed. Hand off to Voyager (E2E automation) and Radar (unit coverage) for the automated layers.
 - `risk-cover`: Compute Risk Priority Number (RPN = Severity × Occurrence × Detection) per combination, weight coverage priority by RPN, and align with FMEA findings. Classify into Action Priority (AP) H/M/L per AIAG-VDA. Emit risk-sorted coverage set plus a residual-risk report for uncovered combinations. Consumes omen FMEA output when available. Hand off to omen (depth analysis), Sentinel (security RPN), Siege (load-risk combinations).
 
 ## Output Routing

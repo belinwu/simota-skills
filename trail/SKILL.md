@@ -17,6 +17,9 @@ CAPABILITIES_SUMMARY:
 - cross_cluster_escalation: Handoff to Specter for resource-related bisect findings via TRAIL_TO_SPECTER_HANDOFF
 - benchmark_driven_bisect: Custom bisect terms and automated scripts for non-binary pass/fail regression detection
 - fix_prompt_generation: Pair every confirmed regression with a paste-ready LLM Fix Prompt embedding breaking commit, bisect evidence, rollback safety, recommended action, acceptance criteria, ruled-out alternatives, and "what NOT to do" so a downstream coding LLM can act without manual reformulation
+- legacy_business_rule_extraction: Extract implicit business rules from undocumented legacy code without relying on commit history; surface hidden domain logic and tribal knowledge (absorbed from fossil)
+- migration_risk_scoring: Score modernization risk for legacy modules; produce rule inventory + dependency map to scope migration work (absorbed from fossil)
+- tribal_knowledge_documentation: Convert oral history and undocumented decisions into runbooks and decision logs (absorbed from fossil)
 
 COLLABORATION_PATTERNS:
 - Scout -> Trail: Bug location for history investigation
@@ -180,6 +183,7 @@ Routing rules:
 | Flamegraph Regression | `flame` | | Diagnose CPU/memory regressions via differential flamegraph + bisect narrowing | `references/flamegraph-regression.md` |
 | Delta Debugging | `delta` | | Minimize failing input/state via ddmin (flaky tests, large reproducers, config) | `references/delta-debugging.md` |
 | Revert Strategy | `revert` | | Choose revert vs reset, handle merge `-m`, partial revert, post-revert verification | `references/revert-strategies.md` |
+| Static Rules | `static-rules` | | Extract implicit business rules from undocumented legacy code (no history needed); assess migration risk; generate rule inventory + runbook (absorbed from fossil) | `references/patterns.md` |
 
 ## Subcommand Dispatch
 
@@ -195,6 +199,7 @@ Behavior notes per Recipe:
 - `flame`: Capture stack samples at good/bad revs under identical workload, generate differential flamegraph, threshold ≥5% absolute frame-share delta. Hand the offending frame to `bisect` with custom terms `fast`/`slow`. Use `--call-graph dwarf` for `perf`; warm up JIT runtimes before sampling.
 - `delta`: Apply `ddmin` to minimize failing input/state (test case, config, event sequence). Define a deterministic oracle returning PASS/FAIL/UNRESOLVED; for flaky tests rerun K=10× per oracle call. Compose with `bisect` (find commit) → `delta` (minimize input). Always verify the 1-minimal still reproduces.
 - `revert`: Choose strategy via the decision matrix — `git revert` for shared/pushed history, `reset --hard` only for local-only branches with reflog backup. Merge commits require `-m <parent>` (typically `-m 1`); document the choice. Plan the revert-of-revert when reintroducing fixed work. Always tag a `backup/pre-revert-<ts>` branch and post the comms template before merging.
+- `static-rules`: Read undocumented legacy code without relying on commit history. Identify implicit invariants, business rules, tribal knowledge. Output a rule inventory + migration-risk score (severity × dependency count × test coverage gap) + runbook. Use when commit history is missing/unreliable or when the question is "what does this code actually do" rather than "what changed". Composes with `blame` and `history` for source-of-decision traceability.
 
 ## Output Requirements
 

@@ -39,7 +39,7 @@ This repository contains 145 specialized AI agents covering various aspects of s
 
 ## Agent Catalog
 
-> Category-by-category catalog for all 130 agents.
+> Category-by-category catalog for all 125 agents.
 
 ### Orchestration
 
@@ -707,7 +707,6 @@ skills/
 ├── aether/SKILL.md    # AITuber/streaming orchestrator
 ├── architect/SKILL.md  # Agent design meta-designer
 ├── anvil/SKILL.md      # CLI/TUI construction
-├── arena/SKILL.md      # External engine competition (Solo/Team Mode)
 ├── artisan/SKILL.md    # Frontend implementation
 ├── atelier/SKILL.md    # Design-to-implementation pipeline orchestrator
 ├── atlas/SKILL.md      # Architecture
@@ -784,7 +783,6 @@ skills/
 ├── showcase/SKILL.md   # Storybook story management
 ├── sketch/SKILL.md     # AI image generation (Gemini API)
 ├── spark/SKILL.md      # Feature proposals
-├── specter/SKILL.md    # Concurrency & async issue detection
 ├── stream/SKILL.md     # Data pipelines
 ├── sweep/SKILL.md      # Dead code detection
 ├── titan/SKILL.md      # Product lifecycle meta-orchestrator
@@ -804,7 +802,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 130 agents.
+> Category-by-category examples for all 125 agents.
 
 #### Orchestration
 

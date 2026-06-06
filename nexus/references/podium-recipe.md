@@ -187,7 +187,7 @@ Where `summit` triangulates strategic code decisions, podium triangulates **pros
 - If a task **compiles or renders structured content** (slide framework, format conversion, diagram-as-code) → Codex
 - If a task **needs > 200K tokens of source context** (whole codebase / large repo diff / multiple long specs) → agy
 - If a task **generates or extracts from images** (AI imagery, mockup reading, screenshot analysis) → agy
-- If a task **requires explicit creative divergence** (alternative hero imagery, alternative slide concepts) → agy via arena[COMPETE]
+- If a task **requires explicit creative divergence** (alternative hero imagery, alternative slide concepts) → agy via rally[engine-paradigm COMPETE]
 - If `agy` is UNAVAILABLE, agy-bound tasks fall back: AI imagery → skipped with placeholder (user adds later), long-ctx → Claude with `sonnet` 1M variant if doc fits, multimodal → Claude vision
 
 **Engine distribution targets (dual-engine baseline):**

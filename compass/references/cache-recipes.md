@@ -109,7 +109,7 @@ Apply the following rules. A skill may be triggered by multiple signals; combine
 
 | Trigger | Skills (H) | Skills (M) |
 |---------|------------|------------|
-| Rust | builder, anvil | crypt, specter |
+| Rust | builder, anvil | crypt, siege |
 | Go | builder, anvil | beacon, gateway |
 | Node + TypeScript backend (Hono, Express, Fastify) | builder, gateway | bolt |
 | Python + Django/Flask/FastAPI | builder, gateway, schema | bolt |

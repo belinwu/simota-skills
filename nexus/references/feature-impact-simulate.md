@@ -95,14 +95,14 @@ ripple_findings:
 
 **Task**: Run Persona Council against the proposed feature mock-up / spec. Use 4-perspective minimum (per v4 proposal): Power user / 初回ユーザー (first-time) / Support / Strategy. Org Tier determines max persona count (Solo skip; SMB max 3; Enterprise max 9). Each persona evaluated with machine-readable Persona Contract.
 
-**Engine diversity (Tier-S/A)**: Run via `arena multi` mode (Codex + Antigravity + Claude) — single-engine Council forbidden for Tier-S.
+**Engine diversity (Tier-S/A)**: Run via `rally engine-paradigm` mode (Codex + Antigravity + Claude) — single-engine Council forbidden for Tier-S.
 
 **Output contract**:
 ```yaml
 echo_council_findings:
   feature_under_evaluation: <feature name>
   org_tier: solo | smb | enterprise
-  engine_mode: single | arena-multi
+  engine_mode: single | rally-engine-paradigm
   personas_evaluated: <count>
   per_persona_results:
     - persona_id: power-user
@@ -202,7 +202,7 @@ magi_verdict:
 Parallel Phase 1-3 (independent evaluations):
   ‖ omen[pre-mortem of feature → RPN/AP scored failure modes]
   ‖ ripple[vertical + horizontal impact + blast radius]
-  ‖ echo[council mode with 3-9 personas per Org Tier; arena multi for Tier-S/A]
+  ‖ echo[council mode with 3-9 personas per Org Tier; rally engine-paradigm for Tier-S/A]
 
 Sequential Phase 4 (after parallel completes):
   experiment[metric prediction based on Insight Ledger historical patterns]
@@ -227,7 +227,7 @@ DELIVER:
 | echo risk persona FAIL | Phase 3 | Forward to Phase 5 as REJECT candidate |
 | experiment LOW confidence + insufficient_baseline | Phase 4 | Forward to Phase 5; magi may require user research before proceeding |
 | Insight Ledger insufficient evidence | Phase 4 | Block Phase 4; queue researcher for fresh research; resume when N≥3 |
-| Persona Council single-engine on Tier-S | Phase 3 setup | Block; require `arena multi` engine diversity |
+| Persona Council single-engine on Tier-S | Phase 3 setup | Block; require `rally engine-paradigm` engine diversity |
 | Org Tier persona cap exceeded | Phase 3 | Truncate persona list to cap; flag deferred personas for next session |
 
 ---
@@ -239,7 +239,7 @@ DELIVER:
 | Solo | n/a (skip echo) | n/a | 10-15 min | 4 (omen + ripple + experiment + magi) | 3× |
 | SMB | up to 3 | single | 15-25 min | 5 (+ echo) | 5× |
 | Enterprise (Tier-A) | up to 9 | single | 20-35 min | 5 | 8× |
-| Enterprise (Tier-S) | up to 9 | arena multi (3 engines) | 25-40 min | 7 (+ arena ×3) | 12× |
+| Enterprise (Tier-S) | up to 9 | rally engine-paradigm (3 engines) | 25-40 min | 7 (+ rally engine-paradigm ×3) | 12× |
 
 **Cap**: Total budget ≤ $50 per simulation (Magi v4 C5 — operator burnout prevention). If projected to exceed, downgrade to single-engine mode or reduce persona count.
 
@@ -251,7 +251,7 @@ DELIVER:
 |--------------|--------------|
 | Promoting feature_impact_simulate to a top-level Nexus subcommand | Reference recipe only — Authoring Principles § Item 1 forbids new top-level if existing skills absorb ≥80% |
 | Running on trivial features (< 2 hours impl, single persona) | Phase 1 entry check — skip and recommend direct implementation |
-| Single-engine Council for Tier-S | Phase 3 enforcement — require `arena multi` |
+| Single-engine Council for Tier-S | Phase 3 enforcement — require `rally engine-paradigm` |
 | Treating echo Council output as `[validated]` without Voice/Trace calibration | echo `council` Always — output is `[hypothesis]` by default |
 | Skipping Phase 4 experiment because "we don't have data" | Block Phase 4; queue researcher; do not proceed to magi without baseline |
 | magi verdict without all 4 prior phases | Phase 5 enforcement — magi receives all 4 outputs as input, none optional |

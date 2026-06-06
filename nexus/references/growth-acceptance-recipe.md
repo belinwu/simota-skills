@@ -62,10 +62,10 @@ Do **not** invoke when:
 
 **Delegation**: This phase fully delegates to `nexus acceptance` recipe (`nexus/references/acceptance-recipe.md`):
 - Phase 1 (Spec Diff) → attest
-- Phase 2A (Code Oracles) → radar / mint / drill / sentinel / attest / arena[COMPETE if applicable]
+- Phase 2A (Code Oracles) → radar / mint / matrix (qa-scenario) / sentinel / attest / rally[engine-paradigm COMPETE if applicable]
 - Phase 2B (Design Oracles) → atelier sub-orchestration: muse / frame / palette / weave / flow / canon / showcase / prose / matrix
-- Phase 3A (Code Adversaries) → vigil / sentinel / specter / siege
-- Phase 3B (Design Adversaries) → atelier: echo / voyager+navigator / drill
+- Phase 3A (Code Adversaries) → vigil / sentinel / siege (concurrency + chaos)
+- Phase 3B (Design Adversaries) → atelier: echo / voyager+navigator / matrix (qa-scenario)
 - Phase 4A (Code Acceptance Gate) → judge[tri-engine] / attest
 - Phase 4B (Design Acceptance Gate) → atelier: canon / frame / vision
 - Phase 4C (Joint Verdict) → guardian

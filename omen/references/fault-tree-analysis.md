@@ -6,7 +6,7 @@ Purpose: Top-down deductive analysis (IEC 61025) that starts from a single undes
 
 - **omen `faulttree`**: single undesired top event, deductive AND/OR decomposition, cut-set computation, optional probability roll-up, hand-off to `bowtie` or Triage playbooks.
 - **omen `mode` / `premortem` (elsewhere)**: broad FMEA-style enumeration across many components. Use when the question is "what can go wrong?" rather than "why does *this* fail?".
-- **specter (elsewhere)**: concurrency / async / resource-leak root-cause detection. FTA can *reference* a specter finding as a basic event, but the dynamic debugging stays there.
+- **siege concurrency (elsewhere)**: concurrency / async / resource-leak root-cause detection. FTA can *reference* a siege concurrency finding as a basic event, but the dynamic debugging stays there.
 - **sentinel / breach (elsewhere)**: attacker-driven attack trees. FTA gates are safety-oriented; attack trees invert objectives and belong to Sentinel or Breach.
 - **magi (elsewhere)**: trade-offs between competing mitigation paths derived from the tree.
 

@@ -15,7 +15,7 @@ Focused checklist for SAST and code-level security review of Kotlin codebases (J
 **Do not duplicate the catalogs above.** This cheatsheet is the *order* and *triage angle* Sentinel applies on JVM-Kotlin and server-Kotlin code; it links rather than restates.
 
 Companion cheatsheets (same agent):
-- Concurrency / race conditions: [`specter/references/kotlin-cheatsheet.md`](../../specter/references/kotlin-cheatsheet.md)
+- Concurrency / race conditions: see `siege` concurrency recipe (absorbed from specter)
 - Crypto stack design: [`crypt/references/kotlin-cheatsheet.md`](../../crypt/references/kotlin-cheatsheet.md)
 
 **Android scope note**: Android-specific patterns (Permission, SecurityException, WebView JS-bridge, EncryptedSharedPreferences, StrongBox/Hardware-backed Keystore) are handled by the **`native`** skill. This file covers cross-platform Kotlin and server-side JVM concerns only.

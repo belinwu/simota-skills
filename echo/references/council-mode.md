@@ -31,7 +31,7 @@ Never exceed cap with "just one more persona". If exhausted, defer to next sessi
 
 ## Engine Diversity (Tier-S/A Required)
 
-For Tier-S/A evaluations, Persona Council **MUST** run via `arena multi` mode (Codex + Antigravity + Claude). Single-engine Council:
+For Tier-S/A evaluations, Persona Council **MUST** run via `rally engine-paradigm` mode (Codex + Antigravity + Claude). Single-engine Council:
 - **Tier-S**: forbidden.
 - **Tier-A**: advisory only.
 - **Tier-B/C**: allowed.
@@ -103,7 +103,7 @@ council_evaluation:
 - Emit Persona Contract first (situation/goal/fear/comprehension/success/disqualification).
 - Produce only behavior-trace YAML — no free-form opinion.
 - Respect Org-Tier persona cap.
-- For Tier-S/A: run via `arena multi` engine diversity.
+- For Tier-S/A: run via `rally engine-paradigm` engine diversity.
 - Tag output as `[hypothesis]` confidence by default.
 
 **Never:**

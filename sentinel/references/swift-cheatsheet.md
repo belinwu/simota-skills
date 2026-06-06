@@ -14,7 +14,7 @@ Focused checklist for SAST and code-level security review of Swift codebases. Ba
 **Do not duplicate the catalogs above.** This cheatsheet is the *order* and *triage angle* Sentinel applies on Apple-platform and server-Swift code; it links rather than restates.
 
 Companion cheatsheets (same agent):
-- Concurrency / race conditions: [`specter/references/swift-cheatsheet.md`](../../specter/references/swift-cheatsheet.md)
+- Concurrency / race conditions: see `siege` concurrency recipe (absorbed from specter)
 - Crypto stack design: [`crypt/references/swift-cheatsheet.md`](../../crypt/references/swift-cheatsheet.md)
 
 ---

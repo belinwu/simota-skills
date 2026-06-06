@@ -1,10 +1,10 @@
 # Skill Packs
 
-Skill membership matrix for selective enablement across the 130-skill ecosystem.
+Skill membership matrix for selective enablement across the 125-skill ecosystem.
 
 ## Why this exists
 
-Anthropic guidance is **8-12 skills** before "context tax" (token overhead per turn) starts to dominate; routing degradation begins in the **dozens**, and a **15,000-character cap** on the available skills list is a hard ceiling. This repository's 130 skills exceed all three thresholds.
+Anthropic guidance is **8-12 skills** before "context tax" (token overhead per turn) starts to dominate; routing degradation begins in the **dozens**, and a **15,000-character cap** on the available skills list is a hard ceiling. This repository's 125 skills exceed all three thresholds.
 
 This file defines **10 Packs** (overlapping subsets of the ecosystem) so that any single workstream can enable ~20-30 skills instead of the full 134. Selective enablement is driven by the Claude Code `skills` filter in `~/.claude/settings.json` (`"all"` / `[list]` / `[]`); Codex CLI and agy use equivalent allowlist mechanisms when available.
 
@@ -85,7 +85,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** LLM/agent evaluation, multi-engine review, observability, reliability eng, failure mode analysis.
 
-**Members:** `judge`, `magi`, `arena`, `attest`, `oracle`, `beacon`, `mend`, `siege`, `specter`, `omen`, `ripple`, `void`, `drill`, `matrix`, `mint`
+**Members:** `judge`, `magi`, `attest`, `oracle`, `beacon`, `mend`, `siege`, `omen`, `ripple`, `void`, `matrix`, `mint`
 
 **Triggers:** `llm`, `rag`, `prompt engineering`, `ai safety`, `evaluation`, `eval`, `slo`, `sli`, `observability`, `tracing`, `incident`, `chaos`, `mutation testing`, `load test`, `pre-mortem`, `race condition`, `memory leak`, `deadlock`, `multi-engine review`, `manual qa`, `testrail`, `zephyr`, `xray`, `qase`, `bva`, `equivalence class`, `combinatorial`, `coverage matrix`, `test data`, `fixture`, `factory pattern`
 
@@ -105,7 +105,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** infrastructure provisioning, CI/CD, observability, DB design, scheduling, repo health.
 
-**Members:** `beacon`, `mend`, `latch`, `gear`, `pipe`, `scaffold`, `triage`, `trail`, `launch`, `hearth`, `tempo`, `schema`, `tuner`, `shard`, `seek`, `stream`, `weave`, `horizon`, `shift`, `fossil`, `grok`, `grove`, `nest`, `hone`, `sweep`, `harvest`, `rally`, `darwin`, `lore`, `orbit`, `anvil`, `relay`, `stratum`
+**Members:** `beacon`, `mend`, `latch`, `gear`, `pipe`, `scaffold`, `triage`, `trail`, `launch`, `hearth`, `tempo`, `schema`, `tuner`, `shard`, `seek`, `stream`, `weave`, `horizon`, `shift`, `grok`, `grove`, `nest`, `hone`, `sweep`, `harvest`, `rally`, `darwin`, `lore`, `orbit`, `anvil`, `relay`
 
 **Triggers:** `terraform`, `cloudformation`, `pulumi`, `docker`, `kubernetes`, `gha`, `github actions`, `ci/cd`, `pipeline`, `dotfiles`, `zsh`, `tmux`, `neovim`, `cron`, `timezone`, `dst`, `retry`, `backoff`, `db schema`, `migration`, `index`, `slow query`, `etl`, `kafka`, `airflow`, `dbt`, `multi-tenant`, `search engine`, `vector db`, `state machine`, `saga`, `regex`, `dsl`, `parser`, `repo structure`, `dead code`, `cli config`, `cli dev`, `tui`, `linter`, `test runner`, `build tool`, `slack bot`, `discord bot`, `webhook`, `websocket`, `c4 model`, `structurizr`
 

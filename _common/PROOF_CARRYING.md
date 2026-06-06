@@ -3,7 +3,7 @@
 Cross-skill protocol for shipping changes with **machine-verifiable evidence packages** that an Acceptance Gate can adjudicate without human visual confirmation. Inspired by the AAOS (Autonomous Acceptance OS) framing: encode product correctness as executable specifications, then refuse to merge any PR whose evidence package does not match the spec graph.
 
 **Audience**: Skills participating in change-shipping pipelines.
-- **Code axis** (Layer A): `attest`, `judge`, `guardian`, `radar`, `voyager`, `sentinel`, `vigil`, `mend`, `beacon`, `arena` (dual-implementation), `nexus[acceptance]`, `nexus[apex]`, `nexus[summit]`.
+- **Code axis** (Layer A): `attest`, `judge`, `guardian`, `radar`, `voyager`, `sentinel`, `vigil`, `mend`, `beacon`, `rally` (dual-implementation via `engine-paradigm`), `nexus[acceptance]`, `nexus[apex]`, `nexus[summit]`.
 - **Design axis** (Layer B): `atelier` (sub-orchestrator), `muse`, `frame`, `palette`, `canon`, `showcase`, `prose`, `echo`, `vision`, `weave`, `flow`, `matrix` (pairwise sampling).
 
 **Prerequisites**: `_common/HANDOFF.md` (handoff schema), `_common/MULTI_ENGINE_RECIPE.md` (cross-engine fan-out).
@@ -21,7 +21,7 @@ The protocol stack now organizes into three tiers, each adoptable independently:
 | Tier | Scope | Guardrails | Skills | Adoption |
 |------|-------|-----------|--------|----------|
 | **Tier A — Foundation** | LLM output integrity, evidence completeness, repair-loop safety | G1 / G2 / G3 | judge, attest, beacon, mend, sentinel | Required for any Proof-Carrying regime |
-| **Tier B — Production Pipeline** | Code merge-time + Design merge-time gates (this file's main body) | G4-G10 + Dual-Impl + Matrix + Contract | radar, voyager, vigil, atelier, frame, muse, palette, canon, showcase, prose, echo, vision, weave, flow, matrix, arena | Solo OK with subset; SMB+ full |
+| **Tier B — Production Pipeline** | Code merge-time + Design merge-time gates (this file's main body) | G4-G10 + Dual-Impl + Matrix + Contract | radar, voyager, vigil, atelier, frame, muse, palette, canon, showcase, prose, echo, vision, weave, flow, matrix, rally | Solo OK with subset; SMB+ full |
 | **Tier C — Market-Brand Acceptance** | Pre-design + ship-time + post-launch lifecycle gates (M / R / B axes) | G11* / G12 / G13 / G14* / G15* | researcher, voice, trace, plea, pulse, experiment, funnel, lure, compete, crest, clause, comply, ledger (FinOps), harvest, tome | Enterprise only; SMB optionally adopts Step 1 Measurement Loop |
 
 \* Cross-cutting guardrails (G11 / G14 / G15) apply to Tier A and Tier B knowledge bases as well, not only Layer C. They are documented in this file below.
@@ -85,7 +85,7 @@ Every Tier-S/A PR must attach:
 | `intent` | Change purpose in 1-3 sentences | author / `scribe` |
 | `scope` | Affected files, modules, user journeys | `ripple` |
 | `spec_diff` | Diff of spec graph nodes touched | `attest` / `accord` |
-| `generated_tests` | Auto-generated contract / property / fuzz / E2E / a11y / VRT | `radar` / `voyager` / `mint` / `drill` |
+| `generated_tests` | Auto-generated contract / property / fuzz / E2E / a11y / VRT | `radar` / `voyager` / `mint` / `matrix` (qa-scenario) |
 | `execution_log` | Full test run output (pass / fail / coverage) | CI |
 | `ui_trace` | Playwright / CUA trace for UI changes | `voyager` / `navigator` |
 | `screenshot_diff` | Before/after with diff% | `voyager` (visual comparison) |
@@ -112,7 +112,7 @@ When `ui_dimension != none`, the following 9 fields are required in addition to 
 | `a11y_proof` | WCAG 2.2 AA via axe-core / Pa11y; keyboard navigation; focus order; aria correctness | `canon` |
 | `vrt_proof` | Visual regression diff within tolerance per Matrix Sampling Policy (see below) | `showcase` / `voyager` (visual comparison) |
 | `copy_proof` | Microcopy passes voice/tone rules, banned-word list, length constraints, locale-appropriate | `prose` |
-| `ux_task_proof` | AI user personas (impatient / first-time / screen-reader / mobile / payment-failure) complete primary tasks | `echo` / `drill` |
+| `ux_task_proof` | AI user personas (impatient / first-time / screen-reader / mobile / payment-failure) complete primary tasks | `echo` / `matrix` (qa-scenario) |
 | `brand_proof` | Visual identity, illustration style, motion language conform to brand rules (advisory if unspecifiable — see Carve-Out) | `vision` |
 
 Each field carries the same semantic-non-emptiness rule as Code-side: empty findings without an exploration log = rejected, not "no issues".
@@ -447,7 +447,7 @@ For Tier-S/A PRs touching the regulated-correctness domains below, two independe
 4. Diff classifier (G5) separates cosmetic / semantic / breaking
 5. Any semantic diff blocks merge; Source-of-Truth Spec is queried to identify which implementation is correct
 6. Both-implementations-agree does NOT auto-pass; G2 success-PR random review still applies; property-based assertions over Spec (G10) MUST be the third triangulation axis
-7. `arena` skill in COMPETE mode orchestrates AI-A vs AI-B; `judge` adjudicates with AI-C input
+7. `rally engine-paradigm` in COMPETE mode orchestrates AI-A vs AI-B; `judge` adjudicates with AI-C input
 
 **Cost note**: Dual-Implementation effectively doubles implementation tokens for in-scope domains. Apply the per-PR compute cap (Cost & Scalability §) strictly. If cost growth exceeds 1.5× per quarter, narrow the in-scope domain list rather than removing the practice.
 
@@ -541,12 +541,12 @@ This protocol defines the **shared concepts and vocabulary**. Skill-specific imp
 
 **Code axis (Layer A)**:
 - `attest/SKILL.md` — spec compliance verification (Layer 1 + Layer 4 Gate)
-- `radar/` `voyager/` `drill/` `mint/` — oracle generation (Layer 2)
+- `radar/` `voyager/` `matrix/` (qa-scenario) `mint/` — oracle generation (Layer 2)
 - `vigil/` `sentinel/` `voyager/` — adversarial exploration (Layer 3)
 - `judge/` — Acceptance Gate adjudication (Layer 4)
 - `guardian/` — PR preparation with evidence package (Layer 4 delivery)
 - `beacon/` `mend/` — runtime oracle + repair loop (Layer 5)
-- `arena/` — Dual-Implementation Oracle (COMPETE mode, G4 orchestration)
+- `rally/` (engine-paradigm recipe) — Dual-Implementation Oracle (COMPETE mode, G4 orchestration)
 
 **Design axis (Layer B, v2)**:
 - `atelier/` — Layer B sub-orchestrator (drives all design skills below)
@@ -600,7 +600,7 @@ When implementing one of the above, reference this protocol rather than restatin
 | Auto-action default-permit in regulated industries | Pharma / financial / political auto-violations; cascade on regulation changes | G14 Regulatory Envelope Pre-Flight (per-jurisdiction toggle, default OFF, quarterly Horizon Scan) |
 | Static authoritative artifact drifts unmaintained | Constitution mummification / customer mismatch / creativity lattice | G15 Constitution Lifecycle Discipline (Core / Strategic / Operational layers, forcing function expiration, 2-person edit) |
 | **Living Architecture Twin Tyranny** (centralized Architecture Knowledge Graph elevated to Single Source of Truth; reality codebase "corrected" to match Twin when divergence detected) | Twin out-evolves reality, then reality is forced backward to match Twin → 5-10 year architecture mummification, innovation death (omen v5 FM-V-7 RPN 1080, S=10 catastrophic) | Architecture KG stays **advisory**; when KG vs reality diverges, reality wins; KG updates to match reality (NOT the reverse). G11 + G15 applied to Architecture sub-graph in `lore` |
-| **Generated Views Only over-strict** (suppressing whiteboard / sketch / draft diagrams as "Proof violations") | Exploration phase thinking is suppressed, design discussions atrophy (omen v5 FM-V-2 / FM-GV-1, RPN 504-576) | Generated Views Only applies to final CI-gated artifacts only; exploration / sketch / draft / proposal diagrams are explicitly carved out. canvas + stratum SKILL.md Always sections enforce the carve-out |
+| **Generated Views Only over-strict** (suppressing whiteboard / sketch / draft diagrams as "Proof violations") | Exploration phase thinking is suppressed, design discussions atrophy (omen v5 FM-V-2 / FM-GV-1, RPN 504-576) | Generated Views Only applies to final CI-gated artifacts only; exploration / sketch / draft / proposal diagrams are explicitly carved out. canvas + atlas (c4-model recipe) SKILL.md Always sections enforce the carve-out |
 | **Line-based citation silent drift** (`@source:src/api.ts#L12-45` references that point to unrelated code after refactor but still pass existence checks) | False confidence in "evidence-based" docs while actually citing wrong code (omen v5 FM-D-2, RPN 648) | Prefer symbol-based (`@source:billing::createInvoice`) or content-hash (`@source:openapi.yaml#sha256:abc...`) citations. Line-number citations require paired content-hash anchor for drift detection. attest enforces. |
 | **Ops Knowledge Graph centralization as separate KG** (parallel ops-side node/edge catalog elevated to its own SoT alongside `lore` Architecture sub-graph; drift between architecture KG and ops KG silently accumulates) | Recreates Twin Tyranny on the ops side (omen v6 FM-5 RPN 640); two KGs evolve in opposite directions, neither matches reality | Ops node types (`secret` / `config` / `feature_flag` / `environment` / `cluster` / `iam_role` / `vulnerability` / `metric` / `terraform_resource` / `kubernetes_object` / `container_image`) and ops edges (`reads_secret` / `exposes_data` / `has_vulnerability` / `scaled_by` / `rolled_back_by` / `deployed_to`) are absorbed as **extension of the existing `lore` Architecture sub-graph**, not a new KG. G11 + G15 + advisory-only-reality-wins rule inherited unchanged. |
 | **"Zero-Human Ops Gate" regime drift** (PROOF_CARRYING.md repurposed as platform-engineering bible covering post-merge ops decisions; collides with Phase 5 beacon + mend territory) | Pre-merge acceptance regime semantics blurred with post-merge runtime ops; Compiler PASS at ops layer reproduces G7 false-confidence (omen v6 FM-3 RPN 504, magi v6 Sophia REJECT) | Pre-merge = Acceptance Gate (deterministic, machine-adjudicated); post-merge = beacon SLO oracle + mend repair loop + G3 circuit breaker (already specified Phase 5). Security/Tuning/Environment/Configuration concerns absorbed into existing skills (sentinel/vigil/cloak/attest/comply/bolt/tuner/siege/beacon/scaffold/gear/mend), NOT as new top-level Proof axes. |

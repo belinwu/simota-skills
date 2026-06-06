@@ -29,7 +29,7 @@ Identify the image type first; type determines what to extract and who owns the 
 | Running-app screenshot / error screen | Browser/OS chrome, real data, toasts, modals | UI state, error text, env indicators | `scout` (bug), `echo` (UX) |
 | Wireframe / sketch | Low fidelity, boxes, placeholder text | Structure, flow, intent | `forge`, `vision` |
 | Chart / graph / data viz | Axes, legend, series, units | Values, trends, axis labels, outliers | `pulse`, `oracle` |
-| Architecture / system diagram | Nodes, boundaries, layered boxes | Components, dependencies, direction | `atlas`, `stratum`, `canvas` |
+| Architecture / system diagram | Nodes, boundaries, layered boxes | Components, dependencies, direction | `atlas`, `canvas` |
 | ER diagram | Entities, cardinality crow's-feet | Tables, relations, keys | `schema` |
 | Flowchart / sequence / state diagram | Arrows, decision diamonds, lifelines | Nodes, transitions, conditions | `canvas`, `weave` |
 | Log / terminal capture | Monospace, stack traces, timestamps | Errors, codes, ordering | `scout`, `triage` |

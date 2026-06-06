@@ -37,7 +37,7 @@ Without this pattern, the user manually copies file paths, evidence, and constra
 | `scout` | Bug fix | `FIX`, `FIX-WITH-TEST`, `MITIGATE`, `INVESTIGATE-FURTHER`, `REFACTOR-FIX` |
 | `trail` | Regression remediation | `FIX-REGRESSION`, `REVERT`, `REVERT-WITH-FORWARD-FIX`, `INVESTIGATE-FURTHER`, `REFACTOR-FIX` |
 | `sentinel` | Security remediation (when handed off, not when shipped inline) | `SECURE-FIX`, `HARDEN`, `MITIGATE`, `BREAKING-FIX`, `AUTH-FIX`, `REVOKE-AND-ROTATE`, `INVESTIGATE-FURTHER` |
-| `specter` | Concurrency / memory / resource remediation | `RACE-FIX`, `LEAK-FIX`, `LOCK-FIX`, `RESOURCE-FIX`, `MITIGATE`, `INVESTIGATE-FURTHER`, `REFACTOR-FIX` |
+| `siege` (`concurrency` recipe) | Concurrency / memory / resource remediation | `RACE-FIX`, `LEAK-FIX`, `LOCK-FIX`, `RESOURCE-FIX`, `MITIGATE`, `INVESTIGATE-FURTHER`, `REFACTOR-FIX` |
 | `probe` | DAST / runtime exploit remediation | `EXPLOIT-FIX`, `HARDEN-RUNTIME`, `MITIGATE`, `BREAKING-FIX`, `AUTH-FIX`, `INVESTIGATE-FURTHER` |
 | `judge` | Tri-engine code review consensus finding | `APPLY-FIX`, `REWRITE`, `REVERT-AND-RESTART`, `BREAKING-FIX`, `INVESTIGATE-FURTHER`, `DOWNGRADE` |
 | `canon` | Standards compliance gap remediation | `REMEDIATE`, `EXEMPT-WITH-RATIONALE`, `BREAKING-REMEDIATE`, `MITIGATE`, `INVESTIGATE-FURTHER` |
@@ -45,7 +45,7 @@ Without this pattern, the user manually copies file paths, evidence, and constra
 | `omen` | Pre-mortem failure mode mitigation | `ADD-GUARDRAIL`, `ADD-MONITOR`, `ADD-RUNBOOK`, `MITIGATE`, `INVESTIGATE-FURTHER`, `ACCEPT-RISK` |
 | `tuner` | DB query plan / index remediation | `OPTIMIZE-QUERY`, `ADD-INDEX`, `BREAKING-OPTIMIZE`, `MIGRATE-WORKLOAD`, `INVESTIGATE-FURTHER`, `MITIGATE` |
 
-Future candidates: `fossil` (legacy migration prompt), and any new investigation/audit agent that hands findings off to a coding agent.
+Future candidates: `trail static-rules` (legacy migration prompt), and any new investigation/audit agent that hands findings off to a coding agent.
 
 ---
 

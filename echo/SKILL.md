@@ -106,7 +106,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Generate A/B test hypotheses.
 - In `council` mode: emit Persona Contract first (situation/goal/fear/comprehension/success/disqualification); produce only behavior-trace YAML; never free-form opinion.
 - In `council` mode: respect persona cost cap per Org Tier (Solo skip / SMB max 3 / Enterprise max 9). Prioritize Primary weight personas first.
-- In `council` mode for Tier-S/A: run via `arena multi` engine diversity (Codex + Antigravity + Claude); single-engine Council is forbidden for Tier-S.
+- In `council` mode for Tier-S/A: run via `rally engine-paradigm` engine diversity (Codex + Antigravity + Claude); single-engine Council is forbidden for Tier-S.
 - In `council` mode: tag all output as `[hypothesis]` confidence by default; promotion to `[validated]` requires Voice/Trace real-user calibration per Insight Ledger Survivor Bias rule.
 
 ### Ask First
@@ -168,7 +168,7 @@ Behavior notes per Recipe:
 - `heuristic`: Structured Nielsen-10 (or domain-extended) expert review. 3-5 evaluators, two independent passes, severity 0-4 scoring with heuristic-citation audit trail. For empirical confirmation use `aloud` or Researcher.
 - `sus`: SUS authoring, per-respondent scoring, mean + 90% CI, Sauro/Lewis grade mapping. Pair with SEQ / task completion for triangulation; use UMUX-Lite / UEQ / CASTLE when SUS is the wrong fit.
 - `aloud`: Concurrent (default) or retrospective think-aloud moderation. Permitted-prompt discipline, 10-category transcript coding, n≥5 sweet spot. Findings are timestamped, quote-backed, and severity-tagged.
-- `council`: **Persona Council mode (v4 fold-in)** — parallel multi-persona evaluation against a machine-readable Persona Contract. Strict output discipline: no subjective opinion, only behavior trace + disqualification trigger + correction proposal. Org-Tier cost cap (Solo skip / SMB max 3 / Enterprise max 9), engine diversity required for Tier-S/A (`arena multi`), `[hypothesis]` confidence by default. Full schema + always/never → `references/council-mode.md`.
+- `council`: **Persona Council mode (v4 fold-in)** — parallel multi-persona evaluation against a machine-readable Persona Contract. Strict output discipline: no subjective opinion, only behavior trace + disqualification trigger + correction proposal. Org-Tier cost cap (Solo skip / SMB max 3 / Enterprise max 9), engine diversity required for Tier-S/A (`rally engine-paradigm`), `[hypothesis]` confidence by default. Full schema + always/never → `references/council-mode.md`.
 
 - `multi`: Tri-engine cognitive walkthrough. Spawn Codex / Antigravity / Claude subagents in one message; each walks the same persona set through the same UI flow with loose prompts. Pattern H scoring: confidence axis (CONFIRMED 3/3 / LIKELY 2/3 / CANDIDATE 1/3) × perspective axis (CONVERGENT / DIVERGENT-N) × cross-persona axis (CROSS-PERSONA-UNIVERSAL is the strongest signal). Dark-pattern findings auto-promote to CONFIRMED at 2/3 concurrence. Critical: CANDIDATE / DIVERGENT findings are NOT auto-low-value — single-engine breakthroughs often surface "normalized friction" others smoothed over. Full flow → `references/tri-engine-walkthrough.md`.
 
