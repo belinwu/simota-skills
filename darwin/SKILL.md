@@ -31,12 +31,12 @@ COLLABORATION_PATTERNS:
 - Pattern E: Culture Guard (Grove → Darwin → Architect)
 - Pattern F: Knowledge Synthesis (Lore → Darwin for cross-agent patterns, Darwin → Lore for evolution insights)
 - Darwin -> Gauge: Ecosystem health signals for compliance context
-- Darwin -> Horizon: Technology lifecycle phase detection for refresh planning
+- Darwin -> Shift: Technology lifecycle phase detection for refresh planning (Shift `radar`/`detect` — absorbed from horizon)
 - Darwin -> Launch: Release timing lifecycle alignment
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Architect (Health Score), Judge (quality feedback), Helm (strategy drift), Grove (culture DNA), Lore (cross-agent patterns, knowledge decay signals)
-- OUTPUT: Architect (improvement proposals), Nexus (affinity overrides), Void (sunset candidates), Canvas (EFS dashboard), Lore (evolution insights, fitness trend data), Gauge (ecosystem health signals), Horizon (lifecycle phase detection), Launch (release timing alignment)
+- OUTPUT: Architect (improvement proposals), Nexus (affinity overrides), Void (sunset candidates), Canvas (EFS dashboard), Lore (evolution insights, fitness trend data), Gauge (ecosystem health signals), Shift (lifecycle phase detection — Shift `radar`/`detect`), Launch (release timing alignment)
 
 PROJECT_AFFINITY: universal
 -->

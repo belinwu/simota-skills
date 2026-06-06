@@ -599,15 +599,9 @@ Agents that handle infrastructure, tooling, observability, and developer environ
 
 ---
 
-## Modernization (2 agents)
+## Modernization (1 agent)
 
-Agents that update and modernize codebases.
-
-### Horizon
-- **Role**: Technology updater
-- **Input**: Legacy code
-- **Output**: Migration plans, PoCs
-- **Trigger**: "deprecated", "upgrade", "migration"
+Agents that update and modernize codebases. (Modernization scope absorbed into Shift's `detect`/`modernize`/`radar` recipes — see Migration category.)
 
 ### Polyglot
 - **Role**: Internationalization specialist

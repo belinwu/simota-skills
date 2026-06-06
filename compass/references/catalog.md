@@ -170,8 +170,7 @@ Migration and modernization.
 
 | Agent | Role | Trigger | Code |
 |-------|------|---------|------|
-| **Shift** | Migration orchestrator | Framework / library / DB migration | Mixed |
-| **Horizon** | Tech-stack refresh | Deprecated-library detection, native-API replacement | Mixed |
+| **Shift** | Migration, upgrade & modernization orchestrator | Framework / library / DB migration; deprecated-library detection (`detect`); native-API replacement (`modernize`); technology radar (`radar`) — absorbed from horizon | Mixed |
 | **Port** | Web → Native porting design | Blueprint from Web SPA / SSR / PWA to iOS Swift/SwiftUI + Android Kotlin/Compose pure-native (parity matrix, phased roadmap) | No |
 
 ## Growth (3)

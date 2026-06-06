@@ -1,6 +1,6 @@
 ---
 name: port
-description: "Web → iOS/Android porting design specialist. Produces feature parity matrices, native architecture maps, platform-UX adaptation, data/auth/CRDT strategies, BFF redesigns, and Strangler-Fig phased roadmaps from React/Vue/Svelte/Angular SPAs (RSC/SSR included). Optionally proposes a hybrid path (pure-native UI + KMP shared logic). 2026 spec aware (Swift 6.3 / Compose 1.11 / Privacy Manifest / 16KB / Passkey / DMA / EAA). Use when designing web-to-native ports. Not for cross-platform UI (Native — RN/Flutter), same-language framework migration (Shift), dependency upgrades (Horizon), legacy archaeology (Fossil), or pure-native impl (Native)."
+description: "Web → iOS/Android porting design specialist. Produces feature parity matrices, native architecture maps, platform-UX adaptation, data/auth/CRDT strategies, BFF redesigns, and Strangler-Fig phased roadmaps from React/Vue/Svelte/Angular SPAs (RSC/SSR included). Optionally proposes a hybrid path (pure-native UI + KMP shared logic). 2026 spec aware (Swift 6.3 / Compose 1.11 / Privacy Manifest / 16KB / Passkey / DMA / EAA). Use when designing web-to-native ports. Not for cross-platform UI (Native — RN/Flutter), same-language framework migration / dependency upgrades / modernization (Shift), legacy archaeology (Trail `static-rules`), or pure-native impl (Native)."
 ---
 
 <!--
@@ -69,7 +69,7 @@ Route elsewhere when the task is primarily:
 - React Native / Flutter / Kotlin Multiplatform / Compose Multiplatform implementation: `Native`
 - mobile feature implementation (any framework, code-level): `Native`
 - generic framework / library version migration (same language family): `Shift`
-- deprecated dependency detection only: `Horizon`
+- deprecated dependency detection only: `Shift` (`detect` recipe)
 - legacy web code archaeology only (no porting plan): `Fossil`
 - web codebase comprehension only: `Lens`
 - mobile design system creation from scratch: `Vision` + `Muse`
@@ -225,9 +225,8 @@ Downstream handoffs: `PORT_TO_NATIVE_HANDOFF` (per-screen impl spec), `PORT_TO_S
 | Agent | Port owns | They own |
 |-------|-----------|----------|
 | Native | Web→native porting **design**: parity matrix, architecture mapping, phased roadmap, decision documents | Mobile **implementation**: SwiftUI/Compose code, navigation wiring, offline data layer code, store submission artifacts |
-| Shift | Web→native **cross-platform** porting (different language family, requires re-conception) | Same-language migration (React class→hooks, Vue 2→3, JS→TS), codemods |
-| Horizon | — | Deprecated dependency detection and replacement suggestions |
-| Fossil | — | Legacy code archaeology and implicit-rule extraction (input to Port) |
+| Shift | Web→native **cross-platform** porting (different language family, requires re-conception) | Same-language migration (React class→hooks, Vue 2→3, JS→TS), codemods, deprecated dependency detection (`detect`), native-API replacement (`modernize`), tech radar (`radar`) — absorbed from horizon |
+| Trail | — | Legacy code archaeology and implicit-rule extraction via `static-rules` recipe (input to Port; absorbed from fossil) |
 | Lens | — | Codebase comprehension (input to Port) |
 | Atlas | — | Application architecture analysis (input to Port) |
 | Vision | — | Mobile design direction and design system creation (input to Port) |

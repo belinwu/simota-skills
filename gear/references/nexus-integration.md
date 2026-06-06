@@ -44,7 +44,7 @@ _STEP_COMPLETE:
     - "[List of created/modified files]"
   Risks:
     - "[Potential issues or side effects]"
-  Next: Radar | Horizon | Sentinel | Launch | VERIFY | DONE
+  Next: Radar | Shift | Sentinel | Launch | VERIFY | DONE
   Reason: "[Why this next step]"
 ```
 

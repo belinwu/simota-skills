@@ -24,7 +24,7 @@ Complete task type → agent chain mapping. The SKILL.md Routing Quick Start con
 | ANALYSIS | Ripple → Builder → Radar | Ripple[impact], Builder[fix], Radar[edge], Canon[owasp], Sweep[dead] | +Canon (standards), +Sweep (cleanup) |
 | API | Gateway → Builder → Radar | Gateway[design], Builder[api], Radar[edge] | +Quill[docstring], +Schema[design] |
 | DEPLOY | Guardian → Launch | Guardian[pr], Launch[plan] | +Harvest[weekly] (reporting) |
-| MODERNIZE | Horizon → Builder → Radar | Horizon[detect], Builder[crud], Radar[coverage] | +Polyglot (i18n), +Grove (structure), +Flux (first-principles), +Matrix (migration paths) |
+| MODERNIZE | Shift → Builder → Radar | Shift[detect+modernize], Builder[crud], Radar[coverage] | +Polyglot (i18n), +Grove (structure), +Flux (first-principles), +Matrix (migration paths) |
 | DOCS | Quill | Quill[docstring] | +Canvas[flow], +Morph[md] (convert), +Scribe (specs) |
 | STRATEGY | Spark → Builder → Radar | Spark[propose], Builder[ddd], Radar[edge], Growth[seo], Pulse[kpi], Experiment[ab], Compete[matrix], Compete[swot], Retain[reengagement], Voice[nps] | +Growth/Compete/Voice/Pulse/Retain/Experiment, +Helm (simulation) |
 | STRATEGY_SIM | Helm | Helm[scenario], Compete[matrix], Compete[swot], Compete[battle-card] | +Compete (intel), +Pulse (KPI), +Magi (decision), +Scribe (docs), +Canvas (viz), +Sherpa (execution) |
@@ -85,7 +85,7 @@ Complete task type → agent chain mapping. The SKILL.md Routing Quick Start con
 | TEST_DATA | Mint → Radar | Mint[factory], Mint[boundary], Radar[coverage] | +Schema (DB fixtures), +Siege (load data), +Builder (factory impl) |
 | SEARCH | Seek → Builder → Radar | Seek[fulltext], Seek[vector], Seek[hybrid], Seek[index], Seek[rag], Builder[api], Radar[edge] | +Oracle[rag] (RAG/embeddings), +Schema (indexes), +Tuner[explain] (query perf), +Spider[topology] (crawl source) |
 | MULTI_TENANT | Shard → Schema → Builder | Shard[isolation], Shard[rls], Shard[routing], Shard[scale], Builder[ddd], Radar[edge] | +Sentinel (security), +Scaffold (infra), +Radar (isolation tests) |
-| MIGRATION | Shift → Builder → Radar | Shift[plan], Builder[harden], Radar[regression] | +Fossil (legacy analysis), +Horizon (modernize), +Trail (history) |
+| MIGRATION | Shift → Builder → Radar | Shift[plan], Builder[harden], Radar[regression] | +Trail (static-rules legacy analysis + history), +Shift[modernize] (native API replacement) |
 | PRESENTATION | Stage → Canvas | Stage[marp], Stage[conference], Stage[timing] | +Stage[reveal] (reveal.js), +Stage[slidev] (Slidev/Vue), +Cue[script] (narrative), +Quill (content), +Morph (export) |
 | LEARNING | Tome → Quill | Tome[learn] | +Canvas (diagrams), +Trail (change context), +Prism (audio) |
 | WORKFLOW | Weave → Builder → Radar | Weave[design], Builder[api], Radar[edge] | +Canvas (diagram), +Schema (persistence), +Attest (spec verify) |

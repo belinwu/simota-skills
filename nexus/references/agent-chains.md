@@ -69,7 +69,7 @@ Complete chain templates and dynamic adjustment rules.
 | ANALYSIS | cleanup | Sweep → Zen → Radar |
 | DEPLOY | release | Guardian → Launch |
 | DEPLOY | full | Radar → Guardian → Launch → Harvest |
-| MODERNIZE | stack | Lens → Horizon → Sherpa → Builder → Radar |
+| MODERNIZE | stack | Lens → Shift (detect+modernize) → Sherpa → Builder → Radar |
 | MODERNIZE | i18n | Polyglot → Artisan → Radar |
 | MODERNIZE | structure | Grove → Sherpa → Zen → Radar |
 | UX_DESIGN | flow | Flow → Artisan → Radar |
@@ -258,8 +258,8 @@ Complete chain templates and dynamic adjustment rules.
 | SECURITY | first-principles | Flux → Breach → Matrix → Sentinel → Scribe |
 | OPTIMIZE | first-principles | Flux → Bolt → Matrix → Builder → Radar |
 | OPTIMIZE | db-matrix | Matrix → Tuner → Schema → Builder → Radar |
-| MODERNIZE | first-principles | Flux → Lens → Horizon → Matrix → Sherpa → Builder → Radar |
-| MODERNIZE | migration-matrix | Matrix → Horizon → Sherpa → Builder → Radar |
+| MODERNIZE | first-principles | Flux → Lens → Shift (detect+modernize) → Matrix → Sherpa → Builder → Radar |
+| MODERNIZE | migration-matrix | Matrix → Shift (detect+modernize) → Sherpa → Builder → Radar |
 | DB_DESIGN | first-principles | Flux → Schema → Matrix → Builder → Radar |
 | API | matrix | Matrix → Gateway → Builder → Radar → Quill |
 | API | first-principles | Flux → Gateway → Matrix → Builder → Radar |
@@ -394,7 +394,7 @@ Builder then applies:
 - Review finds no issues but confidence is low → Add Flux for blind-spot check
 - First principles analysis requested or root assumptions questioned → Add Flux at chain start, combine with Matrix for decomposition
 - Optimization target unclear or premature → Add Flux before Bolt/Tuner to question "are we optimizing the right thing?"
-- Migration involves 3+ technology dimensions → Add Matrix before Horizon for migration path analysis
+- Migration involves 3+ technology dimensions → Add Matrix before Shift `detect` for migration path analysis
 - Postmortem reveals recurring pattern → Add Flux after Triage for deeper root cause reframing
 - API design has 3+ resource types or versioning concerns → Add Matrix before Gateway
 - UX design has 3+ user segments or device types → Add Matrix before Vision
@@ -504,7 +504,7 @@ When Rally is activated for parallel execution, standard chains transform into p
 
 | Base Chain | Rally Parallel Chain | Team Pattern |
 |------------|---------------------|--------------|
-| MODERNIZE/stack | Lens → Horizon → Sherpa → Rally(Builder×N) → Radar | Feature Parallel |
+| MODERNIZE/stack | Lens → Shift (detect+modernize) → Sherpa → Rally(Builder×N) → Radar | Feature Parallel |
 
 ### MOBILE_NATIVE Parallel Chains
 

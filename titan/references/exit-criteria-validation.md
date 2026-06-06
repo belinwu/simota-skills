@@ -139,7 +139,7 @@ Acceptance: Validation report with per-criterion pass/fail and overall score
 |-----------|------------------|--------|---------------|
 | Feedback collected | Voice: report exists | 0.30 | Actionable insights |
 | Improvement plan | Lens: plan document | 0.30 | Prioritized list |
-| Tech debt assessed | Sweep/Horizon: report | 0.20 | Inventory complete |
+| Tech debt assessed | Sweep / Shift (`detect`/`radar`): report | 0.20 | Inventory complete |
 | Next cycle input | Lens: DISCOVER input ready | 0.20 | Personas + criteria updated |
 
 ---

@@ -205,7 +205,7 @@ DECIDE      →  make strategic choices with the map as evidence
 
 ### Handoffs
 - Atlas: architecture follow-through on commoditized / standardized layers
-- Horizon: modernization plan for components that must evolve
+- Shift (`detect`/`modernize`/`radar`): modernization plan for components that must evolve (absorbed from horizon)
 - Magi: Go/No-Go on strategic moves
 - Spark: genesis opportunities for new features
 - Ledger: cost implications of commodity vs custom
@@ -237,7 +237,7 @@ When `wardley` completes, emit:
 - **Strategic moves** chosen with rationale.
 - **Pioneer / Settler / Town Planner** ownership assignments.
 - **Doctrine checklist**.
-- **Handoffs**: Atlas, Horizon, Magi, Spark, Ledger, Scribe.
+- **Handoffs**: Atlas, Shift (`detect`/`modernize`/`radar`), Magi, Spark, Ledger, Scribe.
 
 ## References
 

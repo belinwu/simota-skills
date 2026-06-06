@@ -153,7 +153,7 @@ Typical axes:
 | architecture | x86_64, arm64 | medium |
 | feature | core, experimental, deprecated | medium |
 
-Suggested next agent: `Horizon` or `Builder`.
+Suggested next agent: `Shift` (`detect`/`radar`) or `Builder`.
 
 ## AI/ML
 

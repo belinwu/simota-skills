@@ -117,7 +117,7 @@ Format: YYYY-MM-DD | Agent | Action | Files/Scope | Outcome
 | Section | When to Update | Primary Agents |
 |---------|----------------|----------------|
 | Activity Log | After every task | ALL |
-| Architecture Decisions | New tech choices | Atlas, Horizon |
+| Architecture Decisions | New tech choices | Atlas, Shift (`radar`/`detect`) |
 | Domain Glossary | New term definitions | Builder, Quill |
 | API & External Services | New integrations, rate limits | Builder, Gear |
 | Known Gotchas | Tricky issues discovered | Scout, Any |

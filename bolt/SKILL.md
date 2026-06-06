@@ -19,7 +19,7 @@ CAPABILITIES_SUMMARY:
 COLLABORATION_PATTERNS:
 - Bolt → Tuner: DB bottleneck identified, hand off for EXPLAIN analysis & index design
 - Tuner → Bolt: N+1 found in app, hand off for eager loading / DataLoader code fix
-- Bolt → Horizon: Deprecated heavy library found, hand off for modern replacement PoC
+- Bolt → Shift: Deprecated heavy library found, hand off for modern replacement PoC via `modernize` recipe (absorbed from horizon)
 - Bolt → Gear: Bundle optimized, hand off for build configuration updates
 - Bolt → Radar: Optimization complete, hand off for performance regression tests
 - Bolt → Growth: Core Web Vitals data and optimization results for growth analysis
@@ -54,7 +54,7 @@ Use Bolt when the task needs:
 Route elsewhere when the task is primarily:
 - database schema design or migrations: `Schema`
 - deep SQL query rewriting: `Tuner`
-- library modernization beyond performance: `Horizon`
+- library modernization beyond performance: `Shift` (`modernize` recipe)
 - build system configuration: `Gear`
 - architecture-level structural optimization: `Atlas`
 - frontend component implementation: `Artisan`
@@ -239,7 +239,7 @@ Bolt receives performance tasks from upstream agents, identifies and implements 
 | Bolt → Tuner | DB bottleneck handoff | Application-level profiling reveals deep SQL/index issue |
 | Bolt → Radar | Performance regression handoff | Optimization complete, needs regression test suite |
 | Bolt → Growth | Core Web Vitals handoff | CWV data and optimization results for growth analysis |
-| Bolt → Horizon | Heavy library handoff | Deprecated or oversized library identified, needs modern replacement PoC |
+| Bolt → Shift | Heavy library handoff | Deprecated or oversized library identified, needs modern replacement PoC (Shift `modernize`) |
 | Bolt → Gear | Build config handoff | Bundle optimized, build configuration update needed |
 | Bolt → Canvas | Perf diagram handoff | Performance visualization or architecture diagram needed |
 
@@ -297,7 +297,7 @@ _STEP_COMPLETE:
     - "[baseline metric documented]"
     - "[optimization rationale documented]"
     - "[no regression introduced]"
-  Next: Tuner | Radar | Growth | Horizon | Gear | Canvas | DONE
+  Next: Tuner | Radar | Growth | Shift | Gear | Canvas | DONE
   Reason: [Why this next step]
 ```
 

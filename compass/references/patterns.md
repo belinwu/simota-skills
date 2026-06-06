@@ -69,7 +69,7 @@ User request
   ├─ Migration / modernization
   │   ├─ Web → Native porting design → Port
   │   ├─ Framework migration → Shift
-  │   └─ Deprecated-library detection → Horizon
+  │   └─ Deprecated-library detection → Shift `detect`
   │
   └─ Other
       ├─ Browser automation → Navigator
@@ -176,7 +176,7 @@ Tuner (DB) → Bolt (app) → Beacon (monitoring)
 
 ### Legacy Modernization Chain
 ```
-Fossil (analyze) → Horizon (migration plan) → Shift (execute migration)
+Trail `static-rules` (analyze legacy rules) → Shift `detect` (deprecated dep scan) → Shift `framework`/`lang` (execute migration)
 ```
 
 ### Web-to-Native Porting Chain

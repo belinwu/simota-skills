@@ -374,13 +374,13 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 | Signal | Route to | Rationale |
 |--------|----------|-----------|
-| "Extract business rules from legacy code" | **Fossil** | Rule archaeology |
+| "Extract business rules from legacy code" | **Trail** `static-rules` | Rule archaeology (absorbed from fossil) |
 | "How does this module work?" | **Lens** | Code comprehension |
-| "Migrate from framework A to B" | **Shift** | Migration execution |
-| "What are the hidden rules before we migrate?" | **Fossil** → Shift | Archaeology then migration |
-| "Modernize tech stack" | **Horizon** | Stack-level refresh |
+| "Migrate from framework A to B" | **Shift** `framework` | Migration execution |
+| "What are the hidden rules before we migrate?" | **Trail** `static-rules` → Shift | Archaeology then migration |
+| "Modernize tech stack" | **Shift** `detect`/`modernize` | Stack-level refresh (absorbed from horizon) |
 
-**Rule of thumb**: "What rules are buried?" → Fossil. "How does it work?" → Lens. "Migrate it" → Shift. "Refresh the stack" → Horizon.
+**Rule of thumb**: "What rules are buried?" → Trail `static-rules`. "How does it work?" → Lens. "Migrate it" → Shift `framework`/`lang`. "Refresh the stack" → Shift `detect`/`modernize`/`radar`.
 
 ---
 
@@ -503,7 +503,7 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
-### Port vs Native vs Shift vs Horizon (Mobile Migration & Implementation)
+### Port vs Native vs Shift (Mobile Migration & Implementation)
 
 | Signal | Route to | Rationale |
 |--------|----------|-----------|
@@ -519,11 +519,11 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 | "Passkey / Credential Manager を組み込みたい" | **Native** → Crypt | Implementation then crypto review |
 | "TestFlight phased release / Play staged rollout" | **Native** → Launch | Implementation then release planning |
 | "React Native / Flutter / KMP / CMP で実装したい" | **out of scope** | Native は対象外。Forge でプロトタイプ可、本番は外部実装 |
-| "framework / library / DB の version migration（同一言語内）" | **Shift** | Same-language migration orchestrator |
-| "deprecated library 検出と native API 置換" | **Horizon** | Modernization scan |
-| "legacy web business rule 抽出（移植前）" | **Fossil** | Read-only archaeology |
+| "framework / library / DB の version migration（同一言語内）" | **Shift** `framework`/`lang` | Same-language migration orchestrator |
+| "deprecated library 検出と native API 置換" | **Shift** `detect`/`modernize` | Modernization scan (absorbed from horizon) |
+| "legacy web business rule 抽出（移植前）" | **Trail** `static-rules` | Read-only archaeology (absorbed from fossil) |
 
-**Rule of thumb**: Web→Native の **設計図** → Port。**実装** → Native。同一言語の移行 → Shift。非推奨検出 → Horizon。Native は React Native / Flutter / KMP / CMP は受けない。
+**Rule of thumb**: Web→Native の **設計図** → Port。**実装** → Native。同一言語の移行 → Shift `framework`/`lang`。非推奨検出 → Shift `detect`/`modernize`。Native は React Native / Flutter / KMP / CMP は受けない。
 
 ---
 

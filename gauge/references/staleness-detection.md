@@ -70,7 +70,7 @@ EOL dates as of 2026-05 (update via Self-Update Protocol):
 grep -rln -E 'Node\.js 18\b|Node 16\b|Python 3\.9\b|Ruby 3\.0\b|Java 8\b' SKILL_GLOBS
 ```
 
-Verification: matches inside migration-guide context (`shift`, `horizon`, `port`, `quill`) are PASS — they describe the source side of a migration and SHOULD reference the old version. Matches inside min-version baselines (`iOS X+`, `Node Y+`) with the "+" suffix are PASS. Bare references in bootstrap / setup / recommended-runtime tables are FAILS.
+Verification: matches inside migration-guide context (`shift`, `port`, `quill`, `trail` static-rules) are PASS — they describe the source side of a migration and SHOULD reference the old version. Matches inside min-version baselines (`iOS X+`, `Node Y+`) with the "+" suffix are PASS. Bare references in bootstrap / setup / recommended-runtime tables are FAILS.
 
 ### SD-4 Broken Internal Links
 
@@ -146,7 +146,7 @@ A staleness scan that flags every legitimate historical citation is worse than n
 
 | Guard | Rule |
 |-------|------|
-| **Migration-guide context** | `shift`, `horizon`, `port`, `quill`, `trail` (static-rules recipe) legitimately reference legacy versions on the SOURCE side. Skip findings in these skills when the pattern matches "X → Y" or "X to Y" syntax. |
+| **Migration-guide context** | `shift` (incl. `detect`/`modernize`/`radar` recipes absorbed from horizon), `port`, `quill`, `trail` (static-rules recipe) legitimately reference legacy versions on the SOURCE side. Skip findings in these skills when the pattern matches "X → Y" or "X to Y" syntax. |
 | **Min-version baseline** | "iOS 17+", "Node 22+", "Python 3.12+" are forward-looking floor declarations, not stale. Skip when a `+` immediately follows the version. |
 | **Historical anchor** | A version/benchmark annotated with a year and an "as of" / "historical" / "archive" qualifier is annotation-complete. Skip. |
 | **Migration-target context** | Pattern `${OLD} → ${NEW}` or `from ${OLD} to ${NEW}` legitimately names the OLD version. Skip the OLD side. |

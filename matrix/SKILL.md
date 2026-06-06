@@ -169,7 +169,7 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 | `ux`         | `Echo`, `Cast`, or `Researcher`           | Persona, scenario, device, locale, or accessibility coverage planning          |
 | `risk`       | `Triage`, `Sentinel`, `Probe`, or `Scout` | Threat, surface, auth, sensitivity, or impact planning                         |
 | `experiment` | `Experiment` or `Pulse`                   | Variant, segment, duration, exposure, or KPI planning                          |
-| `compat`     | `Horizon` or `Builder`                    | Runtime, dependency, OS, architecture, or feature compatibility planning       |
+| `compat`     | `Shift` (`detect`/`radar`) or `Builder`   | Runtime, dependency, OS, architecture, or feature compatibility planning       |
 | `security`   | `Sentinel`, `Breach`, or `Probe`          | Input validation, auth bypass, injection, or attack surface combination planning (combinatorial security testing) |
 | `ai/ml`      | `Oracle` or `Radar`                       | Model input space, hyperparameter tuning, fairness dimension, dataset coverage (including data frequency coverage for training skew detection), or combination planning (NIST CT for AI-Enabled Systems) |
 | `visualize`  | `Canvas`                                  | The user needs a matrix visual, heatmap, or coverage diagram                   |

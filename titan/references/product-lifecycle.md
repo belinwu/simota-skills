@@ -145,7 +145,7 @@ Purpose: SEO/CRO, retention, i18n, analytics, growth experiments
 
 ### EVOLVE (XL only)
 ```
-Chain: Voice → Ripple → Sweep → Horizon → Gear → Trail
+Chain: Voice → Ripple → Sweep → Shift (`detect`/`radar`) → Gear → Trail
 Purpose: Feedback-driven improvement, feeds back to DISCOVER
 ```
 

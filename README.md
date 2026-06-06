@@ -229,7 +229,6 @@ This repository contains 145 specialized AI agents covering various aspects of s
 |-------|-------------|--------|
 | **Atlas** | _"Dependencies are destiny. Map them before they map you."_ - Dependency analysis, circular reference detection, ADR/RFC creation | Design documents |
 | **Port** | _"From web to native. Translate the experience, not just the code."_ - Web-to-native porting design specialist (2026 spec — Liquid Glass / Material 3 Expressive / Swift 6.3 / targetSdk 36 / Privacy Manifest / 5.1.2(i) AI disclosure aware). Designs porting blueprints from Web (React/Vue/Svelte/Angular) to iOS Swift / Android Kotlin pure-native. Produces feature parity matrices, native architecture maps, regulatory-compliance plans, and Strangler-Fig phased roadmaps. Optionally proposes a hybrid path (Pure-Native UI + KMP shared logic) | Porting blueprint, parity matrix, roadmap |
-| **Horizon** | _"Today's innovation is tomorrow's legacy code. Plan accordingly."_ - Modernization. Deprecated library detection, native API replacement, PoC creation | Migration plans |
 | **Gateway** | _"APIs are promises to the future. Design them like contracts."_ - API design, review, OpenAPI spec generation, versioning strategy, breaking change detection | API specifications |
 | **Grove** | _"A well-structured repository is a well-structured mind."_ - Repository structure design, optimization, and auditing. Directory design, docs/ organization, test structure, anti-pattern detection | Structure design, audit reports |
 | **Nest** | _"Structure what reaches the model, and the model structures the rest."_ - LLM-optimized folder structure design. Audits and restructures project directories for context efficiency, progressive disclosure, and prompt cache performance | Structure reports, layout plans |
@@ -444,7 +443,7 @@ See `_common/INTERACTION.md` for details.
 |------|-------------|-------|
 | REFACTOR/small | Small refactor | Zen > Radar |
 | REFACTOR/arch | Architecture improvement | Atlas > Sherpa > Zen > Radar |
-| REFACTOR/legacy | Legacy modernization | Horizon > Sherpa > Zen > Radar |
+| REFACTOR/legacy | Legacy modernization | Shift (detect) > Sherpa > Zen > Radar |
 
 #### Performance
 
@@ -577,7 +576,7 @@ See `_common/INTERACTION.md` for details.
 
 | Task | Description | Chain |
 |------|-------------|-------|
-| MODERNIZE/stack | Tech stack refresh | Lens > Horizon > Sherpa > Builder > Radar |
+| MODERNIZE/stack | Tech stack refresh | Lens > Shift (detect+modernize) > Sherpa > Builder > Radar |
 | MODERNIZE/i18n | Internationalization | Polyglot > Artisan > Radar |
 | MODERNIZE/structure | Repository structure improvement | Grove > Sherpa > Zen > Radar |
 
@@ -616,7 +615,7 @@ For large-scale tasks where parallel execution is beneficial, Nexus escalates to
 | REFACTOR/arch (parallel) | Multi-module refactoring | Atlas > Sherpa > Rally(Zen x N) > Radar |
 | SECURITY/full (parallel) | Static + dynamic parallel scan | Rally(Sentinel, Probe) > Builder > Radar |
 | TEST/coverage (parallel) | Unit + E2E parallel testing | Rally(Radar, Voyager) |
-| MODERNIZE/stack (parallel) | Multi-area modernization | Horizon > Sherpa > Rally(Builder x N) > Radar |
+| MODERNIZE/stack (parallel) | Multi-area modernization | Shift (detect+modernize) > Sherpa > Rally(Builder x N) > Radar |
 | DOCS/full (parallel) | Code docs + diagrams + stories | Rally(Quill, Canvas, Showcase) |
 
 > **Rally Escalation Criteria**: Rally is triggered when there are 2+ independent implementation steps, changes span 4+ files across 2+ domains, or Sherpa detects a `parallel_group`.
@@ -738,7 +737,6 @@ skills/
 ├── hearth/SKILL.md     # Personal dev environment config
 ├── helm/SKILL.md       # Business strategy simulation
 ├── hone/SKILL.md       # Codex CLI config audit & optimization
-├── horizon/SKILL.md    # Modernization
 ├── judge/SKILL.md      # Code review (codex review)
 ├── latch/SKILL.md      # Claude Code hook management
 ├── launch/SKILL.md     # Release management
@@ -1472,14 +1470,14 @@ Analyze code dependencies and clarify the impact scope of changes.
 
 ---
 
-##### Modernization (Horizon)
+##### Modernization (Shift)
 
 ```
-/Horizon
+/Shift detect
 Check library versions in use and identify deprecated or vulnerable ones.
 ```
 
-**Output**: Deprecated library detection, alternative proposals, migration PoC
+**Output**: Deprecated library detection, alternative proposals, migration PoC (use `Shift modernize` for native-API swaps, `Shift radar` for tech-maturity assessment)
 
 ---
 

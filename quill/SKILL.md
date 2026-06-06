@@ -24,7 +24,7 @@ COLLABORATION_PATTERNS:
 - Pattern E: Docs-to-Diagram (Quill → Canvas)
 - Pattern F: Documentation Learning (Quill → Lore)
 - Pattern G: CI Doc Gates (Gear → Quill → Gear)
-- Pattern H: Migration Docs (Horizon → Quill)
+- Pattern H: Migration Docs (Shift → Quill)
 
 BIDIRECTIONAL_PARTNERS:
   INPUT:
@@ -34,7 +34,7 @@ BIDIRECTIONAL_PARTNERS:
     - Architect (new agent SKILL.md)
     - Builder (new features needing docs)
     - Scribe (specification documents to reference)
-    - Horizon (deprecated API migration guides)
+    - Shift (deprecated API migration guides — Shift `detect`/`modernize`/`deprecate`)
     - Gear (CI documentation gate failures)
   OUTPUT:
     - Canvas (diagram requests)
@@ -195,14 +195,14 @@ Every deliverable must include:
 
 ## Collaboration
 
-**Receives:** Zen (refactored code), Gateway (API specs), Atlas (ADRs), Architect (SKILL.md), Builder (new features), Scribe (specification documents), Horizon (deprecated API migration guides), Gear (CI doc gate failures)
+**Receives:** Zen (refactored code), Gateway (API specs), Atlas (ADRs), Architect (SKILL.md), Builder (new features), Scribe (specification documents), Shift (deprecated API migration guides — Shift `detect`/`modernize`/`deprecate`), Gear (CI doc gate failures)
 **Sends:** Canvas (diagram requests), Atlas (ADR requests), Gateway (OpenAPI updates), Lore (validated documentation patterns), Gear (doc coverage CI gate config)
 
 **Overlap boundaries:**
 - **vs Scribe**: Scribe = formal specification documents (PRD/SRS); Quill = code-level documentation (JSDoc, README, types).
 - **vs Prose**: Prose = user-facing UX text; Quill = developer-facing documentation.
 - **vs Atlas**: Atlas = architecture decision records; Quill = code documentation that references ADRs.
-- **vs Horizon**: Horizon = deprecated library detection and migration strategy; Quill = migration guide documentation and `@deprecated` tag management.
+- **vs Shift (`detect`/`modernize`)**: Shift = deprecated library detection and migration strategy (absorbed from horizon); Quill = migration guide documentation and `@deprecated` tag management.
 
 **Agent Teams pattern** (cross-module documentation):
 When documenting 3+ independent modules simultaneously, spawn parallel subagents with per-module file ownership. Pattern: `fan-out` with 2-3 workers, each owning `<module>/**/*.ts` for JSDoc additions. Coordinator merges coverage reports in PRESENT phase. Not applicable to single-module or sequential doc work.

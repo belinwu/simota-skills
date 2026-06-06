@@ -213,7 +213,7 @@ Purpose: Reduce total JS/TS shipped to the browser. The subcommand runs an analy
 - **Artisan `perf`**: single-component render tuning — `React.memo`, list virtualization, event-handler stability. Fixes "this one component is slow."
 - **Bolt `frontend` / `render`**: re-render reduction and React Compiler verification. Does not change shipped bytes.
 - **Gear**: build-system config (webpack/Vite/Rollup upgrade paths, minifier choice). Bolt `bundle` emits the optimization; Gear lands config changes ≥1 file wide.
-- **Horizon**: modernize deprecated libraries entirely (migration PoC). Bolt `bundle` picks the replacement when the driver is size.
+- **Shift** (`detect`/`modernize`): modernize deprecated libraries entirely (migration PoC). Bolt `bundle` picks the replacement when the driver is size.
 
 Rule of thumb: if the kB on disk don't change, it's not `bundle`.
 
@@ -269,6 +269,6 @@ PRESENT   →  Before/After table (route, kB, %), risks, follow-ups
 ### Handoff
 
 - **→ Gear**: when the fix requires build-config changes (webpack rule, Vite plugin, tsconfig `"moduleResolution"`).
-- **→ Horizon**: when the only viable path is retiring a legacy library entirely (jQuery, moment, draft-js).
+- **→ Shift** (`modernize` recipe): when the only viable path is retiring a legacy library entirely (jQuery, moment, draft-js).
 - **→ Artisan**: when the analyzer surfaced a large component that needs restructuring, not just splitting.
 - **→ Radar**: add bundle-size regression test to CI (size-limit, bundlewatch).

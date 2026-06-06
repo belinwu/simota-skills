@@ -154,7 +154,7 @@ Summit is a **quality-maximization recipe** that mobilizes multiple execution en
                                     │  ├─ Codex: Bolt/Tuner/Sweep/Mend/    │
                                     │  │   Schema (executable improve.)    │
                                     │  ├─ agy: Hex/Atlas/Lore/Vista/       │
-                                    │  │   Horizon/Shift (strategic)       │
+                                    │  │   Shift (strategic)               │
                                     │  └─ Design: Vision (claude) +        │
                                     │   Palette/Muse (agy) (if UI)         │
                                     │  magi arbitrates → Phase 3 loop      │
@@ -183,7 +183,7 @@ Summit is a **quality-maximization recipe** that mobilizes multiple execution en
 | **Design** *(conditional)* | Vision (direction & arbitration), Echo (persona walkthrough), Prose (UX writing & microcopy) | Pixel (mockup-to-HTML/CSS), Forge (prototype implementation), Flow (CSS/JS animation), Funnel (LP construction), Showcase (component catalog generation) | Sketch (Gemini-native image generation), Muse (token system synthesis via multimodal mockup analysis), Frame (Figma context extraction via multimodal), Palette (a11y + interaction-quality from screenshots), rally[agy, COMPETE, Deep Think] (creative alternative directions), Ink (SVG icon system generation) |
 | **Execution** | Sentinel (security review of generated code), Cloak (privacy review), Crypt (crypto architecture), magi (escalation arbitration), accord (atomic-spec gatekeeping) | Builder (general implementation), Artisan (frontend production), Native (iOS Swift / Android Kotlin), Schema (DB migrations), Bolt (perf-aware implementation), rally[COLLABORATE, codex] (bulk task distribution across DAG) | rally[COLLABORATE, agy] (alternative-implementation generation), Scribe (long-context spec & doc generation), Tome (learning-doc generation from diff), Morph (cross-format document conversion), Tone (game audio code), Lyric (Suno songwriting), Aether (AITuber/streaming pipeline) |
 | **Verification** | judge (tri-engine review with built-in fan-out), Echo (UX persona walkthrough), Palette (interaction & a11y), magi (verdict arbitration on conflicts) | Radar (unit/integration tests), Voyager (E2E web + mobile), Siege (load/chaos), Siege (concurrency stress), Probe (dynamic security), Matrix (manual QA scenarios), Sentinel (re-scan post-fix) | Attest (spec compliance via long-context comparison), Ripple (vertical + horizontal impact analysis), Canon (standards compliance: OWASP/WCAG/ISO 25010), Comply (legal/regulatory), rally[agy, review] (independent multimodal review of generated UI screenshots) |
-| **Improvement** | Zen (refactor judgment & code-review-style improvements), magi (improvement-selection arbitration), Sage (knowledge synthesis) | Bolt (perf optimization), Tuner (DB query plan + index recommendations), Sweep (dead code removal), Mend (automated remediation runbook execution), Schema (migration improvements) | Hex (technical-debt scoring with multimodal character generation), Atlas (architecture improvement via 1M ctx whole-codebase reasoning), Lore (pattern extraction & metapattern surfacing), Vista (long-range strategic refactor planning), Horizon (deprecated-library detection & modernization), Shift (framework migration codemod generation) |
+| **Improvement** | Zen (refactor judgment & code-review-style improvements), magi (improvement-selection arbitration), Sage (knowledge synthesis) | Bolt (perf optimization), Tuner (DB query plan + index recommendations), Sweep (dead code removal), Mend (automated remediation runbook execution), Schema (migration improvements) | Hex (technical-debt scoring with multimodal character generation), Atlas (architecture improvement via 1M ctx whole-codebase reasoning), Lore (pattern extraction & metapattern surfacing), Vista (long-range strategic refactor planning), Shift (deprecated-library detection, native-API modernization, tech radar — absorbed from horizon — plus framework/lang migration codemod generation) |
 
 **Cross-engine routing rules:**
 - If a task **generates or executes code** → Codex (unless it requires deep ethical/security judgment, then Claude)
@@ -502,12 +502,12 @@ loop_iteration:
           — all execution-heavy improvements; Codex sandbox enables safe verification
     - branch: agy_strategic_improvements
       engine: agy
-      agents: [atlas, lore, horizon, shift]
+      agents: [atlas, lore, shift]
       mission: architecture improvement via whole-codebase 1M-context reasoning (Atlas)
           + cross-codebase pattern extraction + metapattern surfacing (Lore)
           + long-range strategic refactor planning (Vista)
-          + deprecated-library detection & modernization (Horizon)
-          + framework migration codemod generation (Shift)
+          + deprecated-library detection & native-API modernization & tech radar (Shift `detect`/`modernize`/`radar` — absorbed from horizon)
+          + framework / lang migration codemod generation (Shift `framework`/`lang`/`codemod`)
           — all benefit from agy's 1M context for codebase-wide reasoning
     - branch: design_improvements   # conditional: skip if ui_dimension == none
       parallel_sub:

@@ -22,7 +22,7 @@ CAPABILITIES_SUMMARY:
 
 COLLABORATION_PATTERNS:
 - Pattern A: Provision-to-Optimize (Scaffold -> Gear)
-- Pattern B: Dependency Modernization (Gear -> Horizon -> Gear)
+- Pattern B: Dependency Modernization (Gear -> Shift `detect` -> Gear)
 - Pattern C: Security Pipeline (Gear -> Sentinel)
 - Pattern D: DevOps Visualization (Gear -> Canvas)
 - Pattern E: Build Performance (Gear <-> Bolt)
@@ -32,8 +32,8 @@ COLLABORATION_PATTERNS:
 - Pattern I: Observability Pipeline (Gear -> Beacon)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Scaffold (provisioned environments), Horizon (migration plans), Bolt (performance recommendations), Beacon (observability gaps)
-- OUTPUT: Horizon (outdated deps), Canvas (pipeline diagrams), Radar (CI/CD tests), Bolt (build perf), Sentinel (security findings), Launch (release readiness), Beacon (OTel instrumentation status)
+- INPUT: Scaffold (provisioned environments), Shift (migration plans), Bolt (performance recommendations), Beacon (observability gaps)
+- OUTPUT: Shift (outdated deps escalation via `detect` recipe), Canvas (pipeline diagrams), Radar (CI/CD tests), Bolt (build perf), Sentinel (security findings), Launch (release readiness), Beacon (OTel instrumentation status)
 
 PROJECT_AFFINITY: universal
 -->
@@ -63,7 +63,7 @@ Use Gear when the user needs:
 
 Route elsewhere when the task is primarily:
 - infrastructure provisioning (Terraform, CloudFormation): `Scaffold`
-- technology migration or modernization: `Horizon`
+- technology migration or modernization: `Shift` (`detect` / `modernize` / `radar`)
 - security vulnerability audit beyond deps: `Sentinel`
 - application performance optimization: `Bolt`
 - release planning or versioning strategy: `Launch`
@@ -187,12 +187,12 @@ Every deliverable must include:
 
 ## Collaboration
 
-**Receives:** Scaffold (provisioned environments), Horizon (migration plans), Bolt (performance recommendations), Beacon (observability gaps), Nexus (task context)
-**Sends:** Horizon (outdated deps), Canvas (pipeline diagrams), Radar (CI/CD tests), Bolt (build perf), Sentinel (security findings), Launch (release readiness), Beacon (OTel instrumentation status)
+**Receives:** Scaffold (provisioned environments), Shift (migration plans), Bolt (performance recommendations), Beacon (observability gaps), Nexus (task context)
+**Sends:** Shift (outdated deps via `detect` recipe), Canvas (pipeline diagrams), Radar (CI/CD tests), Bolt (build perf), Sentinel (security findings), Launch (release readiness), Beacon (OTel instrumentation status)
 
 **Overlap boundaries:**
 - **vs Scaffold**: Scaffold = initial provisioning; Gear = ongoing maintenance and optimization.
-- **vs Horizon**: Horizon = technology modernization; Gear = safe incremental updates.
+- **vs Shift**: Shift = major-version migration, EOL replacement, native-API modernization, and tech radar; Gear = safe patch/minor updates within the same major version. Gear escalates to Shift `detect` when patch/minor reveals deeper modernization need.
 - **vs Bolt**: Bolt = application performance; Gear = build and CI performance.
 - **vs Pipe**: Pipe = advanced GHA workflow design; Gear = general CI/CD maintenance.
 - **vs Beacon**: Beacon = SLO/SLI design and alert strategy; Gear = OTel instrumentation setup and log/metric plumbing.
@@ -239,7 +239,7 @@ _STEP_COMPLETE:
       risk_level: "[low | medium | high]"
       verification: "[build passes | tests pass | linter clean]"
     rollback: "[instructions if medium/high risk]"
-  Next: Horizon | Sentinel | Radar | Bolt | Launch | DONE
+  Next: Shift | Sentinel | Radar | Bolt | Launch | DONE
   Reason: [Why this next step]
 ```
 

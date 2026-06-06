@@ -63,7 +63,6 @@ Complete mapping of all 65 agents across 9 product lifecycle phases.
 | Prism | Documentation | — | — | — | — | — | — | S | — | — |
 | Sketch | Visualization | — | — | — | — | — | — | S | — | — |
 | Atlas | Architecture | — | — | P | — | — | — | — | — | — |
-| Horizon | Modernization | — | — | — | — | — | — | — | — | P |
 | Gateway | Architecture | — | — | P | — | — | — | — | — | — |
 | Grove | Architecture | — | — | P | — | — | — | — | — | — |
 | Scaffold | Architecture | — | — | P | — | — | — | — | — | — |

@@ -54,7 +54,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **hearth**: zsh★ / tmux / neovim / ghostty / vscode / git / shellfn / audit
 - **helm**: scenario★ / swot / pestle / porter / forecast / jtbd / blue-ocean / wardley
 - **hone**: audit★ / codex / agy / claude / diff
-- **horizon**: detect★ / replace / poc / refresh / codemod / strangler / sunset
 - **husk**: scan★ / shai-hulud / lockfile / eradicate / rotate / harden / propagation
 - **ink**: icon★ / illustration / system / sprite / animate / theme / a11y / optimize / pictogram / logo
 - **judge**: pr★ / security / perf / style / quick / intent
@@ -105,7 +104,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **sentinel**: scan★ / secrets / injection / deps / headers / authn / authz / aisec
 - **shard**: isolation★ / rls / routing / scale / migration / provisioning / quota
 - **sherpa**: epic★ / story / replan / review / atomic / walking-skeleton / vertical-slice
-- **shift**: plan★ / codemod / strangler / verify / framework / lang / deprecate
+- **shift**: plan★ / codemod / strangler / verify / framework / lang / deprecate / detect / modernize / radar
 - **showcase**: story★ / catalog / vrt / csf3 / interaction / mdx / cosmos / a11y / chromatic / coverage
 - **siege**: load★ / contract / chaos / mutation / fuzz / property / smoke / concurrency
 - **sigil**: generate★ / analyze / convention / migrate
@@ -133,7 +132,7 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 
 ---
 
-**Total**: 121 skills with Recipes.
+**Total**: 120 skills with Recipes.
 
 Auto-generated from SKILL.md `## Recipes` tables by `_common/scripts/generate-recipes-directory.py`. Do not edit by hand.
 

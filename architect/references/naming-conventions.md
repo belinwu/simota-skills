@@ -89,7 +89,6 @@ Names that suggest a quality or attribute:
 |------|---------|-------|
 | Zen | Calm, clarity | Refactoring |
 | Bolt | Speed | Performance |
-| Horizon | Future view | Modernization |
 | Vision | Sight, direction | Creative direction |
 
 **Pattern**: `[Abstract quality noun]`
@@ -192,8 +191,8 @@ Select the highest-scoring name without conflicts.
 - Nexus, Sherpa, Builder, Artisan, Radar, Voyager
 - Sentinel, Guardian, Harvest, Palette, Muse, Echo
 - Canvas, Atlas, Gateway, Scaffold, Anvil, Gear
-- Horizon, Polyglot, Growth, Retain, Pulse, Warden
-- Ripple, Trail, Specter, Morph, Accord, Helm
+- Polyglot, Growth, Retain, Pulse
+- Ripple, Trail, Morph, Accord, Helm
 - Stream, Launch, Grove
 
 ### Three Syllables (15)
@@ -295,7 +294,7 @@ Example validation:
 
 ### Positive Associations
 - Greek/Roman mythology (Atlas, Nexus)
-- Nature (Horizon, Flow)
+- Nature (Flow, Grove)
 - Crafts (Forge, Anvil, Canvas)
 - Exploration (Scout, Voyager, Navigator)
 

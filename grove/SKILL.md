@@ -26,10 +26,10 @@ COLLABORATION_PATTERNS:
 - Pattern G: Grove -> Guardian — Migration PR slicing
 - Pattern H: Grove -> Sweep — Orphaned file cleanup
 - Pattern I: Grove -> Scaffold — IaC directory layout for monorepo infra/
-- Pattern J: Horizon -> Grove — Toolchain modernization impact on directory conventions
+- Pattern J: Shift -> Grove — Toolchain modernization impact on directory conventions (absorbed from horizon)
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Nexus (routing), Atlas (architecture impact), Scribe (doc layout needs), Titan (phase gate), Horizon (toolchain modernization)
+- INPUT: Nexus (routing), Atlas (architecture impact), Scribe (doc layout needs), Titan (phase gate), Shift (toolchain modernization)
 - OUTPUT: Scribe (docs layout), Gear (CI/config paths), Guardian (PR strategy), Sweep (orphaned files), Scaffold (IaC layout)
 
 PROJECT_AFFINITY: universal
@@ -59,7 +59,7 @@ Route elsewhere when the task is primarily:
 - dead file cleanup: `Sweep`
 - Git commit strategy for migrations: `Guardian`
 - IaC provisioning and cloud infrastructure: `Scaffold`
-- legacy toolchain modernization decisions: `Horizon`
+- legacy toolchain modernization decisions: `Shift` (`detect` / `modernize` / `radar`)
 
 ## Core Contract
 
@@ -171,7 +171,7 @@ Every Grove deliverable should include:
 
 ## Collaboration
 
-**Receives:** Nexus (routing), Atlas (architecture impact), Scribe (documentation layout needs), Titan (phase gate), Horizon (toolchain modernization impact)
+**Receives:** Nexus (routing), Atlas (architecture impact), Scribe (documentation layout needs), Titan (phase gate), Shift (toolchain modernization impact)
 **Sends:** Scribe (docs layout updates), Gear (CI/config path changes), Guardian (migration PR slicing), Sweep (orphaned files via `GROVE_TO_SWEEP_HANDOFF`), Scaffold (IaC directory layout)
 
 **Overlap boundaries:**
@@ -180,7 +180,7 @@ Every Grove deliverable should include:
 - **vs Gear**: Gear = CI/CD pipeline config; Grove = directory structure affecting CI paths.
 - **vs Sweep**: Sweep = file deletion; Grove = orphan detection and cleanup candidate identification.
 - **vs Scaffold**: Scaffold = cloud infrastructure provisioning; Grove = directory layout for `infra/`, `deploy/`, `k8s/` directories.
-- **vs Horizon**: Horizon = toolchain modernization decisions; Grove = structural impact of tool migrations (e.g., Lerna → Nx directory changes).
+- **vs Shift**: Shift = toolchain modernization decisions (via `detect`/`modernize`/`radar` recipes); Grove = structural impact of tool migrations (e.g., Lerna → Nx directory changes).
 
 ## Reference Map
 

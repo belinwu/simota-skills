@@ -23,12 +23,12 @@ COLLABORATION_PATTERNS:
 - Sweep -> Builder: Safe removal implementation
 - Sweep -> Guardian: Cleanup PRs
 - Sweep -> Atlas: Architecture updates after large removals
-- Sweep -> Horizon: Deprecated library candidates for replacement
+- Sweep -> Shift: Deprecated library candidates for replacement (Shift `detect`/`modernize` — absorbed from horizon)
 - Void -> Sweep: Deletion priority and justification
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: Atlas, Zen, Judge, Sentinel, Gear, Void (deletion priority)
-- OUTPUT: Zen, Builder, Guardian, Atlas, Horizon
+- OUTPUT: Zen, Builder, Guardian, Atlas, Shift
 
 PROJECT_AFFINITY: Game(M) SaaS(H) E-commerce(H) Dashboard(M) Marketing(L)
 -->
@@ -210,7 +210,7 @@ Deliver:
 | Sweep → Builder | `SWEEP_TO_BUILDER` | Safe removal implementation |
 | Sweep → Guardian | `SWEEP_TO_GUARDIAN` | Cleanup PRs |
 | Sweep → Atlas | `SWEEP_TO_ATLAS` | Architecture updates after large removals |
-| Sweep → Horizon | `SWEEP_TO_HORIZON` | Deprecated library candidates for replacement |
+| Sweep → Shift | `SWEEP_TO_SHIFT` | Deprecated library candidates for replacement (Shift `detect`/`modernize`) |
 | Sweep → Grove | `SWEEP_TO_GROVE_FEEDBACK` | Cleanup results for Grove handoffs |
 
 **Overlap Boundaries:**

@@ -14,7 +14,7 @@ Use `transmute` for **language-pair crossings**: TS→Rust, Go→Rust, Python→
 |----------|----------|-----|
 | Web → iOS/Android native | `PORTING` (Port→Native) | Platform paradigm shift, not arbitrary language pair |
 | Same-language framework migration (Express→Fastify, Vue2→Vue3) | `shift` | Language unchanged |
-| Dependency / deprecated-API modernization | `horizon` | No language crossing |
+| Dependency / deprecated-API modernization | `shift detect`/`modernize` | No language crossing |
 | Internal cleanup, same language | `refactor` / `kaizen` | No language crossing |
 | Cross-platform prototype (RN/Flutter/KMP) | `forge` | Prototype, not behavior-preserving rewrite |
 
@@ -147,13 +147,13 @@ The core knowledge of this recipe. Magi confirms the relevant table in Phase 3; 
 - `+Schema` — when persistence layer or serialization format crosses the boundary.
 - `+Scout` — deeper root-cause archaeology when Fossil+Lens leave behavior gaps.
 - `+Sherpa` — decompose a large strangler-fig migration into atomic per-module steps.
-- `+Horizon` — when the rewrite also modernizes deprecated APIs in the same pass.
+- `+Shift[modernize]` — when the rewrite also modernizes deprecated APIs in the same pass (absorbed from horizon).
 
 ## 7. Decision Tree vs Neighbors
 
 ```
 Crossing a language boundary?
-  NO  → same-lang framework change? → shift   | dependency modernization? → horizon | internal cleanup? → refactor/kaizen
+  NO  → same-lang framework change? → shift framework  | dependency modernization? → shift detect/modernize | internal cleanup? → refactor/kaizen
   YES → target is mobile-native platform from a Web app? → PORTING (Port→Native)
         otherwise (arbitrary lang pair, behavior-preserving) → transmute
 ```

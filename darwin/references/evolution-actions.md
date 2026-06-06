@@ -153,7 +153,7 @@ OR
 agent_uses_model_at_or_past_provider_announced_eol
 ```
 
-**Action:** Propose migration plan via Horizon (technology lifecycle) and Shift (migration orchestrator). Cite the official retirement date and the recommended successor stack (Microsoft Agent Framework 1.0 GA for SK/AutoGen, AG2 ≥ 0.12 for AutoGen, latest Claude/GPT API for retired models). Apply Microsoft Foundry's industry-standard **18-month deprecation window** (set programmatically at GA launch) as the upper bound for staged migration: communicate at **T−90 / T−30 / T−7 days** before the framework EOL date, mirroring 2026 API-deprecation best practice (Theneo, 2026).
+**Action:** Propose migration plan via Shift (`radar` + `detect` + `framework`/`lang` recipes — technology lifecycle + migration orchestration; modernization absorbed from horizon). Cite the official retirement date and the recommended successor stack (Microsoft Agent Framework 1.0 GA for SK/AutoGen, AG2 ≥ 0.12 for AutoGen, latest Claude/GPT API for retired models). Apply Microsoft Foundry's industry-standard **18-month deprecation window** (set programmatically at GA launch) as the upper bound for staged migration: communicate at **T−90 / T−30 / T−7 days** before the framework EOL date, mirroring 2026 API-deprecation best practice (Theneo, 2026).
 
 **Priority:** HIGH — unmaintained framework drift compounds with model drift (~40% of production agent failures).
 
