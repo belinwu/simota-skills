@@ -21,6 +21,30 @@
 
 ---
 
+## F2: Description Discoverability (WHAT + WHEN)
+
+**Detection:**
+1. Extract `description:` value from frontmatter.
+2. Verify length ≤ 1024 characters (Anthropic spec hard limit).
+3. Verify no XML angle brackets (`<`, `>`) — frontmatter is injected into system prompt.
+4. Verify no Japanese characters (must be English per L1).
+5. **WHEN check:** description (case-insensitive) contains one of: `when`, `use this`, `use it`, `use to`, `use for`, `trigger`, `needs`, `needed`, `intended for`, `designed for`, ` for `, `applies`.
+6. **WHAT check:** description (case-insensitive) contains a role/capability noun (e.g. `agent`, `specialist`, `auditor`, `orchestrator`, `expert`, `framework`, `generator`, `tool`, `analyzer`, `design`, `build`, `create`, `generate`, `review`, `implement`), OR the first clause (before `.` or newline) is ≥ 30 chars (verb-led capability statement fallback).
+
+**PASS:** WHAT and WHEN both present, hard-limit checks pass.
+**PARTIAL:** Hard-limit checks pass but WHAT or WHEN missing (heuristic — many generation-1 skills are "WHAT-only").
+**FAIL:** Description empty, > 1024 chars, contains XML tags, or contains Japanese characters.
+
+**Tooling:** Use `python3 _common/scripts/lint-frontmatter.py --severity warning`. The script emits `F2` findings as PARTIAL (P2) for heuristic violations and FAIL (P0) for hard-limit violations.
+
+**Anti-pattern examples:**
+- `"E2E testing specialist for Playwright/Cypress"` — WHAT only (no WHEN clause). PARTIAL.
+- `"Use this for E2E tests"` — WHEN only (no role noun). PARTIAL.
+- `"E2E testing specialist for web (Playwright/Cypress) and mobile (Appium). Use when designing test suites, debugging flaky tests, or setting up CI integration."` — PASS (both halves present, concrete trigger).
+- `""` (empty), `"<E2E spec>"` (XML), `"E2E テスト専門"` (Japanese) — FAIL.
+
+---
+
 ## L1: Language Compliance
 
 **Detection:**
@@ -176,6 +200,32 @@
 4. Check for standard protocols link: `_common/OPERATIONAL.md` pattern
 
 **PARTIAL trigger:** Heading exists but missing one of the three elements.
+
+---
+
+## S10: Body Size Constraint
+
+**Detection:**
+1. Read SKILL.md, locate frontmatter closing `---`. Lines after that constitute the body.
+2. Compute `line_count = len(body_lines)`.
+3. Compute `token_estimate = max(1, int(len(body_text) / 3.5))` (tiktoken-free heuristic; ~3.5 chars/token for mixed Markdown+English).
+4. Tier the finding (repository-tuned, see normalization-checklist.md S10):
+
+| Lines | Tokens | Verdict | Priority |
+|-------|--------|---------|----------|
+| > 1000 | > 15000 | FAIL (egregious) | P1 |
+| 700-1000 | 10000-15000 | PARTIAL (refactor candidate) | P2 |
+| 500-700 | 7000-10000 | PARTIAL (informational) | P3 |
+| ≤ 500 | ≤ 7000 | PASS | — |
+
+**Tooling:** `python3 _common/scripts/lint-frontmatter.py --severity warning` emits findings as `S1` (line count) and `S2` (token estimate) — one finding per dimension. Treat both as inputs to S10.
+
+**Rationale:** Anthropic explicit guidance: "Keep SKILL.md body under 500 lines for optimal performance". Tiering exists because the existing 148-skill corpus runs higher; FAIL only fires on truly oversized files so CI doesn't choke on legacy violations.
+
+**Fix hints:**
+- Move detail sections (e.g. long `## Boundaries`, oversized recipe descriptions, full `## Workflow` phase notes) to `references/<topic>.md`.
+- Replace inline `_common/` excerpts with pointers — the bytes are already cached in `_common/`.
+- Collapse multi-recipe inline notes into a `## Recipes` table + per-recipe `Read` reference.
 
 ---
 

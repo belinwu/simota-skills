@@ -1,12 +1,17 @@
 # Normalization Checklist (Audit Reference)
 
-**Purpose:** Defines the 16-item checklist with PASS/PARTIAL/FAIL criteria and P0-P3 priority classification.
+**Purpose:** Defines the 18-item checklist with PASS/PARTIAL/FAIL criteria and P0-P3 priority classification.
 **Read when:** Starting any SCAN or CLASSIFY phase.
 **Source:** `.agents/skill-normalization-checklist.md` (ecosystem master checklist).
 
+**Recent additions (Generation 3):**
+- `F2` Description Discoverability — WHAT + WHEN check (P0). Routing accuracy depends on it; Anthropic Complete Guide explicitly mandates both.
+- `S10` Body Size Constraint — line + token thresholds (P1). Anthropic recommendation is `<500 lines / <5000 tokens`. Repository-tuned tiers in `references/detection-patterns.md`.
+- Automated detection for F1/F2/F3/N1/N2/C1/C2/S1/S2 is available via `python3 _common/scripts/lint-frontmatter.py --severity warning`. Use that as the source-of-truth scanner; this checklist remains the human-readable contract.
+
 ---
 
-## 16-Item Checklist
+## 18-Item Checklist
 
 ### F1: YAML Frontmatter
 
@@ -19,6 +24,22 @@
 **Detection — custom-key rejection:** the official Anthropic Agent Skills spec defines the frontmatter as `name` + `description` only. Any other key indicates either format drift (forward-compatibility risk) or a smuggling attempt. Treat any custom frontmatter key as `FAIL`, classify as **P0** when the key looks security-sensitive (`permissions:`, `trust:`, `capabilities:` with elevated scopes), **P1** otherwise. Escalate `P0` cases to `chain` for full intake audit. [Source: platform.claude.com — Agent Skills Overview; `_common/SECURITY.md`]
 
 **Detection — body capability declaration:** scan the SKILL.md body (after frontmatter) for an explicit declaration of the tools / MCP servers / network hosts the skill expects to use. Acceptable formats include a `Tools used: Read, Edit, Bash` line, a "Network allowlist:" line, or a short paragraph naming the touchpoints. Absence of any such declaration is `PARTIAL` (not `FAIL`) because capability mismatch is detected at runtime by `chain` audits; the declaration here is an authoring expectation, not a hard runtime gate.
+
+### F2: Description Discoverability (WHAT + WHEN)
+
+| Status | Criteria |
+|--------|----------|
+| PASS | `description:` ≤1024 chars, English only, no XML angle brackets, contains BOTH a WHAT statement (capability — verb/noun phrase describing the agent's role) AND a WHEN trigger phrase (`"Use when ..."`, `"Triggers when ..."`, `"Use this for ..."`, `"... when X is needed"`, etc.) |
+| PARTIAL | Description is well-formed but contains only WHAT or only WHEN (heuristic — not both) |
+| FAIL | Description empty, >1024 chars, contains XML tags, contains Japanese characters, OR completely lacks both WHAT and WHEN |
+
+**Detection — WHAT+WHEN heuristic:** Anthropic Complete Guide ("The description is critical for skill selection: Claude uses it to choose the right Skill from potentially 100+ available Skills") mandates both halves. The lint script's WHEN allowlist is intentionally broad (`when`, `use this`, `use to`, `trigger`, `for `, `needs`, `intended for`, `designed for`) and the WHAT allowlist favors role nouns (`agent`, `specialist`, `auditor`, `orchestrator`, ...). PARTIAL is the expected state for the majority of generation-1 skills; FAIL only fires on truly broken descriptions.
+
+**Priority:** **P0** — description is the *single* routing signal. Misrouting cascades into wrong agent selection across the whole ecosystem.
+
+**Source:** [platform.claude.com — Agent Skills Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [The Complete Guide to Building Skills for Claude](https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf).
+
+---
 
 ### L1: Language Compliance
 
@@ -126,6 +147,34 @@
 | PARTIAL | Section exists but missing one of the three elements |
 | FAIL | No Operational section |
 
+### S10: Body Size Constraint
+
+| Status | Criteria |
+|--------|----------|
+| PASS | SKILL.md body (lines after frontmatter closing `---`) ≤ 500 lines AND ~≤ 5000 tokens (approx via `chars / 3.5`) — meets Anthropic recommendation |
+| PARTIAL | 500-700 lines OR 5000-10000 tokens — refactor candidate, move detail to `references/` |
+| FAIL | > 1000 lines OR > 15000 tokens (egregious — progressive disclosure not applied) |
+
+**Detection:** Use the lint script's tiered output (S1 = line count, S2 = token estimate). Repository-tuned tiers:
+
+| Lines | Tokens | Priority |
+|-------|--------|----------|
+| > 1000 | > 15000 | **P1** (egregious — block merge in CI) |
+| 700-1000 | 10000-15000 | **P2** (refactor candidate) |
+| 500-700 | 7000-10000 | **P3** (over Anthropic recommendation, informational) |
+
+**Rationale:** Anthropic guidance is "Keep SKILL.md body under 500 lines for optimal performance" but the existing 148-skill corpus runs higher. Generation-3 audit tiers the thresholds so P0/P1 fire only on truly egregious sizes; refactor work is queued at P2/P3. As skills migrate detail to `references/`, raise the floors over time.
+
+**Source:** [platform.claude.com — Agent Skills Best Practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices), [The Complete Guide to Building Skills for Claude](https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf).
+
+**Fix hints:**
+- Move "Reference Map" entries' detail bodies to `references/<topic>.md`
+- Collapse long Recipes tables into a top-level table + per-recipe inline notes only
+- Promote oversized "Core Contract" / "Boundaries" subsections into `references/`
+- Verify `_common/` protocol references are pointers, not inlined excerpts (the bytes are already cached)
+
+---
+
 ### A1: AUTORUN Support (_STEP_COMPLETE)
 
 | Status | Criteria |
@@ -148,8 +197,8 @@
 
 | Priority | Scope | Items | Rationale |
 |----------|-------|-------|-----------|
-| **P0 (Critical)** | Ecosystem integration | A1, A2, S7 | Required for AUTORUN execution and agent collaboration |
-| **P1 (High)** | Quality and consistency | S2, S3, S4, L1 | Core behavioral contract, safety boundaries, workflow definition, language standard |
+| **P0 (Critical)** | Ecosystem integration + routing | A1, A2, S7, **F2** | Required for AUTORUN execution, agent collaboration, **and skill selection** (F2: description is the single routing signal) |
+| **P1 (High)** | Quality and consistency | S2, S3, S4, L1, **S10** | Core behavioral contract, safety boundaries, workflow definition, language standard, **body size egregious tier** |
 | **P2 (Medium)** | Discoverability and routing | S1, S5, S6 | Trigger conditions, output routing, deliverable requirements |
 | **P3 (Low)** | Metadata and reference | F1, H1, H2, H3, S8, S9 | Frontmatter, machine-readable metadata, reference pointers, operational logging |
 
@@ -169,6 +218,7 @@ Quest (`quest/SKILL.md`) is the reference standard for all 16 items. When genera
 | Item | Quest Section Reference |
 |------|------------------------|
 | F1 | Lines 1-4 (YAML frontmatter, kebab-case name) |
+| F2 | Line 3 `description:` (WHAT capability + WHEN trigger phrase) |
 | L1 | Full file (English description, English body) |
 | H1 | Lines 6-17 (CAPABILITIES_SUMMARY) |
 | H2 | Lines 19-32 (COLLABORATION_PATTERNS) |
@@ -182,6 +232,7 @@ Quest (`quest/SKILL.md`) is the reference standard for all 16 items. When genera
 | S7 | "Collaboration" section (Receives/Sends + overlap boundaries) |
 | S8 | "Reference Map" section |
 | S9 | "Operational" section |
+| S10 | Body size ≤ 500 lines / ~5000 tokens (Quest itself is within target) |
 | A1 | "AUTORUN Support" section (_STEP_COMPLETE YAML) |
 | A2 | "Nexus Hub Mode" section (NEXUS_HANDOFF block) |
 
