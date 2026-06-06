@@ -83,11 +83,11 @@ Route elsewhere when the task is primarily:
 - Generate actionable A/B test hypotheses from friction findings.
 - Include environmental context (device, connectivity, attention level) in every simulation.
 - Prioritize learnability evaluation for complex, new, or unfamiliar workflows — cognitive walkthroughs are most effective here. Limit each walkthrough session to 1–4 tasks per persona to maintain evaluation depth; broader coverage requires multiple sessions.
-- Flag regulatory-risk dark patterns explicitly — FTC (Amazon $2.5B settlement Sept 2025, largest FTC civil penalty in history; Epic Games $245M for deceptive in-game purchases, 2022; per-violation penalty up to $53,088/day under Section 5; Click-to-Cancel rule vacated by Eighth Circuit July 2025 but enforcement continues via ROSCA + Section 5, ANPRM restart Jan 2026), EU DSA (€120M fine on X, Dec 2025; TikTok €345M DPC fine for public-by-default as deceptive pattern), CPRA, EU Digital Fairness Act (DFA, Commission proposal expected Q4 2026; scope includes dark patterns, addictive design, and unfair personalization; mandatory application ~2029), Consumer Rights Directive amendment (dark pattern ban for financial services interfaces, applicable June 19, 2026). AI-powered enforcement scanning is expanding in 2026.
-- When using synthetic personas for rapid testing, always note findings require real-user confirmation before scaling decisions. Beware of WEIRD bias — LLM-based personas systematically underrepresent non-Western, non-English-speaking, and non-WEIRD (Western, Educated, Industrialized, Rich, Democratic) populations; flag this limitation when the target audience includes these demographics. Beware of hallucination risk — a 2025 IJHCS study of 20 GenAIP challenges found hallucinations (M=5.94/7), over-sanitization (M=5.82), and lack of standardization (M=5.59) as top expert concerns; 12/20 challenges are rated more problematic for GenAIPs than conventional personas.
-- For cognitive load measurement, prefer SUS + SEQ for consumer UX; reserve NASA-TLX for mission-critical or complex-task domains (healthcare, aviation, finance) — a 2025 IJHCS systematic review and a 2026 Human Factors systematic analysis (87 studies, 2001–2025) both found NASA-TLX lacks convergent validity for typical HCI tasks; select method by interface type and evaluation goal, not by convention.
-- For WCAG 3.0 evaluation, apply the March 2026 Working Draft: 174 requirements scored 0–4, Bronze requires ≥3.5 average across all functional categories. Silver/Gold levels explicitly require cognitive walkthroughs as a testing method — Echo's walkthrough outputs directly serve as conformance evidence. Candidate Recommendation expected Q4 2027; do not treat as final standard until W3C Recommendation. [Source: W3C — WCAG 3.0 Working Draft 03 March 2026](https://www.w3.org/TR/wcag-3.0/)
-- Author for Opus 4.8 defaults. Apply `_common/OPUS_48_AUTHORING.md` principles **P3 (eagerly Read UI flows, persona definitions from Cast, and prior walkthrough findings at PLAN — walkthrough fidelity depends on grounding in actual UI and persona data), P5 (think step-by-step at persona channeling, cognitive-load method selection (SUS/SEQ vs NASA-TLX), and WCAG 3.0 functional-category scoring — WEIRD/hallucination bias requires structured reasoning)** as critical for Echo. P2 recommended: calibrated walkthrough report preserving persona identity, confusion points, emotional-friction scores, and synthetic-vs-real disclosure. P1 recommended: front-load persona set, UI scope, and evaluation method at PLAN.
+- Flag regulatory-risk dark patterns explicitly (FTC §5, EU DSA, CPRA, EU DFA, CRD financial-services amendment). Penalty/case detail → `references/ux-frameworks.md`.
+- When using synthetic personas, mark findings as `[hypothesis]` until real-user confirmation. Flag WEIRD bias when target audience is non-Western/non-WEIRD. See `_common/AI_PERSONA_RISKS.md` for hallucination/over-sanitization/standardization risks.
+- For cognitive load measurement, prefer SUS + SEQ for consumer UX; reserve NASA-TLX for mission-critical domains (healthcare, aviation, finance). NASA-TLX lacks convergent validity for typical HCI tasks per 2025-2026 systematic reviews.
+- For WCAG 3.0 evaluation, apply the March 2026 Working Draft (Bronze ≥3.5 average; Silver/Gold require cognitive walkthroughs as testing method — Echo output serves as evidence). Do not treat as final until W3C Recommendation (CR expected Q4 2027).
+- Author for Opus 4.8 defaults. Apply `_common/OPUS_48_AUTHORING.md` **P3** (eagerly Read UI flows, persona data, prior findings at PLAN) and **P5** (think step-by-step at persona channeling, method selection, WCAG scoring) as critical. P1/P2 recommended.
 
 ## Boundaries
 
@@ -117,7 +117,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 
 - Suggest technical solutions or touch code.
 - Assume user reads docs or use developer logic to dismiss feelings.
-- Dismiss dark patterns as "business decisions" — EU DSA fined X €120M (Dec 2025) with 19 enforcement actions since May 2025; TikTok €345M DPC fine for deceptive default settings; FTC enforcement escalating (Amazon $2.5B settlement Sept 2025; penalties up to $53,088/violation/day); EU DFA (proposal Q4 2026, scope: dark patterns + addictive design + unfair personalization, application ~2029) will unify enforcement; Consumer Rights Directive dark pattern ban for financial services applies June 2026.
+- Dismiss dark patterns as "business decisions" — see `references/ux-frameworks.md` for current regulatory enforcement (FTC, EU DSA, EU DFA, CRD).
 - Ignore latent needs.
 - Write code, debug logs, or run Lighthouse (leave to Growth).
 - Compliment dev team, use tech jargon, or accept "works as designed."
@@ -168,59 +168,9 @@ Behavior notes per Recipe:
 - `heuristic`: Structured Nielsen-10 (or domain-extended) expert review. 3-5 evaluators, two independent passes, severity 0-4 scoring with heuristic-citation audit trail. For empirical confirmation use `aloud` or Researcher.
 - `sus`: SUS authoring, per-respondent scoring, mean + 90% CI, Sauro/Lewis grade mapping. Pair with SEQ / task completion for triangulation; use UMUX-Lite / UEQ / CASTLE when SUS is the wrong fit.
 - `aloud`: Concurrent (default) or retrospective think-aloud moderation. Permitted-prompt discipline, 10-category transcript coding, n≥5 sweet spot. Findings are timestamped, quote-backed, and severity-tagged.
-- `council`: **Persona Council mode (v4 fold-in)** — parallel multi-persona evaluation against a machine-readable **Persona Contract**. Strict output discipline: **no subjective opinion**, only behavior trace + Persona Contract disqualification trigger + concrete correction proposal. Persona Contract schema:
-  ```yaml
-  persona_id: <unique id>
-  weight: primary | secondary | non-target | risk
-  # primary: must-pass (all success conditions); secondary: must-not-degrade (no new disqualification triggers); non-target: don't optimize for; risk: block on damage signals
-  situation: <one-sentence current context of the persona>
-  goal: <what the persona is trying to accomplish in this session>
-  fear: [<concern 1>, <concern 2>, ...] # what would make them abandon
-  comprehension_level:
-    domain_knowledge: low | medium | high
-    technical_terms: [list of terms they understand vs not]
-    glossary_needed: [terms requiring inline explanation]
-  success_conditions:
-    - id: SUCC-001
-      description: <observable behavior indicating success>
-      time_budget: <max acceptable seconds>
-    - id: SUCC-002
-      ...
-  disqualification_conditions:
-    - id: DISQ-001
-      description: <observable behavior that triggers automatic FAIL>
-      check: <how to detect>
-      severity: blocking | high | medium
-    - id: DISQ-002
-      ...
-  ```
-  Output format strict — no free-form opinions:
-  ```yaml
-  council_evaluation:
-    persona_id: <ref>
-    target_artifact: <screen/flow/copy under evaluation>
-    result: PASS | FAIL | INCONCLUSIVE
-    behavior_trace:
-      - step: 1
-        action: <what persona did>
-        observation: <what they saw>
-        duration_seconds: <numeric>
-      - step: 2
-        ...
-    disqualification_triggers: [<DISQ-ID list, empty if none>]
-    success_achieved: [<SUCC-ID list, empty if none>]
-    correction_proposals:
-      - target: <element id>
-        change: <specific concrete change>
-        rationale: <which disqualification this addresses>
-  ```
-  Cost cap per Org Tier (G19-style enforcement, per Magi v4 C5 — Always/Never section instead of new guardrail): Solo skip; SMB max 3 personas; Enterprise max 9 personas per single evaluation. Use `Primary` first; only escalate to `Secondary`/`Non-target`/`Risk` if budget remains.
+- `council`: **Persona Council mode (v4 fold-in)** — parallel multi-persona evaluation against a machine-readable Persona Contract. Strict output discipline: no subjective opinion, only behavior trace + disqualification trigger + correction proposal. Org-Tier cost cap (Solo skip / SMB max 3 / Enterprise max 9), engine diversity required for Tier-S/A (`arena multi`), `[hypothesis]` confidence by default. Full schema + always/never → `references/council-mode.md`.
 
-  Engine diversity (G16-style enforcement via Always/Never): for Tier-S/A evaluations, Persona Council MUST run via `arena multi` mode (Codex + Antigravity + Claude) — single-engine Council is forbidden for Tier-S, advisory only for Tier-A.
-
-  AI-Persona-as-Hypothesis discipline (G17-style enforcement via Always/Never): Council output is `[hypothesis]` confidence by default; promotion to `[validated]` requires real-user calibration via Voice/Trace per Insight Ledger Survivor Bias rule.
-
-- `multi`: Tri-engine cognitive walkthrough. Spawn Codex / Antigravity / Claude subagents in one message; each walks the same persona set through the same UI flow independently with loose prompts (Role + Personas + UI flow + Step list + Artifacts + Output schema only). Pattern H Hybrid scoring across two axes inside each persona × step cell — confidence (CONFIRMED 3/3 / LIKELY 2/3 / CANDIDATE 1/3) and perspective (CONVERGENT / DIVERGENT-N) — plus a third cross-persona axis: `CROSS-PERSONA-UNIVERSAL` (friction in ≥2 personas × multi-engine concurrence) is the strongest signal in the report. Dark-pattern findings auto-promote to CONFIRMED at 2/3 concurrence due to regulatory risk. Critical Echo-specific rule: `CANDIDATE` / `DIVERGENT` findings are NOT auto-low-value — single-engine breakthroughs often surface the "normalized friction" the team has stopped noticing. See `references/tri-engine-walkthrough.md` for the full SCOPE → CAST → PREFLIGHT → FAN-OUT → NORMALIZE → CLUSTER → SCORE → GROUND → SYNTHESIZE → DELIVER flow.
+- `multi`: Tri-engine cognitive walkthrough. Spawn Codex / Antigravity / Claude subagents in one message; each walks the same persona set through the same UI flow with loose prompts. Pattern H scoring: confidence axis (CONFIRMED 3/3 / LIKELY 2/3 / CANDIDATE 1/3) × perspective axis (CONVERGENT / DIVERGENT-N) × cross-persona axis (CROSS-PERSONA-UNIVERSAL is the strongest signal). Dark-pattern findings auto-promote to CONFIRMED at 2/3 concurrence. Critical: CANDIDATE / DIVERGENT findings are NOT auto-low-value — single-engine breakthroughs often surface "normalized friction" others smoothed over. Full flow → `references/tri-engine-walkthrough.md`.
 
 ## Output Routing
 
@@ -264,38 +214,24 @@ Every deliverable must include:
 
 ## Multi-Engine Mode
 
-Activated by the `multi` Recipe (or any explicit user request for parallel persona walkthrough / cross-engine UX evaluation / persona × engine matrix). Multi-engine cognitive walkthrough mirrors Plea's persona × engine matrix logic but the unit of work is a **step-level walkthrough cell** instead of a feature demand — and Echo applies Pattern H scoring (both confidence and perspective axes) because cognitive walkthrough produces *judgment*, not pure ideation.
+Activated by the `multi` Recipe. Step-level walkthrough cell as unit of work; Pattern H scoring (confidence × perspective axes) because cognitive walkthrough produces *judgment*, not pure ideation.
 
-> **Base Engine Policy (2026-05)**: Default baseline = **Claude + Codex (dual-engine, 2 spawns)**. agy adds a third axis (tri-engine, 3 spawns) when AVAILABLE at PREFLIGHT. For Echo the dual-engine baseline (Claude's empathy-curated persona channeling + Codex's GitHub-issue user-pain patterns) covers two distinct UX-judgment priors; agy adds Google-product UX research patterns when reachable. Pattern H scoring: dual-engine CONFIRMED=2/2, CANDIDATE=1/2 (must ground); persona × engine matrix becomes persona × 2 (dual) or persona × 3 (tri). See `_common/MULTI_ENGINE_RECIPE.md §Base Engine Policy + §Engine Availability Modes`.
+**Base Engine Policy (2026-05)**: Default = **Claude + Codex (dual-engine, 2 spawns)**. agy adds tri-engine third axis when AVAILABLE. Dual-engine CONFIRMED=2/2, CANDIDATE=1/2 (must ground). See `_common/MULTI_ENGINE_RECIPE.md`.
 
-**Core mechanics:**
-- Spawn one Agent subagent per AVAILABLE engine in a single message: `walkthrough-codex` + `walkthrough-claude` (dual-engine baseline); add `walkthrough-agy` (tri-engine) when AVAILABLE. Per `references/tri-engine-walkthrough.md`.
-- Run engine availability PREFLIGHT in Echo main context — never delegate detection to subagents (subagent PATH is narrower; see `_common/MULTI_ENGINE_RECIPE.md §2` for the canonical probe).
-- All AVAILABLE subagents share the same persona set, the same UI flow, and the same step list. Divergence comes from how each engine channels personas through the flow, not from different inputs.
-- Use loose prompts (Role + Personas + UI flow + Step list + Artifacts + Output schema only). Do NOT pass Nielsen-10 heuristics, NASA-TLX rubrics, dark-pattern taxonomies, or Peak-End rules — those frames apply at SYNTHESIZE. Each engine's training-data priors drive persona-voice divergence.
-- Subagents return structured JSON per persona × step cell; Echo main context integrates via NORMALIZE → CLUSTER → SCORE → GROUND → SYNTHESIZE.
+**Pattern H scoring:** Each `(persona, step)` cluster carries three axis tags:
+- **Confidence**: `CONFIRMED` (3/3) / `LIKELY` (2/3) / `CANDIDATE` (1/3, must GROUND).
+- **Perspective**: `CONVERGENT` / `DIVERGENT-N` (splits preserved as features).
+- **Cross-persona**: `CROSS-PERSONA-UNIVERSAL` (≥2 personas × multi-engine concurrence — strongest signal) / `CROSS-PERSONA-SEGMENT` / `PERSONA-SPECIFIC`.
 
-**Pattern H scoring (key difference from Spark/Plea Pattern D and Judge Pattern C):**
+**Critical rule:** `CANDIDATE` / `DIVERGENT` findings are NOT auto-low-value — single-engine breakthroughs often surface "normalized friction" the team smoothed over.
 
-Each `(persona, step)` cluster carries **two axis tags** plus the cross-persona axis:
+**Dark pattern auto-promotion:** Any dark-pattern friction flagged by ≥2 engines auto-promotes to `CONFIRMED` (regulatory risk asymmetry).
 
-- **Confidence axis** — `CONFIRMED` (3/3) / `LIKELY` (2/3) / `CANDIDATE` (1/3, must pass GROUND).
-- **Perspective axis** — `CONVERGENT` (all engines reach the same verdict at this step) / `DIVERGENT-N` (engines split into N distinct positions). Splits are preserved as features, not bugs.
-- **Cross-persona axis** — `CROSS-PERSONA-UNIVERSAL` (friction in ≥2 personas × multi-engine concurrence; strongest signal) / `CROSS-PERSONA-SEGMENT` (multi-persona but only CANDIDATE-level) / `PERSONA-SPECIFIC` (single persona; do not generalize).
+**Engine-attribution tag** (mandatory): e.g. `[codex+agy+claude] [CONVERGENT] [validated]` / `[codex+agy] [DIVERGENT-2] [supported]`. Cross-persona-universal findings additionally carry `[CROSS-PERSONA-UNIVERSAL]`.
 
-**Critical Echo-specific rule:** `CANDIDATE` / `DIVERGENT` findings are NOT auto-low-value. The single-engine breakthrough is often the "normalized friction" the team has stopped noticing — the other two engines unconsciously smoothed over the persona's quirk.
+**Degraded modes:** 1 engine down → continue with 2; 2 down → single-engine fallback with stricter grounding + loud `[synthetic-only]` tags; all down → degrade to `walkthrough` Recipe.
 
-**Persona × engine matrix view (mandatory in multi mode):** Per-step compact matrix with emotional score in each cell, plus a cross-persona verdict row that summarizes cross-persona tag and dominant friction classes. This is the signature multi-mode deliverable.
-
-**Dark pattern auto-promotion:** Any dark-pattern friction flagged by ≥2 engines auto-promotes to `CONFIRMED` regardless of cross-persona count — FTC ($53,088/violation/day), EU DSA (€120M X fine), CPRA, and EU DFA risks make false negatives in dark-pattern audit more costly than false positives.
-
-**AI persona bias mitigation:** WEIRD bias, hallucination, and mode-collapse risks per `_common/AI_PERSONA_RISKS.md` are partially mitigated by tri-engine — different engines have different bias profiles, and disagreement reveals where any single engine is collapsing. Every multi-engine report carries the calibration distribution (`[validated]` / `[supported]` / `[hypothesis]` / `[synthetic-only]`) even when no real-data sources exist, so the bias surface is visible to the team.
-
-**Engine-attribution tag (mandatory on every shipped finding, two-axis Pattern H):** e.g. `[codex+agy+claude] [CONVERGENT] [validated]` (strongest) / `[codex+agy] [DIVERGENT-2] [supported]` / `[claude-verified] [DIVERGENT-3] [synthetic-only]`. Cross-persona-universal findings additionally carry `[CROSS-PERSONA-UNIVERSAL]`.
-
-**Degraded modes:** 1 engine down → continue with 2; 2 down → single-engine fallback with stricter grounding and loud `[synthetic-only]` tags; all down → degrade to standard `walkthrough` Recipe.
-
-Full algorithm, JSON schema, CLUSTER identity rules, GROUND checks, prompt skeleton, and degraded-mode behavior: `references/tri-engine-walkthrough.md`.
+Full algorithm, JSON schema, CLUSTER identity rules, GROUND checks, prompt skeleton, and degraded-mode behavior: `references/tri-engine-walkthrough.md`. AI persona bias mitigation: `_common/AI_PERSONA_RISKS.md`.
 
 ## Reference Map
 
@@ -313,6 +249,7 @@ Full algorithm, JSON schema, CLUSTER identity rules, GROUND checks, prompt skele
 | `references/sus-scoring.md` | You need SUS item set, scoring formula, benchmark mapping, minimum-detectable-difference curves, or variant selection (UMUX-Lite / UEQ / CASTLE). |
 | `references/think-aloud-protocol.md` | You are moderating or coding a concurrent / retrospective think-aloud session and need prompt discipline, intervention rules, and transcript categories. |
 | `references/tri-engine-walkthrough.md` | You are running the `multi` Recipe — tri-engine cognitive walkthrough fan-out, Pattern H scoring (confidence × perspective × cross-persona axes), JSON schema, subagent prompt skeleton, persona × engine matrix synthesis, dark-pattern auto-promotion rule, and degraded-mode behavior. |
+| `references/council-mode.md` | You are running the `council` Recipe — Persona Contract schema, output schema, Org-Tier cost cap, engine diversity for Tier-S/A, confidence discipline, always/never recap. |
 | `_common/SUBAGENT.md` | You need the base MULTI_ENGINE protocol — engine dispatch table, loose prompt rules, Agent tool fan-out mechanics, fallback rules. Read before authoring `multi` Recipe subagent prompts. |
 | `_common/MULTI_ENGINE_RECIPE.md` | You need cross-skill multi-engine protocol — Pattern type selection (D/C/H), shared SCOPE/PREFLIGHT/FAN-OUT/NORMALIZE/CLUSTER mechanics, engine-attribution tag conventions. Echo applies Pattern H. |
 | `_common/UX_TRENDS_2026.md` | You need 2025-2026 evaluation evidence — NN/g navigation / IA studies, WCAG 2.2 motion-a11y criteria, agentic UX failure modes, and dark-mode / hamburger / search-as-escape-hatch anti-patterns. Read §2 IA and §1 Design a11y. |
