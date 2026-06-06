@@ -131,33 +131,29 @@ Agent disambiguation → `references/agent-disambiguation.md`
 
 ## Recipes
 
-> **Nexus Recipes represent task shape. `## Modes` represent execution control. They are orthogonal and combine independently.**
+> **Recipes = task shape; `## Modes` = execution control. Orthogonal.** Full phase contracts live in each Recipe's `Read` reference; complex Chain Templates (`See references/recipes-detail.md`) live there; simple Recipes inline their chain.
 
-Single source of truth for Recipe definitions. Full phase contracts for Recipes with a `Read` reference live in those files; Recipes marked "inline" are documented in `## Subcommand Dispatch` below.
-
-Recipes with multi-line chain templates or extended When-to-Use prose (kaizen, apex, essential, killer, acceptance, growth-acceptance, summit, podium, transmute, venture, package) have their full description and chain template in `references/recipes-detail.md`. The table below carries the canonical name, subcommand, one-line when-to-use, and the authoritative `Read` pointer.
-
-| Recipe | Subcommand | When to Use | Read |
-|--------|-----------|-------------|------|
-| Auto Classify | `classify` (default) | No Recipe specified — auto-classification (legacy `CLASSIFY → CHAIN_SELECT` flow) | `references/routing-matrix.md` |
-| Bug Fix | `bug` | Bug reports and fix requests. Chain: `Scout → Sherpa → Builder → Radar (+Sentinel)` | `references/routing-matrix.md` |
-| Feature | `feature` | New web/backend/generic feature. **iOS/Android native → `MOBILE_NATIVE` (Native) instead.** Chain: `Sherpa → Forge → Builder → Radar (+Muse)` | `references/routing-matrix.md` |
-| Security | `security` | Security response. Chain: `Sentinel → Builder → Radar (+Probe)` | `references/routing-matrix.md` |
-| Refactor | `refactor` | Internal-only refactor, no external behavior change. Chain: `Zen → Radar (+Atlas)` | `references/routing-matrix.md` |
-| Optimize | `optimize` | Performance-only improvement. Chain: `Bolt/Tuner → Radar (+Schema)` | `references/routing-matrix.md` |
-| Kaizen | `kaizen` | Existing-feature continuous improvement (perf / UX / code-quality / feature-extension). 4-8 agents | `references/recipes-detail.md`, `references/inline-recipes.md` |
-| Proactive | `proactive` | `/Nexus` with no arguments — project state scan | `references/proactive-mode.md` |
-| Apex | `apex` | Full-cycle auto-implementation: discovery → spec → parallel design → risk gate → loop → ship. 8-25 agents. **Confirm before launch.** | `references/recipes-detail.md`, `references/apex-recipe.md`, `references/apex-walkthrough.md` |
-| Goal Setup | `goal` | `/goal` autonomous long-running execution setup. 1-3 agents, no code execution | `references/goal-recipe.md` |
-| Essential | `essential` | Must-have feature **verdict + conditional implementation** — converges on THE ONE feature. Subtraction-oriented | `references/recipes-detail.md`, `references/inline-recipes.md` |
-| Killer | `killer` | Killer feature **verdict + conditional flagged implementation** via cross-engine triangulation. Dual-engine baseline (Claude + Codex); agy optional | `references/recipes-detail.md`, `references/inline-recipes.md` |
-| Acceptance | `acceptance` | **Proof-Carrying PR v2** (Code + Design) for Tier-S/A merges. 14-30 agents Tier-S; G1-G10. 3-15× cost. **Confirm Tier-S.** | `references/recipes-detail.md`, `_common/PROOF_CARRYING.md`, `references/acceptance-recipe.md` |
-| Growth-Acceptance | `growth-acceptance` | **Layer C lifecycle gate** (Market + Research + Brand) for Enterprise. Insight Ledger + +14/+30/+90d loop. G11-G15. 1.1-8× on acceptance. **Confirm Step 3+.** | `references/recipes-detail.md`, `_common/GROWTH_BRAND_PROOF.md`, `references/growth-acceptance-recipe.md` |
-| Summit | `summit` | Multi-engine **five-team** quality-maximization. Dual-engine default. 28-119 agents, 5-25× cost. **Always confirm.** | `references/recipes-detail.md`, `references/summit-recipe.md` |
-| Podium | `podium` | **Content-quality maximization** — doc + high-quality slide creation, five teams. 16-53 agents, 3-8× cost. Output_format variants. **Confirm release-critical.** | `references/recipes-detail.md`, `references/podium-recipe.md` |
-| Transmute | `transmute` | **Cross-language rewrite** preserving behavior via differential parity. 8-20 agents. **Confirm before big-bang.** | `references/recipes-detail.md`, `references/transmute-recipe.md` |
-| Venture | `venture` | **Business documentation package** from one idea — ~11 parallel doc tracks + traceability barrier. Depth 6-28 agents. **Confirm full.** | `references/recipes-detail.md`, `references/venture-recipe.md`, `references/package-recipe.md` |
-| Package | `package` | **Generalized document-package generator** — 12-domain preset registry. Depth 5-28 agents. **Confirm full.** | `references/recipes-detail.md`, `references/package-recipe.md` |
+| Recipe | Subcommand | When to Use | Chain Template | Read |
+|--------|-----------|-------------|----------------|------|
+| Auto Classify | `classify` (default) | No Recipe specified — auto-classification | `CLASSIFY → CHAIN_SELECT` (legacy flow) | `references/routing-matrix.md` |
+| Bug Fix | `bug` | Bug reports and fix requests | `Scout → Sherpa → Builder → Radar (+Sentinel)` | `references/routing-matrix.md` |
+| Feature | `feature` | New web/backend/generic feature. **iOS/Android native → `MOBILE_NATIVE` (Native) instead.** | `Sherpa → Forge → Builder → Radar (+Muse)` | `references/routing-matrix.md` |
+| Security | `security` | Security response | `Sentinel → Builder → Radar (+Probe)` | `references/routing-matrix.md` |
+| Refactor | `refactor` | Internal-only refactor, no external behavior change | `Zen → Radar (+Atlas)` | `references/routing-matrix.md` |
+| Optimize | `optimize` | Performance-only improvement | `Bolt/Tuner → Radar (+Schema)` | `references/routing-matrix.md` |
+| Kaizen | `kaizen` | Existing-feature continuous improvement (perf / UX / code-quality / feature-extension). 4-8 agents | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/inline-recipes.md` |
+| Proactive | `proactive` | `/Nexus` with no arguments — project state scan | `Scan project → recommend` | `references/proactive-mode.md` |
+| Apex | `apex` | Full-cycle auto-implementation: discovery → spec → parallel design → risk gate → loop → ship. 8-25 agents. **Confirm before launch.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/apex-recipe.md`, `references/apex-walkthrough.md` |
+| Goal Setup | `goal` | `/goal` autonomous long-running execution setup. 1-3 agents, no code execution | `Hone → Latch → Scribe? → DELIVER` | `references/goal-recipe.md` |
+| Essential | `essential` | Must-have feature **verdict + conditional implementation** — converges on THE ONE feature. Subtraction-oriented | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/inline-recipes.md` |
+| Killer | `killer` | Killer feature **verdict + conditional flagged implementation** via cross-engine triangulation. Dual-engine baseline (Claude + Codex); agy optional | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/inline-recipes.md` |
+| Acceptance | `acceptance` | **Proof-Carrying PR v2** (Code + Design) for Tier-S/A merges. 14-30 agents Tier-S; G1-G10. 3-15× cost. **Confirm Tier-S.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `_common/PROOF_CARRYING.md`, `references/acceptance-recipe.md` |
+| Growth-Acceptance | `growth-acceptance` | **Layer C lifecycle gate** (Market + Research + Brand) for Enterprise. Insight Ledger + +14/+30/+90d loop. G11-G15. 1.1-8× on acceptance. **Confirm Step 3+.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `_common/GROWTH_BRAND_PROOF.md`, `references/growth-acceptance-recipe.md` |
+| Summit | `summit` | Multi-engine **five-team** quality-maximization. Dual-engine default. 28-119 agents, 5-25× cost. **Always confirm.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/summit-recipe.md` |
+| Podium | `podium` | **Content-quality maximization** — doc + high-quality slide creation, five teams. 16-53 agents, 3-8× cost. Output_format variants. **Confirm release-critical.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/podium-recipe.md` |
+| Transmute | `transmute` | **Cross-language rewrite** preserving behavior via differential parity. 8-20 agents. **Confirm before big-bang.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/transmute-recipe.md` |
+| Venture | `venture` | **Business documentation package** from one idea — ~11 parallel doc tracks + traceability barrier. Depth 6-28 agents. **Confirm full.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/venture-recipe.md`, `references/package-recipe.md` |
+| Package | `package` | **Generalized document-package generator** — 12-domain preset registry. Depth 5-28 agents. **Confirm full.** | See `references/recipes-detail.md` | `references/recipes-detail.md`, `references/package-recipe.md` |
 
 ### Signal Keywords → Recipe
 
