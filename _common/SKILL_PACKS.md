@@ -41,11 +41,11 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 ## Packs
 
-### `core` (always-on, ~10 skills)
+### `core` (always-on, ~11 skills)
 
-**Purpose:** orchestration + universal investigation/implementation/review primitives required for any workstream.
+**Purpose:** orchestration + universal investigation/implementation/review primitives + skill-meta governance required for any workstream.
 
-**Members:** `nexus`, `sherpa`, `scout`, `builder`, `radar`, `zen`, `guardian`, `compass`, `architect`, `gauge`
+**Members:** `nexus`, `sherpa`, `scout`, `builder`, `radar`, `zen`, `guardian`, `compass`, `architect`, `gauge`, `prune`
 
 **Triggers:** loaded unconditionally.
 
