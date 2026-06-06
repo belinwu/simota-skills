@@ -77,7 +77,7 @@ A materialised dashboard behaves as follows.
 
 - Production SLO / long-term trend monitoring (owned by `beacon`)
 - Skill ecosystem-wide overview (use `canvas` for diagrams; `realm` was sunset 2026-06-06)
-- Test intelligence (owned by `vista`)
+- Test intelligence dashboards (use `pulse` for KPI/flake/regression timelines + `canvas` for coverage maps; `vista` was merged 2026-06-06)
 - Becoming a registered skill under `~/.claude/skills/` (this stays as a Nexus apex companion tool)
 
 ## Related

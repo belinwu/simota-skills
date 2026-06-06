@@ -38,7 +38,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **cue**: script★ / storyboard / narration / explainer / shorts / captions / localize
 - **darwin**: health★ / fitness / evolve / sunset
 - **dawn**: propose★ / morning / weekend / brief / stack / constraint / viral
-- **dial**: loop★ / sweep / objective / guardrail / drift / campaign / ci / test / devtools
 - **director**: demo★ / scenario / record / onboard / voiceover / captions / thumbnail
 - **dot**: svg★ / canvas / phaser / pillow / css / animation / palette / tilesheet
 - **drill**: author★ / regress / charter / trace / prioritize / convert
@@ -143,7 +142,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **tuner**: explain★ / slow / index / plan / cache / connection / vacuum
 - **vigil**: sigma★ / yara / coverage / hunt / snort / playbook / ioc
 - **vision**: direction★ / redesign / trend / system / brand / moodboard / audit
-- **vista**: coverage★ / results / trace / shape / flake / timeline / diff / mutation / ai-lens / journey / otel
 - **voice**: nps★ / review / sentiment / classify / insight / kano / thematic / csat
 - **void**: prune★ / cut / question / simplify
 - **voyager**: playwright★ / page-object / auth / a11y / visual / api / mobile / component

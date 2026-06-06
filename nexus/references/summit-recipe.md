@@ -502,7 +502,7 @@ loop_iteration:
           — all execution-heavy improvements; Codex sandbox enables safe verification
     - branch: agy_strategic_improvements
       engine: agy
-      agents: [atlas, lore, vista, horizon, shift]
+      agents: [atlas, lore, horizon, shift]
       mission: architecture improvement via whole-codebase 1M-context reasoning (Atlas)
           + cross-codebase pattern extraction + metapattern surfacing (Lore)
           + long-range strategic refactor planning (Vista)
