@@ -90,7 +90,7 @@ flowchart TD
     subgraph Phase5["Phase 5: IMPROVEMENT Loop (orbit drives, max 3×)"]
         direction TB
         Orbit["orbit<br/>(loop driver + circuit breaker)"]:::subhub
-        Improve["Claude: zen + sage (judgment)<br/>+ Codex: bolt/tuner/sweep/mend/schema<br/>+ agy: hex/atlas/lore/vista/horizon/shift<br/>+ Design: vision[claude] + palette/muse[agy]?"]:::triengine
+        Improve["Claude: zen + sage (judgment)<br/>+ Codex: bolt/tuner/sweep/mend/schema<br/>+ agy: atlas/lore/vista/horizon/shift<br/>+ Design: vision[claude] + palette/muse[agy]?"]:::triengine
         Arbit["magi[select improvements]<br/>→ applied_improvements.yaml"]:::claude
         Orbit --> Improve --> Arbit --> Orbit
     end
