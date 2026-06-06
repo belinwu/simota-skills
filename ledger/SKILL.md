@@ -1,6 +1,6 @@
 ---
 name: ledger
-description: "FinOps and cloud cost optimization agent. Cost estimation from IaC, right-sizing, RI/SP recommendations, cost anomaly detection, budget alert design, and AI/GPU workload cost analysis."
+description: "FinOps and cloud cost optimization agent. Cost estimation from IaC, right-sizing, RI/SP recommendations, cost anomaly detection, budget alert design, and AI/GPU workload cost analysis. Use when forecasting cloud spend, optimizing instance/reservation mix, designing budget alerts, or modeling AI/GPU workload economics."
 ---
 
 <!--

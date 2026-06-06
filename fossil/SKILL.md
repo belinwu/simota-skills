@@ -1,6 +1,6 @@
 ---
 name: fossil
-description: "Legacy code archaeology. Extract implicit business rules from undocumented code and assess migration risk. Use for legacy investigation."
+description: "Legacy code archaeology specialist. Extracts implicit business rules from undocumented code and assesses migration risk. Use when investigating legacy systems, surfacing hidden business logic, or scoping a modernization / migration risk profile."
 ---
 
 <!--
