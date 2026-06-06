@@ -39,7 +39,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## エージェント一覧
 
-> 🏰 **[Realm Directory を探訪する](https://simota.github.io/agent-skills/realm-directory/)** — 全 137 エージェントのキャラクターポートレート、クラス・カテゴリ別フィルター、関係性マップが揃ったインタラクティブサイト。
+> 🏰 **[Realm Directory を探訪する](https://simota.github.io/agent-skills/realm-directory/)** — 全 145 エージェントのキャラクターポートレート、クラス・カテゴリ別フィルター、関係性マップが揃ったインタラクティブサイト。
 
 ### オーケストレーション
 
@@ -763,7 +763,7 @@ skills/
 ├── quill/SKILL.md      # ドキュメント
 ├── radar/SKILL.md      # テスト
 ├── rally/SKILL.md      # マルチセッション並列オーケストレーター
-├── realm/SKILL.md      # ゲーミフィケーション・メタ可視化
+├── (realm sunset 2026-06-06)
 ├── reel/SKILL.md       # ターミナル録画・CLIデモ動画生成
 ├── relay/SKILL.md      # メッセージング統合・リアルタイム通信
 ├── researcher/SKILL.md # ユーザーリサーチ

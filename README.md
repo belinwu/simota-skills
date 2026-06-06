@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-137-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-145-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 A skill collection that enables collaborative development with a team of specialized AI agents.
 
 ## Features
 
-- **137 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
+- **145 Specialized Agents** - Covering bug investigation, testing, security, UI/UX, AI/ML, observability, and more
 - **Nexus Orchestrator** - Analyzes tasks and automatically designs optimal agent chains
 - **Platform Agnostic** - Works with Claude Code, Codex CLI, Antigravity CLI, and others
 
@@ -35,11 +35,11 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## Overview
 
-This repository contains 137 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
+This repository contains 145 specialized AI agents covering various aspects of software development. Each agent specializes in a specific domain and is coordinated by the **Nexus** orchestrator.
 
 ## Agent Catalog
 
-> 🏰 **[Explore the Realm Directory](https://simota.github.io/agent-skills/realm-directory/)** — interactive site with character portraits, class/category filters, and a visual relationship map for all 137 agents.
+> 🏰 **[Explore the Realm Directory](https://simota.github.io/agent-skills/realm-directory/)** — interactive site with character portraits, class/category filters, and a visual relationship map for all 145 agents.
 
 ### Orchestration
 
@@ -776,7 +776,7 @@ skills/
 ├── quill/SKILL.md      # Documentation
 ├── radar/SKILL.md      # Testing
 ├── rally/SKILL.md      # Multi-session parallel orchestrator
-├── realm/SKILL.md      # Gamification meta-visualization
+├── (realm sunset 2026-06-06)
 ├── reel/SKILL.md       # Terminal recording & CLI demo video generation
 ├── relay/SKILL.md      # Messaging integration & real-time communication
 ├── researcher/SKILL.md # User research
@@ -818,7 +818,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 137 agents.
+> Category-by-category examples for all 145 agents.
 
 #### Orchestration
 

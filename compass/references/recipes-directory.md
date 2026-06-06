@@ -60,7 +60,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **haul**: catalog★ / lookup / refresh / reverse / brand / audit
 - **hearth**: zsh★ / tmux / neovim / ghostty / vscode / git / shellfn / audit
 - **helm**: scenario★ / swot / pestle / porter / forecast / jtbd / blue-ocean / wardley
-- **hex**: summon★ / audit / exorcise
 - **hone**: audit★ / codex / agy / claude / diff
 - **horizon**: detect★ / replace / poc / refresh / codemod / strangler / sunset
 - **husk**: scan★ / shai-hulud / lockfile / eradicate / rotate / harden / propagation
@@ -103,7 +102,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **radar**: edge★ / flaky / coverage / regression / ci / unit / integration / mutation
 - **rally**: parallel★ / teams / codex-subagents / coordinate
 - **rank**: ice★ / rice / wsjf / moscow / kano / cod / value-effort / pokerplan
-- **realm**: phaser★ / map / character / quest / badge
 - **reel**: vhs★ / terminalizer / asciinema / readme / optimize / theme / narration
 - **relay**: webhook★ / bot / websocket / adapter / sse / queue / rate
 - **researcher**: interview★ / usability / analysis / persona / journey / survey / diary / cards

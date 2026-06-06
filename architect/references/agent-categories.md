@@ -861,12 +861,6 @@ Agents that generate project-specific tooling, audit ecosystem health, curate kn
 - **Output**: Ecosystem state report, evolution actions, dynamic affinity overrides
 - **Trigger**: "evolution check", "ecosystem health", "agent fitness"
 
-### Realm
-- **Role**: Gamified ecosystem meta-visualization agent with 2D office simulation
-- **Input**: EFS/RS scores, activity logs, chain results, agent journals, git commits
-- **Output**: Phaser 3 game simulation, interactive HTML map, character sheets, quest boards, badges, chronicles, real-time XP growth
-- **Trigger**: "kingdom status", "agent character", "quest board", "realm dashboard", "realm game", "realm live"
-
 ### Gauge
 - **Role**: SKILL.md normalization auditor
 - **Input**: SKILL.md files
