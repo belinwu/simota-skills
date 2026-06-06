@@ -1,6 +1,6 @@
 ---
 name: nexus
-description: Meta-orchestrator that coordinates specialist AI agent teams. Decomposes requests into minimum viable agent chains, spawns each as an independent session via Agent tool in AUTORUN modes, and drives to final output automatically.
+description: Meta-orchestrator that coordinates specialist AI agent teams. Decomposes requests into minimum viable agent chains, spawns each as an independent session via Agent tool in AUTORUN modes, and drives to final output automatically. Use when a task spans multiple specialist domains, requires parallel agent execution, or needs hub-and-spoke routing across the skill ecosystem.
 ---
 
 <!--
@@ -163,19 +163,19 @@ Single source of truth for Recipe definitions. Full phase contracts for Recipes 
 | Goal Setup | `goal` | `/goal` autonomous long-running execution setup (Claude Code v2.1.139+ / Codex CLI experimental). Lightweight: 1-3 agents, no code execution. | Hone[audit] → Latch[hooks] → Scribe?[CLAUDE.md or AGENTS.md] → DELIVER(launch recipe) | `references/goal-recipe.md` |
 | Essential | `essential` | Must-have feature **verdict + conditional implementation**. Converges on THE ONE feature without which the product cannot exist. Subtraction-oriented (MVP, core feature, scope reduction). | Plea → Spark → Magi → Rank → AskUserQuestion[Y/N/Modify] → if Y: Sherpa → Builder[codex] → Radar[codex] → Guardian | inline |
 | Killer | `killer` | Killer feature **verdict + conditional implementation with feature flag**. Converges on THE ONE decisive differentiator via cross-engine triangulation. Default baseline: **Claude + Codex (dual-engine)** — perspective diversity via different prompt frames + WebSearch tool usage. agy optional third axis when AVAILABLE. Addition-and-leap-oriented. | (Compete[claude+WebSearch] ‖ Flux[claude reframe] ‖ Plea[claude empathy] [+ Compete-agy / Flux-agy if AVAILABLE]) → Spark → Magi → AskUserQuestion[Y/N/Modify] → if Y: Sherpa → (Forge[codex] if UI) → Artisan/Builder[codex] → Radar[codex] → judge[multi-engine] → Guardian + flag | inline |
-| Acceptance | `acceptance` | **Proof-Carrying PR pipeline v2 — Two-Axis (Code + Design)** for Tier-S/A merges. Tier-S=14-30 agents (UI: 22-30, non-UI: 14-18), Tier-A=8-21; Tier-B/C auto-downgrade to `feature`. G1 cross-engine diversity mandatory for Tier-S; G4 Dual-Implementation Diversity for money/authz/state-machine/inventory; G7 Unmeasurable-Quality Audit for Tier-S UI; G9 4-layer Swiss-Cheese for Design-Code Contract. Cost: Tier-S non-UI 6-10×, Tier-S full-UI 9-15×; Tier-A non-UI 3-5×, Tier-A full-UI 5-8× vs `feature`. **Confirm before Tier-S launch.** | Phase 0 tier+ui_dimension → 1 attest[spec-diff] → 2A Code Oracles (radar ‖ mint ‖ drill ‖ sentinel ‖ attest ‖ arena[COMPETE if money/authz]) ‖ 2B Design Oracles via atelier (muse ‖ frame ‖ palette ‖ weave ‖ flow ‖ canon ‖ showcase ‖ prose ‖ matrix) → 3A Code Adversaries (vigil ‖ sentinel ‖ specter ‖ siege?) ‖ 3B Design Adversaries via atelier (echo ‖ voyager+navigator ‖ drill) → 4A judge+attest → 4B canon+frame+vision → 4C guardian[joint verdict] → 4-G7 human designer sign-off (Tier-S UI) → 5 beacon+mend → 6 random sampling 5%/2% | `_common/PROOF_CARRYING.md`, `references/acceptance-recipe.md` |
-| Growth-Acceptance | `growth-acceptance` | **Layer C lifecycle gate** for Enterprise org-tier orgs (Market + Research + Brand axes). Extends `acceptance` (Phase 1 delegates there) with pre-design (Research Proof + Insight Ledger + Contract draft), ship-time (Market Proof + Brand B.tone + G14 Regulatory Pre-Flight), post-launch (+14d/+30d/+90d Measurement Loop with G13 auto-halt). **Org Tier gate**: Solo aborts; SMB Step 1 only; Enterprise full Step 1-4. G11 (KB Write Authority — AI read-only on Ledger), G12 (Diversity Floor), G13 (Stop Authority), G14 (Regulatory Envelope), G15 (Constitution Lifecycle) mandatory. Brand Compiler 3-layer (B.hard / B.pattern blocking + B.tone advisory + G7). Cost: Step 1 only 1.1-1.3× / Step 1+2 2-3× / Step 1+2+3 3-5× / Step 1+2+3+4 5-8× (in addition to acceptance). **Confirm before Step 3 or Step 4.** | Phase 0 classify(org_tier+step+regulatory) → insight[Ledger query R/O] → researcher?[fresh] → accord+spark[Contract Tier 0/1/2] → 1 delegate to `acceptance` (full v2 Code+Design + B.hard/B.pattern) → 2 pulse+experiment[Market Proof+Incrementality Decision Tree] ‖ ledger[CAC/LTV] ‖ compete[cannibalization] ‖ funnel+lure[channel-fit] ‖ vision+prose[B.tone advisory] ‖ clause+comply+cloak+vigil[G14 Pre-Flight] → 3 (+14d/+30d/+90d) pulse+experiment+beacon+compete+ledger[Measurement] → G13 Stop_Condition → mend[24h auto-halt] → harvest+tome[Ledger queue per G11] → 4 quarterly G15/G6/G14/G12 + monthly G11/Override + weekly B.tone sampling | `_common/GROWTH_BRAND_PROOF.md`, `references/growth-acceptance-recipe.md` |
-| Summit | `summit` | Multi-engine **five-team** quality-maximization (Analysis / Design / Execution / Verification / Improvement). Default baseline: **Claude + Codex (dual-engine)** — Codex ~65-70% (code-gen/sandbox/test) / Claude ~30-35% (judgment/orchestration/ethics). agy is an **optional third axis** (~15-25% slice, long-context/multimodal/Deep Think/Search) added when AVAILABLE at PREFLIGHT; dual-engine mode runs normally when agy is unavailable or RUNTIME-BROKEN. Design Team conditional on `ui_dimension`. 32-119 agents (tri-engine), 28-111 agents (dual-engine — agy-only specialists absorbed by Claude/Codex), 49-193 min, 5-25× cost. **Always confirm.** | Phase 0 Framing (Claude) → 1 Analysis (Claude judgment ‖ Codex code-analysis ‖ [agy long-context+multimodal if AVAILABLE] ‖ Echo/Frame/Palette[design]) → 2 Planning (Claude opus) → 3 Design Track (Vision orchestrates) ‖ Execution Track (arena[COLLABORATE]; tri-engine 60/25/15 codex/agy/claude OR dual-engine 70/30 codex/claude) → 4 Verification (judge ‖ Codex dynamic ‖ [agy compliance if AVAILABLE] ‖ Echo/Palette UX) → 5 Improvement (orbit, max 3 loops, magi-arbitrated) → 6 Delivery (Guardian + Launch + Engine Distribution Audit) | `references/summit-recipe.md` |
-| Podium | `podium` | **Content-quality maximization** for documentation + high-quality slide creation. Five teams (Research / Narrative / Production / Verification / Improvement) produce a unified doc+slide package from one source-of-truth outline. Default baseline: **Claude + Codex (dual-engine)** — Claude ~45-50% (prose / narrative / audience judgment) / Codex ~30-35% (slide compilation / diagrams-as-code / format conversion). agy optional third axis (~15-25%, AI imagery code / long-ctx synthesis / multimodal extraction). 16-53 agents, 35-130 min, 3-8× cost. **Confirm only for release-critical.** | Phase 0 Framing (Claude — output_format, audience, brand, mode: greenfield\|refresh) → 1 Research (Researcher audience ‖ Lens/Harvest/Quill sources ‖ [agy Tome/Frame] ‖ external grounding) → 2 Narrative (Stage/Zine/Scribe/Tome story arc + Magi convergence) → 3 Production (Content[Cue+Prose for slides] ‖ Visual[Sketch=code, Ink=svg] ‖ Layout[Stage/Morph/Prism/figma:figma-use-slides] tracks) → 4 Verification (Nexus internal claim-grounding ‖ Canon style ‖ Echo persona ‖ Palette visual a11y ‖ Voyager render ‖ judge) → 5 Improvement (orbit, max 2 loops, magi-arbitrated) → 6 Publish (image materialization → Morph → Guardian? → Launch?) | `references/podium-recipe.md` |
-| Transmute | `transmute` | **Cross-language rewrite** preserving behavior (TS→Rust, Go→Rust, Python→Go, JS→TS, …). Idiomatic re-expression — NOT transliteration — verified by **differential parity** against a golden oracle extracted from the source. Distinct from `PORTING` (Web→native platform shift), `shift` (same-language framework migration), `horizon` (dependency modernization), `refactor`/`kaizen` (same-language). Strategy chosen at a risk gate: big-bang \| strangler-fig \| FFI-incremental. 8-20 agents, mid-high cost. **Confirm before big-bang.** | Phase 0 Framing (lang-pair + scope + strategy + parity feasibility) → 1 Archaeology (Fossil[business rules] ‖ Lens[structure/dataflow] ‖ Atlas?[arch boundaries] ‖ Trail?[why-history]) → 2 Contract (Accord[lang-neutral behavior spec] → Mint[golden I/O oracle]) → 3 Strategy (Magi[strategy + risk gate] → Transmutation Map: type/error/concurrency/memory) → 4 Transmute (Builder/Artisan[idiomatic impl] +grok?[parser/DSL] +gateway/schema?[boundaries]; arena[COMPETE] for high-risk modules) → 5 Parity Verify (Radar[differential/property vs oracle] ‖ Attest[Accord conformance] ‖ judge[idiom review] ‖ Voyager?[E2E parity]) → 6 Ship (Guardian[PR + Before/After parity report + strangler increment]) | `references/transmute-recipe.md` |
-| Venture | `venture` | **Business documentation package** from a single business idea — research → product spine → ~11 parallel doc tracks → overview synthesis → traceability/validation → multi-format file tree (MD/CSV/JSON/YAML/SQL/HTML/CSS/Mermaid) + zip. Serves Biz/PM/Design/Eng/Marketing/Sales/QA/Legal/Investor at once. Core constraint: canonical `feature_id` (F-001…) fixed at a Phase 2 barrier and propagated to every track for cross-doc traceability. Depth/mode-scaled: lite 6-8, mvp(default) 14-18, raise 16-20, full 24-28 agents. Generated content language follows the CLI output-language config. **Confirm before full depth.** | Phase 0 Framing (idea + optional condition fields + depth + mode overlays + web-grounding check + ≤3 clarify) → 1 Research (researcher+compete ‖ plea+cast) → 2 Product Spine [BARRIER: emit canonical F-001… + MoSCoW] (accord+spark+rank+pulse+void?) → 3 Parallel Doc Tracks, feature_id-bound (Brand:vision+muse+prose+tone ‖ UX:palette+canvas+echo+prose ‖ LP:funnel+prose ‖ Mktg:funnel/lure+pulse+experiment ‖ Tech:atlas+schema+gateway+beacon+gear+crypt? ‖ AI:oracle ‖ Legal:clause+cloak+comply?+omen+ripple ‖ Test:drill+radar?+mint ‖ PM:sherpa+rank+scribe ‖ Mock:mint ‖ Assets:sketch+canvas) → 4 Overview synthesis (spark+scribe+magi?) → 5 Integrate+Validate (attest/judge traceability matrix + manifest.csv + validation_report + README) → 6 Package (write tree UTF-8 + zip -r + syntax lint + unzip test + PII scrub) | `references/venture-recipe.md`, `references/package-recipe.md` |
-| Package | `package` | **Generalized document-package generator** — venture's engine factored into engine + **domain-preset registry**. One recipe, 12 domains each backed by an owner skill: `startup` (= venture), `generic`, `research`, `ai-adoption`, `legal` (gate), `saas`, `media`, `growth` (planning-only), `career` (ascent), `learning` (mentor), `hiring` (guild, labor-law gate), `local-gov` (civic, public-equity gate). Per-domain blueprint swaps directories, role→skill map, distinctive outputs, traceability anchor (F-/H-/UC-/R-/P-/E-/T-/LO-/I-), and risk gates. Same Phase 0-6 engine + entity-id barrier + multi-format file tree + zip. Depth-scaled 5-28 agents. **Confirm before full depth; legal/ai-adoption fire mandatory risk gates.** | Phase 0 Framing (theme + conditions + preset auto-detect + depth + risk-flag scan + ≤3 clarify) → 1 Research (preset research skills; research preset may invoke deep-research) → 2 Spine [BARRIER: emit canonical entity-id table per preset anchor] → 3 Parallel Doc Tracks (preset track→skill map, entity-id-bound, waves) → 4 Overview synthesis (spark+scribe+magi?) → 5 Integrate+Validate (attest/judge traceability matrix + risk gate + manifest + validation_report + README) → 6 Package (write tree UTF-8 + zip -r + syntax lint + unzip test + PII scrub) | `references/package-recipe.md` |
+| Acceptance | `acceptance` | **Proof-Carrying PR pipeline v2 — Two-Axis (Code + Design)** for Tier-S/A merges. 14-30 agents Tier-S (UI), 8-21 Tier-A; Tier-B/C auto-downgrade to `feature`. G1-G10 guardrails. Cost: 3-15× vs `feature`. **Confirm before Tier-S launch.** Full Tier policy + G1-G10 + chain → `_common/PROOF_CARRYING.md`, `references/acceptance-recipe.md`. | Phase 0 tier+ui_dimension → 1 attest → 2A Code Oracles ‖ 2B Design Oracles (via atelier) → 3A/3B Adversaries → 4 judge+attest+canon+frame+vision → guardian joint verdict → G7 human sign-off (Tier-S UI) → 5 beacon+mend → 6 sampling | `_common/PROOF_CARRYING.md`, `references/acceptance-recipe.md` |
+| Growth-Acceptance | `growth-acceptance` | **Layer C lifecycle gate** (Market + Research + Brand axes) for Enterprise org-tier. Extends `acceptance` with pre-design Research Proof + Insight Ledger + Contract, ship-time Market Proof + Brand B.tone, post-launch +14/+30/+90d Measurement Loop. Org Tier gate (Solo abort / SMB Step 1 / Enterprise full). G11-G15 + 3-layer Brand Compiler. Cost: 1.1-8× on top of acceptance. **Confirm Step 3+.** Full lifecycle → `_common/GROWTH_BRAND_PROOF.md`, `references/growth-acceptance-recipe.md`. | Phase 0 classify → insight Ledger R/O → researcher?[fresh] → accord+spark Contract → 1 delegate to acceptance → 2 pulse+experiment Market+Incrementality ‖ ledger CAC/LTV ‖ compete cannibalization ‖ funnel+lure channel-fit ‖ vision+prose B.tone ‖ clause+comply+cloak+vigil G14 → 3 Measurement → G13 Stop → mend auto-halt → harvest+tome Ledger queue → 4 audits | `_common/GROWTH_BRAND_PROOF.md`, `references/growth-acceptance-recipe.md` |
+| Summit | `summit` | Multi-engine **five-team** quality-maximization. Dual-engine default (Codex ~65-70% / Claude ~30-35%); agy optional third axis when AVAILABLE. 28-119 agents, 49-193 min, 5-25× cost. **Always confirm.** Engine × team matrix + quorum rules → `references/summit-recipe.md`. | Phase 0 Framing → 1 Analysis ‖ design[Echo/Frame/Palette] → 2 Planning → 3 Design (Vision) ‖ Execution (arena COLLABORATE) → 4 Verification (judge ‖ Codex dynamic ‖ Echo/Palette) → 5 Improvement (orbit, max 3 loops, magi-arbitrated) → 6 Guardian + Launch + Engine Audit | `references/summit-recipe.md` |
+| Podium | `podium` | **Content-quality maximization** — doc + high-quality slide creation, five teams (Research / Narrative / Production / Verification / Improvement). Dual-engine (Claude prose ~45-50% / Codex compile ~30-35%); agy optional (~15-25%). 16-53 agents, 35-130 min, 3-8× cost. Output_format variants (doc / slide / both / notebooklm / figma-slides). **Confirm release-critical.** | Phase 0 Framing → 1 Research (Researcher audience ‖ Lens/Harvest/Quill ‖ external grounding) → 2 Narrative (Stage/Zine/Scribe/Tome + Magi) → 3 Production (Content ‖ Visual ‖ Layout) → 4 Verification (claim-grounding ‖ Canon ‖ Echo ‖ Palette ‖ Voyager ‖ judge) → 5 Improvement (orbit, max 2) → 6 Publish | `references/podium-recipe.md` |
+| Transmute | `transmute` | **Cross-language rewrite** preserving behavior (TS→Rust, Go→Rust, Python→Go, JS→TS, …). Idiomatic re-expression verified by **differential parity** against golden oracle. Distinct from `PORTING` / `shift` / `horizon` / `refactor`. Strategy: big-bang ‖ strangler-fig ‖ FFI-incremental. 8-20 agents. **Confirm before big-bang.** | Phase 0 Framing → 1 Archaeology (Fossil ‖ Lens ‖ Atlas? ‖ Trail?) → 2 Contract (Accord → Mint golden oracle) → 3 Strategy (Magi risk gate + Transmutation Map) → 4 Transmute (Builder/Artisan +grok?+gateway/schema?; arena COMPETE for high-risk) → 5 Parity Verify (Radar differential ‖ Attest conformance ‖ judge ‖ Voyager?) → 6 Ship (Guardian) | `references/transmute-recipe.md` |
+| Venture | `venture` | **Business documentation package** from one idea — research → product spine → ~11 parallel doc tracks → synthesis → traceability → multi-format file tree + zip. Canonical `feature_id` (F-001…) barrier at Phase 2 + propagation to all tracks. Depth tiers: lite 6-8, mvp(default) 14-18, raise 16-20, full 24-28 agents. **Confirm full depth.** | Phase 0 Framing → 1 Research (researcher+compete ‖ plea+cast) → 2 Product Spine [BARRIER: F-001 + MoSCoW] (accord+spark+rank+pulse+void?) → 3 Parallel Doc Tracks, feature_id-bound (Brand / UX / LP / Mktg / Tech / AI / Legal / Test / PM / Mock / Assets) → 4 Overview synthesis → 5 Validate (attest/judge + manifest + report + README) → 6 Package (UTF-8 + zip + lint + unzip test + PII scrub) | `references/venture-recipe.md`, `references/package-recipe.md` |
+| Package | `package` | **Generalized document-package generator** — venture engine + **12-domain preset registry** (startup=venture / generic / research / ai-adoption / legal* / saas / media / growth / career / learning / hiring* / local-gov*). Per-domain swap: directories, role→skill map, traceability anchor (F-/H-/UC-/R-/P-/E-/T-/LO-/I-), risk gates (*=mandatory). Same Phase 0-6 engine. Depth 5-28 agents. **Confirm full depth.** | Phase 0 Framing (preset auto-detect + risk-flag) → 1 Research (preset skills; deep-research for research preset) → 2 Spine [BARRIER: entity-id per anchor] → 3 Parallel Doc Tracks (preset map, waves) → 4 Synthesis → 5 Validate (attest/judge + risk gate + manifest + report + README) → 6 Package | `references/package-recipe.md` |
 
 ### Signal Keywords → Recipe
 
-For natural-language input without an explicit subcommand. Subcommand match wins if both apply.
+For natural-language input without an explicit subcommand. **Subcommand match always wins.** Keywords are **English canonical anchors**, not a literal allowlist — Nexus translates input (any language / paraphrase) to English intent first, then matches by semantic intent, not string match. The output-language config still governs the user-facing response.
 
-Keywords below are **English canonical anchors**, not a literal allowlist. Nexus absorbs language and phrasing at CLASSIFY: input in any language (Japanese, etc.) or paraphrased wording is semantically mapped to the matching Recipe by intent, not string match. Translate the user's request to its English intent first, then match. The output-language config still governs the user-facing response.
+**Full canonical table** (Core / Specialist / Mobile / Package / Fallback sections) → `references/signal-keywords.md`. The most-used Core anchors are inlined below; for specialist-skill, mobile-native, and package-preset keyword anchors, consult the reference.
 
 | Keywords | Recipe |
 |----------|--------|
@@ -184,48 +184,28 @@ Keywords below are **English canonical anchors**, not a literal allowlist. Nexus
 | `security`, `vulnerability`, `CVE` | `security` |
 | `refactor`, `clean up`, `code smell` | `refactor` |
 | `optimize`, `slow`, `performance` | `optimize` |
-| `kaizen`, `improve`, `polish`, `enhance existing`, `incremental improvement`, `refine`, `continuous improvement` | `kaizen` |
+| `kaizen`, `improve`, `polish`, `enhance existing`, `incremental improvement`, `refine` | `kaizen` |
 | `review`, `check`, `audit` | (legacy quality review via `routing-matrix.md`) |
-| `design system docs`, `token docs`, `component catalog` | `DESIGN_SYSTEM_DOCS` (see Routing Quick Start) |
 | `brainstorm`, `bounce ideas`, `riff`, `ideate`, `sounding board` | (Riff direct — single-agent) |
-| `apex`, `auto-impl`, `full implementation`, `discovery to launch`, `end-to-end feature`, `ultimate` | `apex` |
-| `goal`, `/goal setup`, `goal recipe`, `long-running goal`, `autonomous loop setup` | `goal` |
-| `essential`, `must-have`, `MVP definition`, `core feature`, `minimum viable`, `cut scope`, `bare minimum` | `essential` |
-| `killer`, `killer feature`, `differentiator`, `WOW experience`, `decisive feature`, `competitive edge` | `killer` |
-| `acceptance`, `proof-carrying PR`, `acceptance gate`, `machine-adjudicated merge`, `tier-s merge`, `payment merge`, `auth merge`, `auto-merge with evidence` | `acceptance` |
-| `growth-acceptance`, `lifecycle gate`, `market proof`, `research proof`, `brand proof`, `insight ledger`, `incrementality gate`, `brand compiler`, `growth-brand contract`, `post-launch measurement` | `growth-acceptance` |
-| `summit`, `tri-engine`, `all engines`, `claude+codex+agy`, `quality maximization`, `strategic decision`, `release-critical`, `design-critical launch` | `summit` |
-| `podium`, `slide deck`, `keynote`, `conference talk`, `presentation`, `talk deck`, `speaker deck`, `onboarding kit (doc + deck)`, `learning material with companion deck`, `doc + slide`, `unified content package`, `article + slides`, `retrospective (doc + exec deck)`, `launch package (announcement + sales deck)` | `podium` |
+| `apex`, `auto-impl`, `full implementation`, `discovery to launch`, `end-to-end feature` | `apex` |
+| `goal`, `/goal setup`, `long-running goal`, `autonomous loop setup` | `goal` |
+| `essential`, `must-have`, `MVP definition`, `core feature`, `minimum viable`, `cut scope` | `essential` |
+| `killer`, `killer feature`, `differentiator`, `WOW experience`, `decisive feature` | `killer` |
+| `acceptance`, `proof-carrying PR`, `tier-s merge`, `payment merge`, `auth merge`, `auto-merge with evidence` | `acceptance` |
+| `growth-acceptance`, `lifecycle gate`, `market proof`, `research proof`, `brand proof`, `insight ledger`, `incrementality gate`, `post-launch measurement` | `growth-acceptance` |
+| `summit`, `tri-engine`, `all engines`, `quality maximization`, `strategic decision`, `release-critical` | `summit` |
+| `podium`, `slide deck`, `keynote`, `presentation`, `doc + slide`, `unified content package` | `podium` |
+| `transmute`, `rewrite in <lang>`, `language rewrite`, `cross-language`, `idiomatic rewrite`, `differential parity` | `transmute` |
+| `venture`, `business plan`, `business documentation package`, `MVP dossier`, `startup dossier`, `pitch package` | `venture` (= `package domain=startup`) |
+| `package`, `document package`, `documentation package`, `generate a full package` | `package` (auto-detect preset) |
 | `/Nexus` (no arguments) | `proactive` |
-| `skill audit`, `MCP supply chain`, `plugin intake`, `.claude config audit`, `Unicode Tag injection`, `curl-pipe scan`, `third-party intake` | `SUPPLY_CHAIN_AUDIT` (Chain) |
-| `Shai-Hulud`, `npm worm`, `PyPI worm`, `lottie-player`, `S1ngularity`, `infected lockfile`, `C2 traffic`, `credential rotation order`, `infected` | `MALWARE_RESPONSE` (Husk → Triage → Crypt) |
-| `auto-tune`, `continuous tuning`, `GC tuning`, `threadpool`, `connection pool`, `worker count`, `cache size auto-adjust` | `AUTO_TUNING` (Dial) |
-| `tech debt visualization`, `debt mascot`, `debt character`, `gamified retro`, `quarterly debt review` | `DEBT_VISUALIZATION` (Hex → Sketch) |
-| `audio analysis`, `LUFS`, `True Peak`, `BPM detect`, `key detect`, `mastering QC`, `EBU R128`, `librosa`, `pyloudnorm` | `AUDIO_ANALYSIS` (Sonar) |
-| `ToS`, `Terms of Service`, `Privacy Policy`, `Tokushoho`, `Specified Commercial Transactions Act`, `terms review`, `policy gap` | `LEGAL_REVIEW` (Clause → Scribe) |
-| `ICE`, `RICE`, `WSJF`, `MoSCoW`, `Kano`, `Cost of Delay`, `priority`, `prioritize`, `ranking` | `PRIORITIZE` (Rank → Magi) |
-| `pre-mortem`, `premortem`, `FMEA`, `failure modes`, `RPN`, `AP`, `failure scenario enumeration`, `what could go wrong` | `PREMORTEM` (Omen → Ripple) |
-| `manual QA`, `TestRail`, `Xray`, `Zephyr`, `Qase`, `BVA`, `equivalence class`, `decision table`, `exploratory charter`, `manual test procedure` | `MANUAL_QA` (Drill) |
-| `test pyramid`, `trophy`, `honeycomb`, `coverage heatmap`, `flake dashboard`, `Wilson lower-bound`, `mutation overlay`, `test shape` | `TEST_INTELLIGENCE` (Vista) |
-| `iOS`, `iOS implementation`, `iPhone`, `iPad`, `Swift`, `SwiftUI`, `Swift 6.2`, `Liquid Glass`, `iOS 26`, `@Observable`, `SwiftData`, `Xcode`, `App Store`, `TestFlight`, `xcrun`, `simctl`, `devicectl`, `xctrace`, `WidgetKit`, `Live Activities`, `App Intents`, `ASAuthorizationController`, `Apple Intelligence`, `Foundation Models` | `MOBILE_NATIVE` (Native) — iOS path |
-| `Android`, `Android implementation`, `Kotlin`, `Jetpack Compose`, `Material 3 Expressive`, `M3 Expressive`, `Compose Multiplatform`, `Strong Skipping`, `Type-safe Navigation`, `Gradle`, `KSP`, `Android Gradle Plugin`, `AGP`, `Play Store`, `Play Console`, `adb`, `logcat`, `dumpsys`, `WorkManager`, `Credential Manager`, `Jetpack Glance`, `Gemini Nano`, `AICore` | `MOBILE_NATIVE` (Native) — Android path |
-| `native app`, `native implementation`, `mobile app implementation`, `both iOS and Android`, `mobile native`, `pure native`, `Passkey mobile`, `Privacy Manifest`, `Data Safety form`, `Universal Links`, `App Links`, `App Bundle`, `staged rollout`, `phased release` | `MOBILE_NATIVE` (Native) — cross-platform / shared mobile |
-| `XCUITest`, `XCUIApplication`, `XCUIElement`, `XCUIElementQuery`, `accessibilityIdentifier`, `fastlane snapshot`, `Snapfile`, `SnapshotHelper`, `App Store screenshot`, `frameit`, `xcresulttool`, `xcodebuild test`, `.xctestrun`, `iOS UI test`, `swift ui test`, `status bar override`, `simctl status_bar` | `IOS_UI_TEST` (Snap) |
-| `Web to iOS`, `Web to Android`, `Web to native`, `port to iOS`, `port to Android`, `feature parity matrix`, `nativize`, `porting design`, `Strangler Fig mobile` | `PORTING` (Port → Native) |
-| `transmute`, `rewrite in`, `port to Rust`, `TS to Rust`, `Go to Rust`, `Python to Go`, `JS to TS`, `language rewrite`, `cross-language`, `rewrite in another language`, `idiomatic rewrite`, `differential parity` | `transmute` |
-| `venture`, `business plan`, `business documentation package`, `MVP dossier`, `startup dossier`, `pitch package`, `business-prep package`, `investor material bundle`, `business idea to docs`, `comprehensive product docs` | `venture` (= `package domain=startup`) |
-| `package`, `document package`, `documentation package`, `generate a full package`, `project package`, `generic project docs` | `package` (auto-detect preset) |
-| `research package`, `research plan package`, `literature review package`, `study design`, `methodology + analysis plan` | `package domain=research` |
-| `AI adoption package`, `AI rollout plan`, `RAG plan`, `prompt library`, `AI governance package`, `internal AI enablement` | `package domain=ai-adoption` |
-| `legal package`, `compliance package`, `policy pack`, `ToS + privacy + AI policy drafts`, `legal risk register` | `package domain=legal` |
-| `SaaS package`, `SaaS productization docs`, `AI product platform docs` | `package domain=saas` |
-| `media package`, `content operations kit`, `editorial calendar package`, `channel + monetization plan` | `package domain=media` |
-| `growth package`, `growth experiment plan`, `funnel + A/B plan package`, `growth hypotheses package` | `package domain=growth` (planning-only; execution → `kaizen`) |
-| `career package`, `job-change plan`, `career strategy package`, `portfolio + interview + negotiation kit` | `package domain=career` (owner skill `ascent`) |
-| `learning package`, `curriculum package`, `course design package`, `training program docs` | `package domain=learning` (owner skill `mentor`) |
-| `hiring package`, `recruitment package`, `JD + interview + onboarding kit`, `org design docs` | `package domain=hiring` (owner skill `guild`) |
-| `local-gov package`, `civic project package`, `public-sector plan`, `regional initiative docs`, `citizen participation plan` | `package domain=local-gov` (owner skill `civic`) |
 | unclear or multi-domain request | `classify` → `references/intent-clarification.md` |
+
+**Specialist anchors** (Chain / Husk-Triage-Crypt / Dial / Hex-Sketch / Sonar / Clause-Scribe / Rank-Magi / Omen-Ripple / Drill / Vista) — see `references/signal-keywords.md` § Specialist Skill Anchors.
+
+**Mobile / cross-platform anchors** (`MOBILE_NATIVE` for iOS/Android/cross-platform, `IOS_UI_TEST` for Snap, `PORTING` for Port→Native) — see `references/signal-keywords.md` § Mobile Native Anchors.
+
+**Package / domain-preset anchors** (research / ai-adoption / legal / saas / media / growth / career / learning / hiring / local-gov) — see `references/signal-keywords.md` § Package / Domain Anchors.
 
 ## Subcommand Dispatch
 
@@ -236,40 +216,12 @@ Parse the first token of user input:
 
 Execution-control Mode (AUTORUN_FULL / AUTORUN / GUIDED / INTERACTIVE) is applied after Recipe selection (orthogonal).
 
-Recipes with `Read` references in the Recipes table follow those references for phase contracts. The three Recipes below (`kaizen`, `essential`, `killer`) are documented inline because they have no separate reference file.
+Recipes with `Read` references in the Recipes table follow those references for phase contracts. Three Recipes — `kaizen`, `essential`, `killer` — have no separate top-level reference; their full phase contracts (DIAGNOSE/PROPOSE/IMPROVE/VERIFY/SHIP for kaizen, sequential funnel + verdict + conditional implementation for essential, cross-engine triangulation + verdict + flagged implementation for killer) live in `references/inline-recipes.md`.
 
-### `kaizen` — Multi-axis improvement of an existing feature
-
-- **Phase 1 DIAGNOSE (parallel)** — Lens[map-current-implementation] unconditionally; conditionally add Pulse[KPI-measure] if metrics instrumentation exists, Echo[UX-walkthrough] if UI surface, Voice[sentiment]/Trace[session-replay] if user-feedback or session data is available. Goal: multi-signal picture of how the feature behaves and where it falls short.
-- **Phase 2 PROPOSE (sequential)** — Spark[improvement-spec, **constrained to enhancing existing data/logic** — not new feature ideation] → Magi[axis-prioritize] selects **one or two** axes from `{perf, UX, code-quality, feature-extension}`; rejects "improve everything" plans because kaizen is iterative and scope-bounded.
-- **Phase 3 IMPROVE (axis-bounded, parallel within axis)** — perf → Bolt[frontend]/Tuner[explain]; UX → Palette[usability]/Prose[microcopy]/Flow[motion]; code-quality → Zen[refactor]/Sweep[dead-code]; feature-extension → Artisan[component]/Builder[api]. Independent sub-axes parallel; dependent ones serialize.
-- **Phase 4 VERIFY** — Radar[regression] gates non-regression on existing behavior; if Pulse/Echo ran in Phase 1, re-run them for Before/After comparison.
-- **Phase 5 SHIP** — Guardian[PR-prep] produces PR with embedded Before/After report.
-- **Boundaries**: vs `refactor` (internal-only, no external delta) — kaizen explicitly improves externally-observable quality alongside internal hygiene. vs `optimize` (perf-only) — kaizen treats perf as one axis. vs `feature` (new capability) — kaizen polishes a shipped feature.
-- **Anti-patterns prevented**: (1) "rewrite the whole module under improvement banner" (Magi's axis-cap forces scope discipline), (2) "improve without measuring" (Phase 1 diagnostics mandatory), (3) "improvement that regresses something else" (Phase 4 Radar + re-measure).
-- **Add-ons**: +Scout for deeper root-cause when Lens insufficient, +Atlas for structural change, +Ripple for cross-module impact before committing to an axis.
-
-### `essential` — Single must-have verdict + conditional implementation
-
-- **Phase 1-4 Verdict (sequential refinement funnel)** — Plea[claude pain-extraction] → Spark[claude spec] → Magi[claude necessity-arbitration] → Rank[claude MoSCoW-must]. Each step narrows the previous output; parallelization would force redundant re-synthesis. Subtraction-oriented — Magi's Sophia filters "Should-have" posing as "Must-have".
-- **Convergence rule**: Rank's MoSCoW output filtered to **the single top Must-have** (highest necessity score). Tie-break: defer to Magi's Sophia; still tied → escalate to user via AskUserQuestion with tied candidates.
-- **Phase 5 DELIVER verdict via AskUserQuestion** — card format: `## Essential Verdict / Recommended must-have: <single feature> / Why: <2-3 lines> / Source of conviction: Plea→Spark→Magi→Rank summary / Considered but rejected: <2-3 alternatives, one-line reasons> / → Build this? [Yes / No / Modify]`.
-- **Phase 6 Conditional Implementation (only if Yes)**: Sherpa[claude atomic-decomposition] → Builder[codex] → Radar[codex] → Guardian[claude] → DELIVER working feature + tests + PR. Engine routing follows summit principles (Codex owns code-gen, Claude owns judgment).
-- **If No**: DELIVER verdict artifact as "decided-not-to-build" record; do not run Phase 6.
-- **If Modify**: capture user input (what to change), loop back to Phase 1 with the modification as additional constraint.
-- **Failure mode prevented**: over-engineering (Phase 1-5) + unbounded implementation scope (Phase 6 inherits the single-feature constraint).
-- **Add-ons**: +Void for aggressive scope cut, +Accord for atomic-unit specs in Phase 1-4.
-
-### `killer` — Single differentiator verdict + conditional flagged implementation
-
-- **Phase 1 (parallel hub-spoke, cross-engine triangulation, dual-engine baseline)** — Default baseline distributes Phase 1 branches across **both Claude and Codex** to preserve perspective independence at the model-priors level (not just prompt-frame level): Compete[**claude** + WebSearch tool for current market gap-analysis, framed as "industry analyst"] ‖ Flux[**codex** sandbox-execution priors, framed as "what would the market gap look like in code / infrastructure / developer-experience terms" — Codex's GitHub-heavy training surfaces gaps a market-focused model misses] ‖ Plea[**claude** empathy/latent-needs, framed as "user advocate"]. **Optional agy lift (when AVAILABLE at PREFLIGHT)**: Compete adds a second branch on agy (Search-grounded for fresher market data than Claude's training cutoff), Flux adds a second branch on agy (Deep Think mode for cross-domain analogy generation) — agy's training-data priors give an additional independence axis. Failure mode prevented: model-monoculture in the triangulation step. Engine-attribution tags: `[claude-compete]`, `[codex-flux]`, `[claude-plea]` for the dual-engine baseline; add `[agy-search]`, `[agy-deepthink]` when the optional lift is active.
-- **Phase 2 (sequential synthesis)** — Spark[claude] aggregates the independent perspectives into **the single most decisive killer feature** → Magi[claude] binary Go/No-Go.
-- **Convergence rule**: Spark MUST synthesize one feature (not a ranked list); Magi delivers binary Go/No-Go. Tie-break: Magi forces selection via strategic-impact criterion (market timing × differentiation depth × feasibility); NO-GO still surfaces runner-up with "weakest-link" annotation.
-- **Phase 4 DELIVER verdict via AskUserQuestion** — card with perspective-attributed evidence (mark which frame produced which insight; note which branches were agy-backed vs Claude-frame-only) + Magi verdict (GO confidence H/M/L | NO-GO reason) → Ship this? [Yes / No / Modify].
-- **Phase 5 Conditional Implementation (only if Yes)**: Sherpa[claude decomposition] → if `ui_dimension != none`: Forge[codex prototype-validation] → Artisan[codex frontend-production] → Builder[codex backend/logic] → Radar[codex edge cases for differentiator] → judge[claude multi-engine review — killer features are high-stakes] → Guardian[claude] **with feature-flag recommendation** for controlled rollout (differentiation risk) → DELIVER working feature + tests + PR + flag config + rollout plan.
-- **If No**: DELIVER "decided-not-to-ship" strategic record.
-- **If Modify**: loop back to Phase 1 with modification (e.g., "reframe around X constraint" → Flux re-runs with updated directive).
-- **Add-ons**: +Riff for iterative deep-dive on Spark output in Phase 2, +Researcher for additional market trend grounding in Phase 1.
+**Summary:**
+- `kaizen` — DIAGNOSE (Lens unconditional + Pulse?/Echo?/Voice?/Trace?) → PROPOSE (Spark → Magi axis-cap to 1-2 of `{perf, UX, code-quality, feature-extension}`) → IMPROVE (axis-bounded parallel) → VERIFY (Radar + re-measure) → SHIP (Guardian).
+- `essential` — Sequential funnel: Plea → Spark → Magi → Rank → AskUserQuestion[Y/N/Modify] → if Yes: Sherpa → Builder[codex] → Radar[codex] → Guardian.
+- `killer` — Phase 1 parallel cross-engine triangulation (Compete[claude+WebSearch] ‖ Flux[codex] ‖ Plea[claude]; agy lift optional) → Spark synthesis → Magi GO/NO-GO → AskUserQuestion → if Yes: Sherpa → (Forge[codex] if UI) → Artisan/Builder[codex] → Radar → judge[multi-engine] → Guardian + feature flag.
 
 ## Workflow
 
@@ -319,94 +271,19 @@ Is spawn tool available? (Agent / spawn_agent / /agent)
 
 ### Execution Layers
 
-#### Claude Code
+Full per-CLI prereqs, runtime notes, silent-failure mitigations, and the verified headless template → `references/execution-layers.md`. Cross-CLI mapping → `_common/CLI_COMPATIBILITY.md`. Summary:
 
-| Layer | Method | When | API |
-|-------|--------|------|-----|
-| **L1: Direct Spawn** | Agent tool (foreground) | 1-4 step sequential chains | `Agent(prompt, mode: bypassPermissions)` |
-| **L2: Parallel Spawn** | Agent tool (background) | 2-3 independent branches | `Agent(prompt, run_in_background: true)` |
-| **L3: Rally Delegation** | Spawn Rally as Agent | 4+ workers, complex ownership | `Agent(prompt="You are Rally...")` |
-| **L3-alt: Agent Teams** | TeammateTool (peer-to-peer) | Shared task list, independent contexts | Claude Agent SDK `team_name` parameter |
+| CLI | L1 | L2 | L3 | Key prereq |
+|-----|----|----|----|-----------|
+| **Claude Code** | `Agent(... mode: bypassPermissions)` | `Agent(... run_in_background: true)` | `Agent("You are Rally...")` or TeammateTool | `Agent` tool present (default true) |
+| **Codex CLI** | `spawn_agent` → `wait_agent` | N × `spawn_agent` → `wait_agent` × N | `spawn_agent("You are Rally...")` | `multi_agent = true` + `[agents] max_depth >= 2` |
+| **agy** | `/agent <name>` (TUI) or `agy -p --dangerously-skip-permissions` (headless) | Multiple `/agent` (async, aggregate via `/tasks`) | Plugin team pack (e.g. `oh-my-antigravity`) | TUI main session or OS-level process isolation; artifact file capture (NOT stdout) |
 
-**Prereq**: fall back only if the `Agent` tool is absent from the tool list (normally always available).
-
-#### Codex CLI
-
-| Layer | Method | When | API |
-|-------|--------|------|-----|
-| **L1: Direct Spawn** | `spawn_agent` → `wait_agent` | 1-4 step sequential chains | `spawn_agent(prompt)` → `wait_agent(id)` |
-| **L2: Parallel Spawn** | Multiple `spawn_agent` → `wait_agent` all | 2-3 independent branches | `spawn_agent` × N → `wait_agent` × N |
-| **L3: Rally Delegation** | `spawn_agent` with Rally prompt | 4+ workers, complex ownership | `spawn_agent(prompt="You are Rally...")` |
-
-**Subagent Tools:** `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent`
-**Config:** `agents.max_depth` (default: 1) controls nesting. Omitted fields inherit from parent session.
-
-**Prereqs (must hold or internal-fall-back):**
-1. `codex features list | grep multi_agent` → `stable / true` (default true since v0.115+; verify in older builds).
-2. `~/.codex/config.toml` has `[agents] max_depth >= 2`. Default `1` only allows the main session to spawn — a nested orchestrator (e.g. Nexus spawned from a slash command) may already be at depth 1 and unable to recurse.
-3. If the model claims `spawn_agent` is missing from its tool inventory while both above are satisfied, attempt the call anyway — Codex exposes the tool lazily ("tool not visible" ≠ "tool not callable").
-
-```toml
-[agents]
-max_depth = 3
-```
-
-#### Antigravity CLI (`agy`)
-
-| Layer | Method | When | API |
-|-------|--------|------|-----|
-| **L1: Direct Spawn** | `/agent <name> "<task>"` (TUI) or `agy -p "<prompt>"` (one-shot) | 1-4 step sequential chains | TUI: `/agent <slug> "<prompt>"` / Headless: `agy -p "<prompt>" --dangerously-skip-permissions` (use `@<path>` to inject file context; **deliverable captured via prompt-mandated artifact file, NOT stdout** — see "agy headless silent-failure root causes" below + `_common/CLI_COMPATIBILITY.md §9.2`) |
-| **L2: Parallel Spawn** | Multiple `/agent` invocations (async, each own context) | 2-3 independent branches | Aggregate via `/tasks`; no explicit `wait` primitive |
-| **L3: Role-Driven Team** | Plugin-installed team pack (`oh-my-antigravity` etc. via `agy plugin install <url>`) | 4+ workers, complex ownership | Community pattern — `/oma:taskboard` priority queue + approval gates (no Rally equivalent documented) |
-
-**Subagent Tools:** `/agent`, `/tasks`, `/resume`, `/rewind`, `/btw` (read-only side question), `/schedule`, `/goal` (experimental flag status unverified)
-**Config:** Subagent depth-cap key name **unverified** — community guidance says "cap subagent depth" but no JSON/TOML key was found in official docs. Treat as runtime/budget concern via `/usage` polling, not as a config switch.
-**Skill root:** `~/.gemini/antigravity-cli/skills/` (global) or `<repo>/.agents/skills/` (workspace, preferred).
-**Permission model:** `request-review` (default — pause for review) / `proceed-in-sandbox` (containerized auto) / `always-proceed` (host auto, production-forbidden) / `strict` (read-only).
-
-**Prereqs (must hold or internal-fall-back — distinct from Codex):**
-1. **`agy` binary is on PATH** — verify with `which agy && agy --version`.
-2. **Main TUI session** — agy launches `/agent` only as a TUI slash command. If Nexus itself runs as a customAgent (its own `agent.json` exists under `~/.gemini/antigravity-cli/brain/<session>/.agents/agents/<name>/`), nested spawn is impossible unless `customAgent.toolNames` permits a `/agent` equivalent.
-3. **Headless (`agy -p`) requires OS-level process isolation** — TUI slash commands unavailable. Substitute with `Bash("agy -p '<spawn prompt>' --dangerously-skip-permissions")` to run a separate agy process. The `--dangerously-skip-permissions` flag is **required for autonomous Nexus execution** because headless `agy -p` cannot interactively respond to `request-review` prompts and will hang or fail otherwise. Treat this flag like Claude Code's `bypassPermissions` mode — never use it in production / untrusted-workspace contexts; restrict to ephemeral sandboxes, CI runners, or explicitly-authorized dev environments.
-4. **No tool named `spawn_agent` exists in agy** — the correct fallback log form is "`/agent` slash command unavailable (reason: <not in TUI main session | toolNames does not permit | headless mode without --prompt-interactive>)".
-
-**Runtime notes**: (1) Model is switched via `/model` in TUI before spawning, not per-agent — design recipes around the active model or instruct the user to switch. (2) `/usage` does not update live — for long chains (>20 min) prefer `agy -p` one-shot triggered externally over TUI-resident `/agent` to avoid mid-run quota cliffs. (3) Permission mode defaults to `request-review`; recipes assuming autonomy must instruct the user to switch to `proceed-in-sandbox` (TUI) or pass `--dangerously-skip-permissions` (headless `agy -p`) — never use `always-proceed` or unrestricted skip in production. The headless flag is the only way to bypass the interactive review prompt that would otherwise stall a Nexus-orchestrated agy spawn. (4) `request-review` is reported as occasionally ignored for file edits — treat as runtime risk, not configuration guarantee.
-
-**⚠ MANDATORY Pre-flight Notification**: before the first `agy -p ... --dangerously-skip-permissions` spawn of a session, Nexus MUST emit the Pre-flight Notification defined in `_common/CLI_COMPATIBILITY.md §9.1`. Rationale: spawning agy headless from Claude Code's `Bash` tool creates a two-layer autonomous loop that bypasses both sides' approval gates. The notification recommends running the `update-config` skill once to allowlist the specific Bash pattern in `settings.json permissions.allow`. The notification fires in AUTORUN / AUTORUN_FULL too (informational, not a gate). See §9.1 for canonical template.
-
-**agy headless silent-failure root causes (v1.0.5, verified 2026-06)**: the `exit 0 + empty stdout` pattern detected by `_common/MULTI_ENGINE_RECIPE.md §3.5` has five root causes, with mitigations. The first is the most consequential: **empty stdout no longer implies failure** — a successful run looks identical when stdout is piped.
-
-| Root cause | Mechanism | Mitigation |
-|------------|-----------|------------|
-| **Non-TTY stdout flush bug (affects SUCCESSFUL runs too)** | `agy -p` renders output via TUI drip (`text_drip.go`) and never flushes to a non-TTY stdout — redirection/`tee` capture nothing even when the model responded (official issue #115, OPEN; unfixed through v1.0.5) | **Never use stdout as the deliverable channel.** Mandate an absolute-path artifact write + sentinel in the prompt per `_common/CLI_COMPATIBILITY.md §9.2`; pseudo-TTY reattach (`script -q /dev/null agy ...`) helps the status line but artifact verification stays mandatory |
-| **File path written as plain string** | agy treats `docs/foo.md` (no `@`) as literal text; main agent delegates the read to an internal subagent | **Always use `@<path>` syntax** to inject file context directly into the main agent (e.g. `Compare @docs/a.md and @docs/b.md ...`) |
-| **Internal subagent 60s timeout** | v1.0.2 changelog restricts the 60s timeout to subagents only (main agent is no longer capped); long-file reads via delegated subagents still die silently | `@` syntax avoids subagent delegation entirely; for unavoidable delegation, split prompt into multiple smaller `agy -p` calls |
-| **`--print-timeout` exceeded** | Default 5min on the main agent's wait; long syntheses can hit it | Pass `--print-timeout 15m` (or appropriate) for heavy reviews |
-| **Quota / OAuth expiry** | Silent runtime failure with no stderr emission | `--log-file <path>` + post-run `grep -i "quota\|auth\|expired"` per `_common/MULTI_ENGINE_RECIPE.md §3.5` |
-
-**`--output-format json` status (re-verified 2026-06, v1.0.5)**: availability is **inconsistent across installs** — demonstrated in a community guide, but "flag not defined" errors are reported on the same guide, and no JSON schema is documented anywhere. **Do not depend on it.** Request structured JSON inside the §9.2 artifact file instead.
-
-**Recommended headless template** (full protocol + verification chain: `_common/CLI_COMPATIBILITY.md §9.2`):
-```bash
-SLUG="<task-slug>"
-script -q /dev/null agy -p --dangerously-skip-permissions "$(cat <<EOF
-[Role and task]
-
-Primary: @<path>
-References: @<path1>, @<path2>
-
-MANDATORY OUTPUT PROTOCOL:
-- Write your COMPLETE deliverable to the absolute path /tmp/agy-${SLUG}.md (create or overwrite).
-- End that file with a final line containing exactly: <<<END_OF_OUTPUT>>>
-- To stdout, print only a single status line: DONE /tmp/agy-${SLUG}.md
-EOF
-)" --print-timeout 15m --log-file /tmp/agy-${SLUG}.log >/dev/null 2>&1 || true
-# Then run the §9.2 verification chain: [ -s /tmp/agy-${SLUG}.md ] && sentinel grep;
-# fallback 1 = transcript harvest (brain/<conv-id>/.../transcript.jsonl last PLANNER_RESPONSE);
-# fallback 2 = --log-file grep → RUNTIME-BROKEN. Typed retry: max 1.
-```
-
-**Cross-CLI mapping:** see `_common/CLI_COMPATIBILITY.md`.
+**Key rules:**
+- **Codex**: `spawn_agent` may be lazily hidden — attempt the call when prereqs hold ("tool not visible" ≠ "tool not callable"). Codex tools: `spawn_agent`, `send_input`, `wait_agent`, `resume_agent`, `close_agent`.
+- **agy headless**: use `@<path>` to inject file context; mandate absolute-path artifact write + `<<<END_OF_OUTPUT>>>` sentinel — `agy -p` never flushes to non-TTY stdout (issue #115, unfixed v1.0.5). Pass `--print-timeout 15m` for heavy syntheses; `--log-file <path>` for quota/OAuth failure diagnosis.
+- **agy Pre-flight Notification**: before the first `agy -p ... --dangerously-skip-permissions` spawn of a session, emit the notification per `_common/CLI_COMPATIBILITY.md §9.1`.
+- **Permission model**: agy defaults to `request-review`; autonomous Nexus must switch to `proceed-in-sandbox` (TUI) or `--dangerously-skip-permissions` (headless). Never use `always-proceed` in production.
 
 ### Model Selection
 
@@ -454,26 +331,9 @@ Agent(
 
 > **Opus 4.8 note**: The four directive fields above (acceptance criteria / output length / tool-use / thinking) are not optional. Opus 4.8 calibrates output length to context, restrains tool calls by default (raise `effort` to increase tool use), and interprets each field literally, so both under- and over-shoot occur when these are implicit. For parallel spawns, see **Core Rule #10** and **`_common/SUBAGENT.md`**, and issue multiple `Agent(... run_in_background: true)` calls in the same turn. Shared protocol: `_common/OPUS_48_AUTHORING.md`.
 
-**Codex CLI variant**: same prompt body; resolve the skill path to `~/.codex/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`. The four directive fields stay required (they are CLI-agnostic), but Codex authoring follows `_common/CODEX_ORCHESTRATION.md` (C-principles), not the Opus note above — Codex routes effort by **model choice** (`gpt-5.5` plan / `gpt-5.4`-family execute, C3) plus `model_reasoning_effort`, not an Opus `effort` enum, and gates fan-out via `agents.max_depth` + `agents.max_threads` (C1), not a soft "max 3".
+**Codex CLI variant**: same prompt body; resolve skill path to `~/.codex/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`. Four directive fields stay required. Authoring follows `_common/CODEX_ORCHESTRATION.md` (C-principles), not the Opus note — effort routed by model choice (`gpt-5.5` plan / `gpt-5.4`-family execute, C3) + `model_reasoning_effort`; fan-out gated by `agents.max_depth` + `agents.max_threads` (C1). API patterns (L1 `spawn_agent`→`wait_agent`, L2 parallel-then-join, L3 `send_input`/`resume_agent`/`close_agent` for checkpoint-resume) → `references/execution-layers.md` § Codex CLI.
 
-```
-# L1 sequential
-id = spawn_agent(prompt=<body>)         # omitted fields inherit from parent session
-result = wait_agent(id)
-
-# L2 parallel — N spawn in one turn, then JOIN ALL (no background primitive; C2)
-ids = [spawn_agent(prompt=<body_i>) for i in branches]   # branches ≤ max_depth/budget
-results = [wait_agent(i) for i in ids]                    # hard barrier; aggregate after join
-
-# 4+ step chain — continue a live subagent instead of re-spawning (C6)
-send_input(id, <next_step_delta>)       # feed next step into the same session
-resume_agent(id)                        # revive a checkpointed subagent
-close_agent(id)                         # release context when the branch is done
-```
-
-Prereqs (C1): `[features] multi_agent = true` + `[agents] max_depth >= 2`. `spawn_agent` may be lazily hidden — attempt the call when prereqs hold (C5).
-
-**agy variant**: same prompt body; invoke via `/agent [agent]-[task-slug] "<body>"` (TUI) or `agy -p "<body>" --dangerously-skip-permissions` (headless). The `--dangerously-skip-permissions` flag is mandatory in headless mode — without it, `request-review` will block the spawn. **Headless capture is file-handoff, not stdout**: append the `_common/CLI_COMPATIBILITY.md §9.2` MANDATORY OUTPUT PROTOCOL block to the prompt body (absolute-path artifact + `<<<END_OF_OUTPUT>>>` sentinel) and run the §9.2 verification chain after exit — `agy -p` never flushes to non-TTY stdout (issue #115, unfixed v1.0.5), so the `_STEP_COMPLETE` block is read from the artifact file. Do not rely on `--output-format json` (inconsistent availability). **Reference files in the prompt body with `@<path>`** (e.g. `@docs/spec.md`) to inject context into the main agent — bare path strings trigger silent subagent timeouts (60s cap, see Antigravity CLI section above). Replace skill path with `~/.gemini/antigravity-cli/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`.
+**agy variant**: same prompt body; TUI via `/agent [agent]-[task-slug] "<body>"`, headless via `agy -p "<body>" --dangerously-skip-permissions`. Headless capture is **file-handoff, not stdout** — append the `_common/CLI_COMPATIBILITY.md §9.2` MANDATORY OUTPUT PROTOCOL (absolute-path artifact + `<<<END_OF_OUTPUT>>>` sentinel) and reference files via `@<path>`. Full silent-failure mitigations + verified template → `references/execution-layers.md` § agy. Replace skill path with `~/.gemini/antigravity-cli/skills/[agent]/SKILL.md` or `<repo>/.agents/skills/[agent]/SKILL.md`.
 
 Detailed execution flows: `references/execution-phases.md`, `references/orchestration-patterns.md`
 
@@ -515,9 +375,9 @@ Canonical matrix: `references/routing-matrix.md`. Recipe-driven chains (Apex / S
 | `OPTIMIZE` | Bolt/Tuner → Radar | `+Schema` for DB-heavy work |
 | `DESIGN_SYSTEM_DOCS` | Muse → Showcase + Canvas → Quill | `+Vision` for direction, `+Artisan` for live examples |
 | `DESIGN_WORKFLOW` | Atelier (orchestrates: Vision → Muse/Frame → Forge → Artisan → Showcase → Canvas) | Full design→code loop with design-system persistence. When request spans direction + tokens + prototype + implementation + catalog |
-| `MOBILE_NATIVE` | **Native** → Radar → Showcase → Launch | iOS Swift/SwiftUI or Android Kotlin/Compose implementation. `+Native cli` for terminal automation (xcrun / adb), `+Forge` for prototype validation, `+Vision`/`+Muse` for mobile design tokens, `+Voyager` for mobile E2E, `+Cloak` for Privacy Manifest review, `+Crypt` for Passkey/Keychain. **Pure-native only** — RN/Flutter/KMP/CMP out of scope (route to Forge for cross-platform prototypes). Full task-type details: `references/routing-matrix.md` MOBILE_NATIVE row |
-| `IOS_UI_TEST` | **Snap** → Gear → Launch | XCUITest authoring, accessibility-identifier audit, programmatic screenshot capture, fastlane snapshot for App Store. `+Native` when defects route back to the shipping app or identifiers must be retrofitted. `+Voyager` for Android parity (Espresso / Compose UI Test / Maestro). `+Judge` for test-quality review. **Pure XCUITest scope** — Appium / Detox / Maestro authoring stays with Voyager. Trigger: "XCUITest", "iOS UI test", "automate App Store screenshots", "fastlane snapshot", "accessibilityIdentifier hygiene" |
-| `PORTING` | Lens/Atlas → **Port → Native** → Voyager → Launch | Web → iOS/Android porting design + implementation. `+Fossil` for legacy business-rule extraction, `+Researcher` for mobile user research, `+Scaffold` for project skeleton, `+Polyglot` for i18n, `+Cloak`/`+Crypt` for compliance / Passkey. Trigger: "port web app to iOS/Android", "rewrite as native app", "feature parity matrix" |
+| `MOBILE_NATIVE` | **Native** → Radar → Showcase → Launch | iOS Swift/SwiftUI or Android Kotlin/Compose. Pure-native only (RN/Flutter/KMP/CMP → Forge). Add-ons + full row → `references/routing-matrix.md` MOBILE_NATIVE |
+| `IOS_UI_TEST` | **Snap** → Gear → Launch | XCUITest authoring, accessibilityIdentifier audit, App Store screenshot pipeline (fastlane snapshot). Pure XCUITest scope (Appium/Detox/Maestro → Voyager). Add-ons → `references/routing-matrix.md` IOS_UI_TEST |
+| `PORTING` | Lens/Atlas → **Port → Native** → Voyager → Launch | Web → iOS/Android porting design + implementation. Add-ons (Fossil/Researcher/Scaffold/Polyglot/Cloak/Crypt) → `references/routing-matrix.md` PORTING |
 
 **Sherpa skip conditions** (skip Sherpa from default chain only when ALL apply):
 - Task touches ≤ 2 files
@@ -599,7 +459,7 @@ Read only the files that match the current decision point.
 | `references/handoff-validation.md` | Handoff missing structure, confidence, or integrity checks |
 | `references/output-formats.md` | Canonical final output or handoff templates |
 | `references/orchestration-patterns.md` | Concrete execution patterns (sequential, parallel, evaluator-loop, verification-gated) |
-| `references/evaluator-loop-protocol.md` | Generator-Evaluator separation end-to-end: applicability + Sprint Contract format + Rubric system + orchestration pattern. Merged from former `evaluator-loop.md` + `sprint-contract.md` + `rubric-system.md` |
+| `references/evaluator-loop-protocol.md` | Generator-Evaluator separation: applicability + Sprint Contract + Rubric + orchestration pattern |
 | `references/context-strategy.md` | Decide how context flows between agents in a chain |
 | `references/routing-learning.md` | Adapting routing from execution evidence |
 | `references/quality-iteration.md` | Output needs post-delivery PDCA improvement |
@@ -607,24 +467,27 @@ Read only the files that match the current decision point.
 | `references/task-routing-anti-patterns.md` | Decomposition or routing looks too shallow, deep, or dynamic |
 | `references/production-reliability-anti-patterns.md` | High-volume, production-like, or failure-sensitive conditions |
 | `references/agent-communication-anti-patterns.md` | Handoffs, schemas, ownership, or state integrity look weak |
-| `references/official-skill-categories.md` | Official use case categories (Document & Asset / Workflow Automation / MCP Enhancement), 5 canonical patterns, problem-first vs tool-first detection during CLASSIFY |
-| `references/managed-agents-mapping.md` | Claude Managed Agents / Outcomes / Dreaming / Webhooks — four-feature mapping (Multiagent Orchestration ↔ hub-and-spoke, Outcomes ↔ Evaluator Loop, Dreaming ↔ Lore, Webhooks ↔ Mend/Beacon), local-vs-managed escalation, SF 2026 reference deployments (Harvey 6×, Netflix fan-out, Spiral, Wisedocs 50%). §5: **Dynamic Workflows** (Claude Code-native parallel sweeps, `ultracode`, native-vs-Nexus selection) |
-| `references/apex-recipe.md` | `/nexus apex` — phase contracts, conditional inclusion, sub-orchestration topology (Vision for UX, Orbit for loop), tri-axis Risk Gate criteria, AUTORUN chain template |
-| `references/apex-walkthrough.md` | Human-facing apex explanation — Mermaid flowcharts, sequence diagrams, per-phase storyboards, parallel topology, failure-and-rollback paths, Gantt timeline, example outputs |
-| `references/goal-recipe.md` | `/nexus goal` — platform detection, use-case templates (ci-headless / long-dev / parallel-experiment / safe-bounded), chain phase contracts, hook templates, launch command recipes |
-| `_common/PROOF_CARRYING.md` | `/nexus acceptance` — Tier policy (S/A/B/C), evidence package fields, G1-G10 guardrails, spec self-bug mitigation, unspecifiable-quality carve-out, Hot-Fix Fast-Path. **Mandatory before `acceptance` Recipe.** |
-| `references/acceptance-recipe.md` | `/nexus acceptance` — Layer A/B chain template, phase contracts, failure escalation, cost profile |
-| `_common/GROWTH_BRAND_PROOF.md` | `/nexus growth-acceptance` — Layer C (Market / Research / Brand axes), Insight Ledger, Incrementality Gate, Brand Compiler 3-layer, Growth-Brand Contract, Phased Adoption Step 1-4, Org Tier (Solo / SMB / Enterprise), G11-G15 |
-| `references/growth-acceptance-recipe.md` | `/nexus growth-acceptance` — Phase 0-3 lifecycle chain template, Phase 4 cross-cutting audits, failure escalation, cost profile per Step adoption |
-| `references/feature-impact-simulate.md` | Feature impact prediction before implementation begins (Persona+Journey+Product v4 fold-in). Reference recipe (NOT a top-level Nexus subcommand) — chain: omen ‖ ripple ‖ echo[council mode] → experiment → magi. Org Tier: Solo skip-echo / SMB max-3 personas / Enterprise max-9 + arena multi for Tier-S |
-| `references/summit-recipe.md` | `/nexus summit` — prereqs (agy OPTIONAL — dual-engine fallback when unavailable), engine × team matrix, phase contracts, arena sub-orchestration, Vision sub-orchestration of design specialists, multi-engine quorum rules, AUTORUN chain template, failure escalation, cost/latency profile, decision tree vs apex/judge |
-| `references/transmute-recipe.md` | `/nexus transmute` — cross-language rewrite (TS→Rust, Go→Rust, …). Migration strategy table (strangler-fig / FFI-incremental / big-bang), Phase 0-6 contract, the Transmutation Map (per-pair type/error/concurrency/memory idiom mappings), failure modes, add-ons, decision tree vs PORTING/shift/horizon |
-| `references/venture-recipe.md` | `/nexus venture` (= `package domain=startup`) — the startup preset's detailed 14-directory blueprint and per-file→agent mapping. Depth tiers (lite/mvp/raise/full) × mode overlays (mvp-dev/fundraising/b2b-saas/b2c-growth/ai-product), Phase 2 feature_id barrier (F-001/TC-001/BL-001), multi-format syntax validation, zip packaging. For the shared engine and other domains, read `package-recipe.md` |
-| `references/package-recipe.md` | `/nexus package` — generalized document-package generator (canonical engine + domain-preset registry). Shared domain-agnostic Phase 0-6 engine, generalized entity-id barrier (F-/H-/UC-/R-/P-/E-/T-/LO-/I- per preset), 12 presets (startup/generic/research/ai-adoption/legal/saas/media/growth/career/learning/hiring/local-gov) each backed by an owner skill, with directory + spine + track + risk-gate blueprints, theme→preset auto-detection table + precedence rules + confidence gate, legal/ai-adoption/hiring/local-gov mandatory risk gates, coverage map vs source collection, decision tree vs venture/apex/kaizen/growth-acceptance/deep-research |
-| `references/podium-recipe.md` | `/nexus podium` — five-team content workflow (Research / Narrative / Production / Verification / Improvement) for doc + high-quality slide creation. Engine × team matrix (Claude prose / Codex compile / agy imagery), phase contracts with output_format variants (doc / slide / both / notebooklm / figma-slides), claim-grounding via Attest, 6×6 + WCAG-AA + persona walkthrough gates, max-2 improvement loop, decision tree vs single-skill / atelier / summit |
-| `_common/OPUS_48_AUTHORING.md` | **Claude Code hub** — designing spawn prompts, planning output envelopes, or selecting per-step model effort. Critical for orchestrators: P4 (parallel subagents), P6 (effort), P7 (delegation) |
-| `_common/CODEX_ORCHESTRATION.md` | **Codex CLI hub** — spawn-depth budget (C1), synchronous fan-out/join via `spawn_agent`/`wait_agent` (C2), reasoning-effort-by-model routing (C3), checkpoint-resume via `send_input`/`resume_agent`/`close_agent` (C6). The Codex-hub counterpart to OPUS_48_AUTHORING |
-| `_common/IMAGE_INPUT.md` | A routing request carries an image (bug screenshot, mockup, diagram) — run the five-stage image pipeline at CLASSIFY to produce a structured reading, then pass that reading (not the raw image) in `_AGENT_CONTEXT` handoffs so spawned specialists inherit a verified interpretation rather than re-reading pixels. |
+| `references/execution-layers.md` | Per-CLI prereqs (Claude / Codex / agy), runtime notes, agy headless silent-failure mitigations + headless template |
+| `references/inline-recipes.md` | Full phase contracts for `kaizen` / `essential` / `killer` |
+| `references/signal-keywords.md` | Canonical full Signal Keywords → Recipe table (Core / Specialist / Mobile / Package / Fallback) |
+| `references/official-skill-categories.md` | Official use case categories + 5 canonical patterns + problem-first vs tool-first detection |
+| `references/managed-agents-mapping.md` | Claude Managed Agents / Outcomes / Dreaming / Webhooks four-feature mapping + Dynamic Workflows |
+| `references/apex-recipe.md` | `/nexus apex` — phase contracts, sub-orchestration topology, Risk Gate, chain template |
+| `references/apex-walkthrough.md` | Human-facing apex explanation — Mermaid flowcharts, storyboards, failure paths, timeline |
+| `references/goal-recipe.md` | `/nexus goal` — platform detection, use-case templates, chain phase contracts, hook templates |
+| `_common/PROOF_CARRYING.md` | `/nexus acceptance` — Tier policy, evidence package, G1-G10 guardrails. **Mandatory before `acceptance` Recipe.** |
+| `references/acceptance-recipe.md` | `/nexus acceptance` — Layer A/B chain template, phase contracts, cost profile |
+| `_common/GROWTH_BRAND_PROOF.md` | `/nexus growth-acceptance` — Layer C, Insight Ledger, Incrementality Gate, Brand Compiler, Growth-Brand Contract, G11-G15 |
+| `references/growth-acceptance-recipe.md` | `/nexus growth-acceptance` — Phase 0-3 lifecycle, Phase 4 audits, Step adoption cost profile |
+| `references/feature-impact-simulate.md` | Feature impact prediction (Persona+Journey+Product v4) — reference recipe, not a top-level subcommand |
+| `references/summit-recipe.md` | `/nexus summit` — prereqs, engine × team matrix, phase contracts, quorum rules, decision tree |
+| `references/transmute-recipe.md` | `/nexus transmute` — cross-language rewrite, migration strategy table, Phase 0-6, Transmutation Map |
+| `references/venture-recipe.md` | `/nexus venture` (= `package domain=startup`) — 14-directory blueprint, depth/mode tiers, feature_id barrier |
+| `references/package-recipe.md` | `/nexus package` — engine + 12 domain presets, entity-id barrier, theme→preset detection, risk gates |
+| `references/podium-recipe.md` | `/nexus podium` — five-team content workflow, output_format variants, claim-grounding, decision tree |
+| `_common/OPUS_48_AUTHORING.md` | **Claude Code hub** — spawn prompts, output envelopes, per-step effort. Critical: P4 / P6 / P7 |
+| `_common/CODEX_ORCHESTRATION.md` | **Codex CLI hub** — spawn-depth budget (C1), sync fan-out/join (C2), effort-by-model (C3), checkpoint-resume (C6) |
+| `_common/IMAGE_INPUT.md` | Routing request carries an image — run the five-stage pipeline at CLASSIFY before delegating |
 
 ## Operational Notes
 

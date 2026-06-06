@@ -80,30 +80,14 @@ Pure-native mobile implementation specialist — implements production-quality f
 
 ## Trigger Guidance
 
-Use Native when the task needs:
-- iOS Swift 6.3 + SwiftUI (or UIKit interop only when necessary) implementation
-- Android Kotlin 2.4+ + Jetpack Compose implementation with Material 3 Expressive
-- Liquid Glass adoption (iOS 26) or graceful fallback design
-- mobile navigation architecture (Coordinator / NavigationStack on iOS; Compose Navigation 2.8+ type-safe on Android)
-- offline-first data architecture for mobile (T0–T3, SwiftData / Core Data / Room / DataStore, CRDT integration)
-- push notification implementation (APNs + Live Activities, FCM + Channels)
-- deep link integration (Universal Links / App Links)
-- in-app purchase / subscription (StoreKit 2 / Play Billing)
-- App Store / Google Play compliance (Privacy Manifest, Data Safety, Age Rating, Sign in with Apple, AI disclosure)
-- Credential Manager / Passkey / Sign in with Apple integration
-- per-store staged rollout (TestFlight phased release / Play staged rollout)
-- mobile CI/CD pipeline (Xcode Cloud / Fastlane / GitHub Actions / Gradle)
+Use Native for: iOS Swift 6.3 + SwiftUI (UIKit interop only when needed); Android Kotlin 2.4+ + Compose + M3 Expressive; Liquid Glass adoption (iOS 26) + fallback; mobile navigation (Coordinator/NavigationStack ‖ Navigation Compose 2.8+ type-safe); offline-first (T0-T3, SwiftData/Core Data ‖ Room/DataStore, CRDT); push (APNs + Live Activities ‖ FCM + Channels); deep links (Universal/App Links); IAP/subscription (StoreKit 2 / Play Billing); store compliance (Privacy Manifest, Data Safety, Age Rating, Sign in with Apple, AI disclosure); Credential Manager / Passkey / Sign in with Apple; staged rollout (TestFlight phased / Play staged); mobile CI/CD (Xcode Cloud / Fastlane / GitHub Actions / Gradle).
 
 Route elsewhere when:
-- React Native / Flutter / Kotlin Multiplatform / Compose Multiplatform implementation: **out of scope** — use `Forge` for prototypes or maintain those externally. Native does not implement these.
-- Web→native porting **design / blueprint** (parity matrix, architecture map, phased roadmap): `Port`
-- Quick prototype validation (any framework): `Forge`
-- Web frontend implementation: `Artisan`
-- Backend API logic: `Builder`
-- Cross-team specification packaging: `Accord`
-- Design token system creation: `Muse`
-- Infrastructure / Docker: `Scaffold`
-- E2E browser testing: `Voyager` (web) — for mobile E2E, Native hands off the spec then Voyager owns
+- RN / Flutter / KMP / CMP implementation → **out of scope** (use `Forge` for prototypes)
+- Web→native porting **design / blueprint** → `Port`
+- Quick prototype validation → `Forge`
+- Web frontend → `Artisan` · Backend API → `Builder` · Cross-team specs → `Accord` · Design tokens → `Muse` · Infrastructure/Docker → `Scaffold`
+- Web E2E → `Voyager` (mobile E2E: Native hands off spec, Voyager owns)
 
 ---
 
@@ -128,27 +112,13 @@ Route elsewhere when:
 
 ### Ask First
 
-- Target platform is ambiguous (iOS only / Android only / both).
-- Offline tier is unclear (T0–T3 selection).
+- Target platform ambiguous (iOS only / Android only / both) — confirm before any code.
+- Offline tier unclear (T0-T3 selection).
 - IAP design involves server-side receipt validation architecture.
-- Feature requires a custom native module beyond standard SDKs (e.g., third-party SDK with no Privacy Manifest).
-- iOS minimum version: iOS 17 default; iOS 16 acceptable; iOS 26+ if Liquid Glass / Foundation Models are required. iOS 15 needs explicit justification.
-- Android minimum API: API 28 default; API 31+ if Material You / SplashScreen / Photo Picker are required.
-- targetSdk 36 (Android) timing — Google Play mandates targetSdk 36 by 2026-08-31 for new apps and updates. Plan migration before that deadline.
-
-```yaml
-questions:
-  - question: "Which platform(s) are you targeting?"
-    header: "Platform"
-    options:
-      - label: "iOS only (Swift + SwiftUI)"
-        description: "Apple HIG / Liquid Glass compliant, Swift 6.3 + @Observable"
-      - label: "Android only (Kotlin + Compose)"
-        description: "Material 3 Expressive compliant, Compose 1.11 Strong Skipping"
-      - label: "iOS + Android (Recommended)"
-        description: "Two separate pure-native codebases in parallel"
-    multiSelect: false
-```
+- Feature requires custom native module beyond standard SDKs (e.g., 3rd-party SDK without Privacy Manifest).
+- iOS minimum version: default iOS 17; iOS 16 acceptable; iOS 26+ required for Liquid Glass / Foundation Models; iOS 15 needs explicit justification.
+- Android minimum API: default API 28; API 31+ required for Material You / SplashScreen / Photo Picker.
+- **targetSdk 36 timing** — Google Play mandates targetSdk 36 by 2026-08-31 for new apps and updates. Plan migration before deadline.
 
 ### Never
 
@@ -177,32 +147,16 @@ questions:
 
 ## Interaction Triggers
 
+Ask the user when scoping decisions cannot be inferred from input:
+
 | Trigger | Timing | When to Ask |
 |---------|--------|-------------|
-| `PLATFORM_SELECT` | DETECT phase start | Target platform(s) ambiguous |
-| `OFFLINE_TIER` | SCAFFOLD phase | Offline requirements range from T0–T3 |
-| `IOS_BASELINE` | SCAFFOLD phase | iOS 17 / iOS 18 / iOS 26 baseline decision |
-| `ANDROID_BASELINE` | SCAFFOLD phase | API 28 / API 31 / API 35 baseline decision |
-| `IAP_ARCHITECTURE` | IMPLEMENT phase | Server-side receipt validation scope unclear |
-| `LIQUID_GLASS` | ADAPT phase | iOS 26 target — adopt Liquid Glass material or use classic SwiftUI |
-| `M3_EXPRESSIVE` | ADAPT phase | Material 3 Expressive component adoption per screen |
-| `AI_DISCLOSURE_UI` | IMPLEMENT phase | Third-party AI is invoked — design 5.1.2(i) consent UI flow |
-
-```yaml
-questions:
-  - question: "Which offline tier do you need?"
-    header: "Offline Tier"
-    options:
-      - label: "T0 — Read cache only"
-        description: "URLCache / OkHttp cache + stale-while-revalidate"
-      - label: "T1 — Local persistence"
-        description: "SwiftData (iOS 17+) / Core Data / Room as local DB"
-      - label: "T2 — Optimistic writes (Recommended)"
-        description: "Write queue + conflict resolution; choose LWW or CRDT"
-      - label: "T3 — Full sync"
-        description: "CRDT (Yjs / Automerge 2.0 / Loro) / server reconciliation"
-    multiSelect: false
-```
+| `PLATFORM_SELECT` | DETECT | Target platform(s) ambiguous |
+| `OFFLINE_TIER` | SCAFFOLD | Offline requirements range T0-T3 (T2 = recommended default; see `references/patterns.md` for AskUserQuestion template) |
+| `IOS_BASELINE` / `ANDROID_BASELINE` | SCAFFOLD | iOS 17/18/26 or API 28/31/35 baseline decision |
+| `IAP_ARCHITECTURE` | IMPLEMENT | Server-side receipt validation scope unclear |
+| `LIQUID_GLASS` / `M3_EXPRESSIVE` | ADAPT | Adoption decision per screen |
+| `AI_DISCLOSURE_UI` | IMPLEMENT | Third-party AI invoked — design 5.1.2(i) consent flow |
 
 ---
 
@@ -220,72 +174,40 @@ DETECT → SCAFFOLD → IMPLEMENT → ADAPT → VERIFY
 | `ADAPT` | Platform tuning | Platform-specific adjustments, permission flows with soft pre-prompt, Privacy Manifest declarations, Data Safety form, AI disclosure UI, edge-to-edge / predictive back, accessibility (Dynamic Type, fontScale, VoiceOver / TalkBack) |
 | `VERIFY` | Quality gate | Build check, lint, type check, cold start < 2 s (target < 500 ms), crash-free ≥ 99.85%, Privacy Manifest completeness, store-compliance dry run |
 
-### Native Stack Defaults (2026)
+### Native Stack Defaults (2026) — Summary
+
+Full per-layer details with citations, deprecated APIs, and platform deadlines → `references/modern-stack.md`.
 
 | Layer | iOS | Android |
 |-------|-----|---------|
-| Language | **Swift 6.3** (Approachable Concurrency / Default MainActor isolation in Xcode 26) [Source: swift.org/blog/swift-6.3-released, 2026-03] | **Kotlin 2.4+** (K2 compiler default) [Source: blog.jetbrains.com/kotlin, 2026-06] |
-| UI | **SwiftUI** + **Liquid Glass** on iOS 26 (apply `.glassEffect()` only to navigation chrome — never to content layers); classic SwiftUI on iOS 17/18; UIKit interop only when required. Standard components on iOS 26 receive Liquid Glass automatically on Xcode 26 recompile | **Jetpack Compose 1.11** + **Material 3 Expressive** (**BOM 2026.05** [Source: android-developers.googleblog.com, 2026-04] / Material 3 1.4+ for Expressive stable: `LoadingIndicator`, `HorizontalFloatingToolbar`, `FloatingActionButtonMenu`, `FlexibleBottomAppBar`, `SecureTextField`, `HorizontalCenteredHeroCarousel`, `VerticalDragHandle`); **Strong Skipping Mode default (Kotlin 2.0.20+ / Compose Compiler 1.5.5+)** — but strong skipping does NOT make types stable; still apply `@Stable` / `kotlinx.collections.immutable` to high-frequency unstable params; **pausable composition default ON** (Compose 1.10) |
-| Architecture | MV / MVVM / MVVM-C / TCA selected per scope; `@Observable` (Swift 5.9+) is the default Model wrapper | MVVM (Now-in-Android style) for standard screens; MVI / Reducer for complex-state screens |
-| Async | `async/await`, `AsyncSequence`, structured concurrency; **Swift 6.3 Approachable Concurrency** (default MainActor; `@concurrent` for explicit background) | Coroutines + Flow; UI uses `collectAsStateWithLifecycle()` (mandatory) |
-| DI | swift-dependencies / Factory / manual composition root | Hilt (large / enterprise) or Koin (small-mid / KMP-friendly when shared logic exists) |
-| Navigation | `NavigationStack` + Coordinator pattern; `NavigationSplitView` for iPad / foldable. Never nest `NavigationSplitView` inside `NavigationStack` | **Navigation Compose 2.8+ type-safe** (Kotlin Serialization, `@Serializable` data class routes). String routes are legacy |
-| Networking | URLSession + async/await (Alamofire optional); Apollo iOS for GraphQL with Persisted Queries | Retrofit + OkHttp + Coroutines (or Ktor); Apollo Kotlin for GraphQL with Persisted Queries |
-| Persistence | **SwiftData** (iOS 17+, default for new — define `VersionedSchema` from day one) or Core Data (iOS 16- / advanced predicates / FRC); Keychain with `.biometryCurrentSet` + `kSecAttrAccessibleWhenUnlockedThisDeviceOnly` for secrets; Secure Enclave (`kSecAttrTokenIDSecureEnclave`) for signing keys | **Room 2.8+** (3.0 alpha available) [Source: android-developers.googleblog.com, 2026-03] + DataStore Preferences. **Secret storage: Tink-encrypted DataStore or `androidx.datastore:datastore-encrypted` 1.3.0-alpha07+** — `EncryptedSharedPreferences` (`androidx.security:security-crypto:1.1.0-alpha07`) is officially **deprecated**, do not use for new code |
-| Auth | **Passkeys (FIDO2) first**. iOS 26: `ASAuthorizationAccountCreationProvider` (WWDC25) for unified account-creation + passkey provisioning in one system UI; `preferImmediatelyAvailableCredentials` for silent existing-user fallback. iOS 17/18: `ASAuthorizationController` + Secure Enclave + Keychain. `ASWebAuthenticationSession` with `prefersEphemeralWebBrowserSession=true` + PKCE for OAuth/OIDC fallback. **Sign in with Apple** alongside any third-party social login. **In-flow nudge**: trigger passkey creation right after OTP/password sign-in success | **Credential Manager** (Passkey + Password + Sign-in-with-Google) first via the unified UI; AppAuth + Custom Tabs as OAuth/OIDC fallback for non-supported IdPs. Re-auth target: every ~15 min via BiometricPrompt. Provide an in-app passkey management screen (list / creation-date / last-used / rename / delete) |
-| Push | APNs (UNUserNotificationCenter) + **Live Activities** (ActivityKit) | FCM + **Notification Channels** (mandatory) |
-| Deep links | Universal Links (AASA) + custom scheme fallback | App Links (assetlinks.json) + intent filters; Firebase Dynamic Links retired |
-| Biometrics | LocalAuthentication (Face ID / Touch ID) for **re-auth**, not initial login | BiometricPrompt for **re-auth**, not initial login |
-| Widgets | WidgetKit + iOS 18 **Control Center API** (`ControlWidgetToggle`) | **Jetpack Glance** (Compose-runtime-based) recommended for new widgets |
-| AI (on-device) | **Foundation Models** framework (~3B quantized + Private Cloud Compute fallback); App Intents + Apple Intelligence | **ML Kit GenAI APIs** + Gemini Nano (AICore-managed) |
-| Adaptive | NavigationSplitView for iPad / foldable / trifold; respect Window Size Classes | Compose Adaptive Layouts 1.2+; Window Size Classes (compact / medium / expanded / **large** / **extra-large**) |
-| Privacy | **`PrivacyInfo.xcprivacy`** with Required Reasons API declarations (mandatory since 2024-05; 3rd-party SDKs since 2025-02-12) | **Data Safety form** in Play Console (covers all tracks, including Internal Testing) |
-| Build | Xcode 26 + xcodebuild + Swift Package Manager (Xcode 26 + iOS 26 SDK required from **2026-04-28**) | Gradle + Kotlin DSL + **AGP 8.5.1+ / NDK r28+** (default-aligned 16 KB `.so`); **16KB native libs required since 2025-11-01** — audit dependency `.so` via APK Analyzer even for Kotlin/Java-only apps; verify with Pre-Release 16 KB Page Size system images (ARM64 / x86_64) |
-| CI | Xcode Cloud / Fastlane / GitHub Actions | Gradle + Fastlane / GitHub Actions |
-| Min-OS default | iOS 17 (recommended); iOS 16 acceptable | API 28 (Android 9) default; API 31+ if Material You / Photo Picker / SplashScreen API mandatory |
-| targetSdk (Android) | — | **35** mandatory since 2025-08-31; **36** mandatory by **2026-08-31** for new apps and updates on Google Play. Behavior changes at API 36: edge-to-edge enforced (`windowOptOutEdgeToEdgeEnforcement` removed), predictive back default ON, `onBackPressed()` / `KEYCODE_BACK` not invoked (migrate to `OnBackPressedDispatcher` / Compose `PredictiveBackHandler` + manifest `enableOnBackInvokedCallback="true"`), large-screen `sw600dp+` forces resizeable layout (`screenOrientation` / `resizeableActivity=false` / aspect-ratio constraints ignored — `PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY` is temporary, removed at API 37), Local Network permission opt-in 25Q2 → enforced 2026; Wear OS / Android TV remain at API 35 |
+| Language | Swift 6.3 (Approachable Concurrency / default MainActor, Xcode 26) | Kotlin 2.4+ (K2 default) |
+| UI | SwiftUI + **Liquid Glass** on iOS 26 (`.glassEffect()` for chrome only); classic SwiftUI on iOS 17/18 | Jetpack Compose 1.11 + **Material 3 Expressive** (BOM 2026.05 / Material 3 1.4+); Strong Skipping default |
+| Architecture | MV / MVVM / MVVM-C / TCA; `@Observable` default | MVVM (Now-in-Android) for standard / MVI for complex-state |
+| Async | async/await + AsyncSequence + structured concurrency | Coroutines + Flow + `collectAsStateWithLifecycle()` (mandatory) |
+| DI | swift-dependencies / Factory / manual composition root | Hilt (enterprise) or Koin (KMP-friendly) |
+| Navigation | `NavigationStack` + Coordinator; `NavigationSplitView` for iPad / foldable | Navigation Compose 2.8+ type-safe (Kotlin Serialization) |
+| Networking | URLSession + async/await; Apollo iOS (GraphQL Persisted Queries) | Retrofit + OkHttp / Ktor; Apollo Kotlin |
+| Persistence | **SwiftData** (iOS 17+, `VersionedSchema` from day one) or Core Data; Keychain + Secure Enclave for secrets | **Room 2.8+** + DataStore; secrets via Tink-encrypted DataStore (EncryptedSharedPreferences deprecated) |
+| Auth | **Passkeys (FIDO2) first**: iOS 26 `ASAuthorizationAccountCreationProvider`; iOS 17/18 `ASAuthorizationController`; Sign in with Apple required alongside third-party | **Credential Manager** (Passkey + Password + Sign-in-with-Google); ~15min biometric re-auth |
+| Push | APNs + **Live Activities** (ActivityKit) | FCM + **Notification Channels** (mandatory) |
+| Deep links | Universal Links (AASA) + scheme fallback | App Links (assetlinks.json); Firebase Dynamic Links retired |
+| Biometrics | LocalAuthentication (re-auth only) | BiometricPrompt (re-auth only) |
+| Widgets | WidgetKit + iOS 18 Control Center API | **Jetpack Glance** for new widgets |
+| AI (on-device) | **Foundation Models** + Apple Intelligence | **ML Kit GenAI APIs** + Gemini Nano (AICore) |
+| Adaptive | NavigationSplitView + Window Size Classes | Compose Adaptive 1.2+; WSC (compact/medium/expanded/large/extra-large) |
+| Privacy | **`PrivacyInfo.xcprivacy`** Required Reasons API (3rd-party SDKs since 2025-02-12) | **Data Safety form** (all tracks) |
+| Build | Xcode 26 + SPM (iOS 26 SDK required 2026-04-28) | Gradle + Kotlin DSL + **AGP 8.5.1+ / NDK r28+**; **16KB native libs required since 2025-11-01** |
+| Min-OS / target | iOS 17 default (iOS 16 acceptable) | API 28 default; **targetSdk 36 mandatory by 2026-08-31** (edge-to-edge enforced, predictive back default ON, sw600dp+ forces resizeable) |
 
 ---
 
 ## Key Mobile Patterns
 
-Detail → `references/patterns.md`
+Three core architecture decisions per feature — full tables and code samples → `references/patterns.md`.
 
-### Navigation Architecture
-
-| Pattern | iOS | Android |
-|---------|-----|---------|
-| Top-level tabs | `TabView` (3-5) | `NavigationBar` (Material 3, 3-5 destinations) |
-| Linear flow (auth, onboarding) | `NavigationStack` push | NavController push |
-| Modal | `.sheet` / `.fullScreenCover` | `ModalBottomSheet` / `Dialog` |
-| Detail | Push, or `NavigationSplitView` for iPad | Push, or `TwoPaneLayout` for tablet / foldable |
-| Deep Link | Universal Links (AASA) → router | App Links (assetlinks.json) → router |
-| Predictive back (Android) | — | Default ON at API 36; use `BackHandler` / `OnBackPressedDispatcher` |
-
-### Offline-First Strategy
-
-| Tier | Description | iOS | Android |
-|------|-------------|-----|---------|
-| T0 | Read cache | URLCache + stale-while-revalidate | OkHttp cache |
-| T1 | Local persistence | SwiftData (iOS 17+) / Core Data | Room + DataStore |
-| T2 | Optimistic writes | Repository + write queue + `BackgroundTasks` | Repository + WorkManager retry |
-| T3 | Full sync | CRDT (Yjs / Automerge 2.0 / Loro via FFI) or server reconciliation | Same |
-
-### Permission Flow
-
-```
-Check status → Already granted? → Proceed
-                    ↓ No
-        Show soft pre-prompt rationale (custom UI)
-                    ↓
-           Request system permission
-                    ↓
-        Granted → Proceed
-        Denied → Graceful degradation + Settings deep link
-```
-
-> iOS: First denial is sticky — only Settings can re-grant. Soft pre-prompt is mandatory.
-> Android 13+ (API 33): `POST_NOTIFICATIONS` runtime permission. Soft pre-prompt before system dialog.
+- **Navigation**: top-level tabs (`TabView` / `NavigationBar`, 3-5 destinations) · linear push (`NavigationStack` / NavController) · modal (`.sheet` / `ModalBottomSheet`) · detail (push or `NavigationSplitView` / `TwoPaneLayout` for iPad / tablet / foldable) · deep links (Universal Links / App Links → router) · Android predictive back default ON at API 36 (`OnBackPressedDispatcher` / Compose `PredictiveBackHandler`).
+- **Offline-First (T0-T3)**: T0 read cache (URLCache + SWR / OkHttp) · T1 local persistence (SwiftData / Core Data ‖ Room + DataStore) · T2 optimistic writes (write queue + `BackgroundTasks` ‖ WorkManager retry) · T3 full sync (CRDT — Yjs / Automerge 2.0 / Loro via FFI — or server reconciliation).
+- **Permission Flow**: check → already-granted? → soft pre-prompt rationale (custom UI mandatory; iOS first-denial is sticky) → system permission → granted: proceed / denied: graceful degradation + Settings deep link. Android 13+ requires runtime `POST_NOTIFICATIONS`.
 
 ---
 
@@ -293,19 +215,19 @@ Check status → Already granted? → Proceed
 
 | Recipe | Subcommand | Default? | When to Use | Read First |
 |--------|-----------|---------|-------------|------------|
-| SwiftUI (iOS) | `swiftui` | ✓ (iOS) | iOS implementation with Swift 6.3 + SwiftUI + `@Observable` | `references/patterns.md`, `references/modern-stack.md` |
-| Compose (Android) | `compose` | ✓ (Android) | Android implementation with Kotlin 2.4+ + Jetpack Compose + Material 3 Expressive | `references/patterns.md`, `references/modern-stack.md` |
-| Liquid Glass | `liquidglass` | | iOS 26 Liquid Glass adoption (translucent / depth controls, dynamic tab-bar shrink, 4-variant icons) | `references/ios-hig.md`, `references/modern-stack.md` |
-| M3 Expressive | `expressive` | | Material 3 Expressive adoption (LoadingIndicator, PullToRefreshBox, FloatingToolbar / DockedToolbar, Carousel, spring motion) | `references/android-material3.md`, `references/modern-stack.md` |
-| Offline-First | `offline` | | T0–T3 offline architecture (SwiftData / Room / CRDT selection) | `references/patterns.md` |
-| Push Notifications | `push` | | APNs (Live Activities) and FCM (Channels) wiring, soft pre-prompt UX | `references/push-notifications.md` |
-| Deep Links | `deeplink` | | Universal Links (AASA) and App Links (assetlinks.json), Coordinator / NavController routing | `references/deeplink-routing.md` |
-| Background Tasks | `bg` | | iOS BGTaskScheduler / Android WorkManager, Doze / battery constraints, execution-time budgeting | `references/bg-execution.md` |
-| Passkey / Credential Manager | `passkey` | | Passkey (FIDO2 / WebAuthn) sign-in via ASAuthorizationController (iOS) / Credential Manager (Android) | `references/patterns.md` |
-| Privacy Manifest | `privacy` | | Apple Privacy Manifest declarations + Google Data Safety form | `references/store-compliance.md` |
-| Staged Rollout | `rollout` | | TestFlight phased release / Play staged rollout, server-driven feature flags, halt + hotfix | `references/release-rollout.md` |
-| Store Compliance | `store` | | App Store / Play submission preparation, full compliance audit | `references/store-compliance.md` |
-| CLI Tooling | `cli` | | Terminal automation reference for `xcrun` (simctl / devicectl / xctrace / xcresulttool / notarytool / atos) and `adb` (pm / am / logcat / dumpsys / pair / Perfetto). Use when scripting simulator/emulator automation, parsing test results, symbolicating crashes, debugging deep links from terminal, recording demos, or wiring CI install / launch / log capture. | `references/xcrun-cli.md`, `references/adb-cli.md` |
+| SwiftUI (iOS) | `swiftui` | ✓ (iOS) | iOS — Swift 6.3 + SwiftUI + `@Observable` | `references/patterns.md`, `references/modern-stack.md` |
+| Compose (Android) | `compose` | ✓ (Android) | Android — Kotlin 2.4+ + Compose + M3 Expressive | `references/patterns.md`, `references/modern-stack.md` |
+| Liquid Glass | `liquidglass` | | iOS 26 Liquid Glass adoption (depth controls, dynamic tab-bar, 4-variant icons) | `references/ios-hig.md`, `references/modern-stack.md` |
+| M3 Expressive | `expressive` | | M3 Expressive adoption (LoadingIndicator / PullToRefreshBox / FloatingToolbar / Carousel + spring) | `references/android-material3.md`, `references/modern-stack.md` |
+| Offline-First | `offline` | | T0-T3 offline architecture (SwiftData / Room / CRDT) | `references/patterns.md` |
+| Push Notifications | `push` | | APNs (Live Activities) + FCM (Channels) wiring + soft pre-prompt | `references/push-notifications.md` |
+| Deep Links | `deeplink` | | Universal Links (AASA) + App Links (assetlinks.json) + routing | `references/deeplink-routing.md` |
+| Background Tasks | `bg` | | iOS BGTaskScheduler + Android WorkManager + Doze/budget | `references/bg-execution.md` |
+| Passkey / Credential Manager | `passkey` | | FIDO2/WebAuthn sign-in via ASAuthorizationController / Credential Manager | `references/patterns.md` |
+| Privacy Manifest | `privacy` | | Apple Privacy Manifest + Google Data Safety form | `references/store-compliance.md` |
+| Staged Rollout | `rollout` | | TestFlight phased / Play staged + feature flags + halt-hotfix | `references/release-rollout.md` |
+| Store Compliance | `store` | | App Store / Play submission compliance audit | `references/store-compliance.md` |
+| CLI Tooling | `cli` | | Terminal automation — `xcrun` (simctl/devicectl/xctrace/xcresulttool/notarytool/atos) + `adb` (pm/am/logcat/dumpsys/pair/Perfetto) | `references/xcrun-cli.md`, `references/adb-cli.md` |
 
 ## Subcommand Dispatch
 
@@ -313,39 +235,36 @@ Parse the first token of user input.
 - If it matches a Recipe Subcommand above → activate that Recipe; load only the "Read First" column files at the initial step.
 - Otherwise → default Recipe is **`swiftui`** for iOS-only context, **`compose`** for Android-only context, or both in parallel for cross-platform context. Apply normal DETECT → SCAFFOLD → IMPLEMENT → ADAPT → VERIFY workflow.
 
-Behavior notes per Recipe:
-- `swiftui`: iOS-only. Swift 6.3 strict concurrency + `@Observable` + SwiftData (iOS 17+) / Core Data. Default to T1 offline. Apply Liquid Glass on iOS 26 targets.
-- `compose`: Android-only. Material 3 Expressive + Compose Strong Skipping + Type-safe Navigation 2.8+. Default targetSdk 35 (or 36 if mandated). Edge-to-edge from day 1.
-- `liquidglass`: iOS 26 adoption. Use new SwiftUI material APIs; design 4-variant icons (light / dark / tinted / clear) via Icon Composer; plan dynamic tab-bar shrink. Provide iOS 17/18 fallback that does not look broken.
-- `expressive`: Material 3 Expressive adoption. Replace deprecated `BottomAppBar` / indeterminate `CircularProgressIndicator` with FloatingToolbar / LoadingIndicator. Use spring motion. 35 new shape library available.
-- `offline`: Determine T0–T3 tier per data domain → select local DB → design write queue → choose conflict policy (LWW vs CRDT vs server reconciliation).
-- `push`: APNs + UNUserNotificationCenter + Live Activities (`ActivityKit`, max 8h active + 4h stale, ~4KB payload, no advertising copy) on iOS; FCM + Notification Channels on Android (POST_NOTIFICATIONS runtime permission since Android 13 / API 33). Soft pre-prompt UI mandatory.
-- `deeplink`: Universal Links (Associated Domains + AASA) and Android App Links (assetlinks.json + intent filters). Custom scheme as fallback only. Coordinator / NavController resolves URL → typed Route → screen. Auth-gated routes replay after login. Firebase Dynamic Links is retired — run AASA / assetlinks directly; use Branch / AppsFlyer / Adjust for attribution if needed.
-- `bg`: iOS BGTaskScheduler (BGAppRefreshTask / BGProcessingTask), Android WorkManager / JobScheduler. Budget execution to ~80% of OS window. Plan for Doze / App Standby / Low Power Mode. Foreground service types declared on Android 14+.
-- `passkey`: Passkey (FIDO2 / WebAuthn) is the **default sign-in path** for new flows. iOS: `ASAuthorizationController` + Secure Enclave + Keychain. Android: Credential Manager API (Passkey + Password + Sign-in-with-Google in one UI). Plan Passkey + fallback (password / OAuth) at MVP. Sign in with Apple is required alongside any third-party social login (App Store rule clarified 2024-01).
-- `privacy`: Apple Privacy Manifest with Required Reasons API declarations (mandatory since 2024-05; 3rd-party SDKs since 2025-02-12). Google Data Safety form across all tracks (Android ID is "Device or other IDs" since 2025-04). Hand off to `Cloak` for review.
-- `rollout`: TestFlight Internal → External → App Review → Phased Release (1%/10%/50%/100% over 7 days) on iOS. Play Internal → Closed → Open → Production Staged Rollout (5%/20%/50%/100%) on Android. Halt + hotfix on regression. Server-driven feature flags as the primary mitigation since mobile rollback is slower than web.
-- `store`: Pre-submission compliance audit. Privacy Manifest, Data Safety, 5-tier Age Rating questionnaire (Apple, by 2026-01-31), DSA trader declaration, DMA fee model (EU), Sign in with Apple alongside any third-party login, AI disclosure UI per 5.1.2(i) and Play AI Content Policy, Photo Picker (Android), Foreground Service Types (Android 14+), Liquid Glass icon variants (iOS 26).
-- `cli`: Terminal-driven workflows. Load `references/xcrun-cli.md` for iOS (`simctl boot/install/launch/push`, `devicectl` for physical devices Xcode 15+, `xctrace record` for performance, `xcresulttool` for test JSON, `notarytool` for macOS notarization, `atos` for crash symbolication). Load `references/adb-cli.md` for Android (`pm` / `am` / `logcat --pid` / `dumpsys` / `pair` for Android 11+ Wi-Fi ADB / `screenrecord` / Perfetto trace / `monkey` fuzz). The adb reference includes an iOS ↔ Android command map at the end — read both files when the task spans both platforms.
+Behavior notes per Recipe (1-line summaries; load the "Read First" reference for full detail):
+
+- `swiftui` — iOS Swift 6.3 + `@Observable` + SwiftData/Core Data, T1 offline default, Liquid Glass on iOS 26.
+- `compose` — Android Material 3 Expressive + Strong Skipping + Type-safe Navigation 2.8+, targetSdk 35/36, edge-to-edge day 1.
+- `liquidglass` — iOS 26 adoption: new SwiftUI material APIs + 4-variant icons (Icon Composer) + dynamic tab-bar shrink + iOS 17/18 fallback.
+- `expressive` — M3 Expressive: replace deprecated BottomAppBar/indeterminate CircularProgressIndicator with FloatingToolbar/LoadingIndicator, spring motion, new shape library.
+- `offline` — Per-domain T0-T3 tier → local DB → write queue → conflict policy (LWW / CRDT / server reconciliation).
+- `push` — iOS APNs + UNUserNotificationCenter + Live Activities (max 8h + 4h stale, ~4KB, no ads); Android FCM + Notification Channels + POST_NOTIFICATIONS runtime perm. Soft pre-prompt mandatory.
+- `deeplink` — Universal Links (AASA) + App Links (assetlinks.json) + Coordinator/NavController routing. Firebase Dynamic Links retired. Custom scheme = fallback only.
+- `bg` — iOS BGTaskScheduler, Android WorkManager/JobScheduler. ~80% of OS window budget; plan Doze/App Standby/Low Power; Foreground Service Types on Android 14+.
+- `passkey` — Passkey (FIDO2/WebAuthn) default for new flows. iOS `ASAuthorizationController` + Secure Enclave + Keychain; Android Credential Manager. Sign in with Apple alongside any third-party social.
+- `privacy` — Apple Privacy Manifest + Required Reasons API (3rd-party SDKs since 2025-02-12); Google Data Safety form (all tracks). Hand off to Cloak.
+- `rollout` — iOS TestFlight phased (1/10/50/100% over 7d); Android Play Staged (5/20/50/100%). Halt + hotfix on regression; server-driven flags as primary kill switch.
+- `store` — Pre-submission compliance: Privacy Manifest, Data Safety, 5-tier Age Rating (by 2026-01-31), DSA, DMA, Sign in with Apple, AI disclosure (5.1.2(i) + Play AI Content), Photo Picker, Foreground Service Types, Liquid Glass icon variants.
+- `cli` — Terminal automation. iOS: `references/xcrun-cli.md` (simctl/devicectl/xctrace/xcresulttool/notarytool/atos). Android: `references/adb-cli.md` (pm/am/logcat/dumpsys/pair/Perfetto/monkey). adb reference includes iOS↔Android command map.
 
 ## Output Routing
 
 | Signal | Approach / Output | Read next |
 |--------|-------------------|-----------|
-| iOS-only feature request | SwiftUI implementation with Swift 6.3 + `@Observable` + offline T1+ | `references/patterns.md` |
-| Android-only feature request | Compose + Material 3 Expressive + Strong Skipping + offline T1+ | `references/patterns.md` |
-| Cross-platform feature (both iOS + Android) | Two-codebase parallel implementation with shared design intent | `references/patterns.md` |
+| iOS-only / Android-only / cross-platform feature request | Per-platform SwiftUI or Compose + offline T1+; cross-platform = two codebases with shared intent | `references/patterns.md` |
 | iOS 26 Liquid Glass adoption | New SwiftUI material APIs + 4-variant icons + dynamic tab-bar shrink | `references/ios-hig.md`, `references/modern-stack.md` |
-| Android Material 3 Expressive | New components (LoadingIndicator, PullToRefreshBox, FloatingToolbar, Carousel) + spring motion | `references/android-material3.md`, `references/modern-stack.md` |
-| HIG / Material 3 design guideline lookup (foundations, color roles, typography, components catalog) | Per-platform OEM design system reference | `references/ios-hig.md`, `references/android-material3.md` |
-| Performance regression | Profile cold start, re-render / recomposition (Compose `Self._printChanges()` / Compose Effect Graph), memory | `references/patterns.md` |
-| Store submission preparation | Compliance audit, Privacy Manifest / Data Safety, metadata, build artifacts, staged rollout plan | `references/store-compliance.md`, `references/release-rollout.md` |
-| Phased release / Staged rollout | TestFlight phased + Play staged rollout with halt-and-hotfix | `references/release-rollout.md` |
-| Cross-platform UI framework request (RN/Flutter/KMP/CMP) | Out of scope — route to Forge for prototyping | — |
-| `xcrun` / `simctl` / `devicectl` / `xctrace` / `notarytool` / iOS simulator automation / iOS crash symbolicate (`atos`) | `cli` Recipe — iOS terminal tooling | `references/xcrun-cli.md` |
-| `adb` / `logcat` / `dumpsys` / `am start` / `pm install` / Android device shell / Wireless ADB pairing / `screenrecord` | `cli` Recipe — Android terminal tooling | `references/adb-cli.md` |
-| Perfetto trace / `xctrace` profiling / cold-start measurement / jank detection from terminal | `cli` Recipe — performance CLIs (both platforms) | `references/xcrun-cli.md`, `references/adb-cli.md` |
-| Demo recording / screen capture from CLI / E2E test scripting from terminal | `cli` Recipe — `simctl io recordVideo` (iOS) + `screenrecord` / `scrcpy` (Android) | `references/xcrun-cli.md`, `references/adb-cli.md` |
+| Android Material 3 Expressive | LoadingIndicator / PullToRefreshBox / FloatingToolbar / Carousel + spring motion | `references/android-material3.md`, `references/modern-stack.md` |
+| HIG / M3 design guideline lookup | Per-platform OEM design-system reference | `references/ios-hig.md`, `references/android-material3.md` |
+| Performance regression | Profile cold start, re-render / recomposition, memory | `references/patterns.md` |
+| Store submission / phased release | Compliance audit + Privacy Manifest / Data Safety + TestFlight phased / Play staged rollout | `references/store-compliance.md`, `references/release-rollout.md` |
+| Cross-platform UI framework (RN/Flutter/KMP/CMP) | Out of scope — route to Forge for prototyping | — |
+| iOS terminal tooling (`xcrun` / `simctl` / `devicectl` / `xctrace` / `notarytool` / `atos`) | `cli` Recipe — iOS | `references/xcrun-cli.md` |
+| Android terminal tooling (`adb` / `logcat` / `dumpsys` / `am` / `pm` / wireless pair / `screenrecord`) | `cli` Recipe — Android | `references/adb-cli.md` |
+| Cross-platform CLI (Perfetto / xctrace / cold-start / jank / demo capture) | `cli` Recipe — both platforms | `references/xcrun-cli.md`, `references/adb-cli.md` |
 
 ## Output Requirements
 
@@ -363,81 +282,19 @@ Every Native deliverable must include:
 
 ## Collaboration
 
-**Receives:**
+**Receives:** Port (blueprint after Port `blueprint`) · Forge (validated prototype) · Vision (design direction, Liquid Glass / M3 Expressive) · Muse (design tokens) · Builder (API contracts) · Frame (Figma extraction) · Palette (UX/a11y fixes) · Polyglot (translated `.xcstrings` / `strings.xml` + `LocaleConfig` after Polyglot `mobile`) · Launch (compliance feedback, halt triggers, flag activation — `LAUNCH_TO_NATIVE_HANDOFF`).
 
-| From | What | When |
-|------|------|------|
-| Port | Web→native porting blueprint (parity matrix, per-screen impl spec, architecture map) | After Port `blueprint` Recipe completes |
-| Forge | Validated prototype + known issues | Prototype-to-production conversion |
-| Vision | Design direction, mobile UX patterns (Liquid Glass / M3 Expressive direction) | New screen / flow design |
-| Muse | Design tokens (spacing, color, typography, dark mode) | Theming and token integration |
-| Builder | API contracts, shared business logic | Backend-connected features |
-| Frame | Figma mobile design extraction | Figma-to-code handoff |
-| Palette | UX improvement specs, a11y fixes | Usability and accessibility pass |
-| Polyglot | Translated `.xcstrings` (iOS) / `strings.xml` + `plurals.xml` (Android) per-locale, `LocaleConfig` for Android per-app language preferences | After Polyglot `mobile` Recipe completes (translation cycle ready for build integration) |
-| Launch | Store-compliance feedback, phased-release halt triggers, server-driven flag activation signals (`LAUNCH_TO_NATIVE_HANDOFF`) | During staged rollout — when halt triggers fire or flag-disable decisions are made |
+**Sends:** Radar (test specs — XCUITest / Espresso / Maestro) · Voyager (mobile E2E handoff) · Showcase (component catalog) · Gear (CI/CD — Fastlane / GitHub Actions / Xcode Cloud / Gradle) · Launch (submission artifacts + compliance + rollout — `NATIVE_TO_LAUNCH_HANDOFF`) · Guardian (PR with platform adaptation) · Cloak (Privacy Manifest / Data Safety review) · Crypt (Passkey / Keychain attestation) · Polyglot (untranslated strings + exported xliff before store submission).
 
-**Sends:**
+**Collaboration Patterns:**
+- **A** Port→Native: Port `blueprint` → Native `swiftui` + `compose` (Web→native porting to production)
+- **B** Prototype→Native: Forge → Native → Radar (prototype to production mobile)
+- **C** Vision-Driven Build: Vision → Muse → Native → Launch (design direction to store)
+- **D** API-Connected: Builder → Native → Radar (backend integration)
 
-| To | What | When |
-|----|------|------|
-| Radar | Mobile test specs (XCUITest, Espresso, Maestro) | After IMPLEMENT phase |
-| Voyager | Mobile E2E test handoff | After IMPLEMENT phase |
-| Showcase | Component catalog entries | New reusable components created |
-| Gear | Mobile CI/CD config (Fastlane, GitHub Actions, Xcode Cloud, Gradle) | Pipeline setup or update |
-| Launch | Store submission artifacts + compliance notes + staged-rollout plan (`NATIVE_TO_LAUNCH_HANDOFF`) | Release preparation |
-| Guardian | PR with platform adaptation summary | Code review |
-| Cloak | Privacy Manifest / Data Safety completeness review | After ADAPT phase |
-| Crypt | Token / Passkey / Keychain key-attestation review | Auth flow completion |
-| Polyglot | Untranslated UI strings (Swift `String(localized:)` / Compose `stringResource()` call sites), exported xliff (`xcodebuild -exportLocalizations` / Android Studio Translations Editor) for TMS routing | After IMPLEMENT phase, before store submission |
-
-### Collaboration Patterns
-
-| Pattern | Name | Flow | Purpose |
-|---------|------|------|---------|
-| **A** | Port → Native | Port `blueprint` → Native `swiftui` + `compose` | Web→native porting from blueprint to production |
-| **B** | Prototype → Native | Forge → Native → Radar | Validated prototype to production mobile |
-| **C** | Vision-Driven Build | Vision → Muse → Native → Launch | Design direction to store release |
-| **D** | API-Connected Native | Builder → Native → Radar | Backend integration with mobile frontend |
-
-### Handoff Patterns
-
-**From Port:**
-```yaml
-PORT_TO_NATIVE_HANDOFF:
-  scope: "[per-screen impl spec | full app build-out]"
-  target_platforms: ["iOS", "Android"]
-  blueprint_ref: "[path to blueprint.md]"
-  parity_matrix_ref: "[path]"
-  architecture_map_ref: "[path]"
-  per_screen_specs:
-    - screen_name: "[Home]"
-      ios_view: "HomeView"
-      ios_viewmodel: "HomeViewModel"
-      android_screen: "HomeScreen"
-      android_viewmodel: "HomeViewModel"
-      data_dependencies: ["[Repository names]"]
-      offline_tier: "T1"
-  defaults:
-    ios: { language: "Swift 6.3", ui: "SwiftUI", arch: "MVVM-C", min_os: "iOS 17" }
-    android: { language: "Kotlin 2.4+", ui: "Jetpack Compose", arch: "MVVM (or MVI)", min_os: "API 28", target_sdk: "35" }
-```
-
-**To Launch:**
-```yaml
-NATIVE_TO_LAUNCH_HANDOFF:
-  app_version: "[semver]"
-  platforms: ["iOS", "Android"]
-  store_compliance_notes: ["[Compliance items verified]"]
-  privacy_manifest_complete: true | false
-  data_safety_complete: true | false
-  build_artifacts: ["[IPA/AAB paths]"]
-  release_notes: "[User-facing changelog]"
-  rollout_plan:
-    ios: "TestFlight Internal → External → App Review → Phased Release"
-    android: "Play Internal → Closed → Open → Production Staged Rollout"
-  feature_flags: ["[server-driven flags wired for kill-switch]"]
-```
+**Handoff Patterns** (full YAML → `references/handoffs.md`):
+- `PORT_TO_NATIVE_HANDOFF`: `scope`, `target_platforms`, `blueprint_ref`, `parity_matrix_ref`, `architecture_map_ref`, `per_screen_specs[]`, `defaults.{ios, android}`.
+- `NATIVE_TO_LAUNCH_HANDOFF`: `app_version`, `platforms`, `store_compliance_notes`, `privacy_manifest_complete`, `data_safety_complete`, `build_artifacts`, `release_notes`, `rollout_plan.{ios, android}`, `feature_flags`.
 
 ---
 
@@ -445,53 +302,35 @@ NATIVE_TO_LAUNCH_HANDOFF:
 
 | File | Content |
 |------|---------|
-| `references/ios-hig.md` | Apple Human Interface Guidelines reference — Foundations / Patterns / Components / Inputs, iOS 26 Liquid Glass adoption rules (where to apply / where NOT, variants, fallback), Dynamic Type / SF Pro / accessibility, App Store technology integration hooks |
-| `references/android-material3.md` | Material 3 + Material 3 Expressive reference — Foundations / Styles / Components (Jetpack Compose API names) / Patterns, design tokens (color roles / type scale / shape / motion / elevation), Expressive new components (LoadingIndicator / SplitButton / FloatingToolbar / FlexibleBottomAppBar / FAB Menu / Carousel / SecureTextField), Compose BOM 2026.05 / Material 3 1.4+ adoption checklist |
-| `references/patterns.md` | Navigation, state management, offline-first, Compose recomposition, SwiftUI body invalidation, platform adaptation patterns |
+| `references/ios-hig.md` | Apple HIG reference — Foundations / Patterns / Components, iOS 26 Liquid Glass adoption rules, Dynamic Type / SF Pro / accessibility |
+| `references/android-material3.md` | M3 + M3 Expressive — Foundations / Styles / Components (Compose API), design tokens, Expressive new components, Compose BOM 2026.05 |
+| `references/patterns.md` | Navigation, state management, offline-first, Compose recomposition, SwiftUI body invalidation, platform adaptation |
 | `references/examples.md` | Representative use cases and output format examples |
 | `references/handoffs.md` | Incoming / outgoing handoff templates for all collaboration partners |
-| `references/store-compliance.md` | App Store Review Guidelines / Google Play Policy, Privacy Manifest, Data Safety, AI disclosure, Children Age Rating, Fintech, DMA, EAA, IAP, Sign in with Apple |
-| `references/release-rollout.md` | TestFlight phased release / Play staged rollout, halt-and-hotfix, server-driven feature flags |
+| `references/store-compliance.md` | App Store / Google Play policy, Privacy Manifest, Data Safety, AI disclosure, Age Rating, Fintech, DMA, EAA, IAP, Sign in with Apple |
+| `references/release-rollout.md` | TestFlight phased / Play staged rollout, halt-and-hotfix, server-driven feature flags |
 | `references/mobile-ci-cd.md` | Xcode Cloud / Fastlane / GitHub Actions / Gradle pipeline design |
-| `references/platform-permissions.md` | iOS / Android permission handling, soft pre-prompt UX, graceful degradation |
-| `references/modern-stack.md` | Swift 6.3 Approachable Concurrency, `@Observable`, SwiftData, Liquid Glass, Kotlin 2.4+ / K2, Compose Strong Skipping, Type-safe Navigation 2.8+, Material 3 Expressive |
-| `references/push-notifications.md` | APNs (Live Activities) and FCM (Channels), token lifecycle, soft pre-prompt UX, payload shape, delivery analytics, quota budgeting |
-| `references/deeplink-routing.md` | Universal Links (AASA), App Links (assetlinks.json), routing architecture, attribution parameters |
-| `references/bg-execution.md` | iOS BGTaskScheduler, Android WorkManager, Doze / App Standby, Foreground Service Types, execution-time budgeting |
-| `references/xcrun-cli.md` | `xcrun` toolchain reference — `simctl` (simulator), `devicectl` (physical device, Xcode 15+ replacing `ios-deploy`), `xctrace` (Instruments CLI), `xcresulttool` (test JSON), `notarytool` / `altool` (App Store submit + macOS notarization), binary introspection (`lipo` / `atos` / `dwarfdump` / `codesign`), recipes + gotchas |
-| `references/adb-cli.md` | `adb` reference — package mgmt (`pm`), activity launching (`am`), `logcat` filters, file transfer (`push` / `pull` / `run-as`), Wi-Fi pairing (Android 11+), screen capture / record, device-state simulation (`dumpsys battery` / `deviceidle` / `settings`), Perfetto tracing, monkey fuzz, plus iOS ↔ Android command map at the end |
-| `_common/OPUS_48_AUTHORING.md` | Sizing the implementation summary, choosing effort-level for offline-tier scope, or front-loading platform / framework at Assess. Critical for Native: P3, P6 |
+| `references/platform-permissions.md` | iOS / Android permissions, soft pre-prompt UX, graceful degradation |
+| `references/modern-stack.md` | Swift 6.3 + `@Observable` + SwiftData + Liquid Glass; Kotlin 2.4+ + Compose Strong Skipping + Type-safe Navigation + M3 Expressive |
+| `references/push-notifications.md` | APNs (Live Activities) + FCM (Channels), token lifecycle, payload, analytics, quota |
+| `references/deeplink-routing.md` | Universal Links (AASA), App Links (assetlinks.json), routing architecture, attribution |
+| `references/bg-execution.md` | iOS BGTaskScheduler, Android WorkManager, Doze / App Standby, Foreground Service Types |
+| `references/xcrun-cli.md` | `xcrun` toolchain — `simctl` / `devicectl` / `xctrace` / `xcresulttool` / `notarytool` / `atos` / binary introspection |
+| `references/adb-cli.md` | `adb` reference — `pm` / `am` / `logcat` / `dumpsys` / wireless pair / Perfetto / iOS↔Android command map |
+| `_common/OPUS_48_AUTHORING.md` | Sizing implementation summary, effort-level for offline tier, platform/framework front-load. Critical: P3, P6 |
 
 ---
 
-## Daily Process
+## Working Principles
 
-1. **Assess** — Read task, identify platform(s), check existing project structure, audit third-party SDKs for Privacy Manifest / 16KB compliance
-2. **Plan** — Select Recipe (swiftui / compose / liquidglass / expressive / offline / push / deeplink / bg / passkey / privacy / rollout / store), identify offline tier, permission flows, store-compliance items
-3. **Build** — Implement feature with platform conventions, type safety, accessibility, Privacy Manifest declarations
-4. **Adapt** — Platform-specific adjustments, test on both platforms when both in scope, soft pre-prompt UX, AI disclosure UI if applicable
-5. **Deliver** — Build verification, cold-start / crash-free metrics, Privacy Manifest / Data Safety completeness, handoff artifacts
-
----
-
-## Favorite Tactics
-
-- **Two codebases, one product owner**: prevent UI / feature drift via per-screen parity reviews
-- **Soft pre-prompt always**: never request system permissions on cold launch
-- **Privacy Manifest as a first-class deliverable**: draft alongside the feature, not after
-- **Offline queue from day 1**: retrofitting write queues is 3× more expensive
-- **Server-driven feature flags as primary rollback**: mobile rollback is slower than web; flags are the kill switch
-- **Liquid Glass on iOS 26 / Material 3 Expressive on Android — adopt early**: late retrofits cause layout regressions across the app
-
-## Avoids
-
-- **Cross-platform UI frameworks**: RN / Flutter / KMP / CMP are out of scope for this skill
-- **Web-think**: applying SPA patterns (`react-router`, `localStorage`) to mobile
-- **Platform ignorance**: same UI on iOS and Android without respecting conventions
-- **Eager permissions**: requesting all permissions at app launch
-- **Monolithic state**: one giant global store instead of per-feature ViewModels with cross-cut `AppState`
-- **Skip offline**: assuming always-connected; mobile networks are unreliable
-- **OTA-of-native promises**: native code cannot be hot-patched; only TestFlight / Play Staged Rollout
+- **DETECT → SCAFFOLD → IMPLEMENT → ADAPT → VERIFY** per task (mirrors `## Workflow` phases).
+- **Two codebases, one product owner** — per-screen parity reviews prevent UI/feature drift.
+- **Soft pre-prompt always** — never request system permissions on cold launch (iOS first-denial is sticky).
+- **Privacy Manifest as a first-class deliverable** — draft alongside the feature, not after.
+- **Offline queue from day 1** — retrofitting write queues is 3× more expensive.
+- **Server-driven feature flags as primary rollback** — mobile rollback is slower than web; flags are the kill switch.
+- **Adopt Liquid Glass / M3 Expressive early** — late retrofits cause layout regressions across the app.
+- **Avoid**: cross-platform UI frameworks (RN/Flutter/KMP/CMP — out of scope) · SPA patterns on mobile (`react-router`, `localStorage`) · same UI on both platforms ignoring conventions · eager permissions at launch · monolithic global store · assumed connectivity · OTA-of-native promises (native cannot be hot-patched).
 
 ---
 
