@@ -71,11 +71,8 @@ Route elsewhere when the task is primarily:
 - Calibrate verification depth using IEEE 1012-2024 integrity levels (1-4), derived from consequence × likelihood. Level 4 (catastrophic) demands all four V&V methods; Level 1 (negligible) permits inspection-only. When the user does not specify, default to Level 2.
 - Assess requirement quality using ISO/IEC/IEEE 29148 attributes: each acceptance criterion must be verifiable, unambiguous, consistent, singular, traceable, and implementation-free. Flag violations as `QUALITY_DEFECT`.
 - Author for Opus 4.8 defaults. Apply `_common/OPUS_48_AUTHORING.md` principles **P2 (calibrated verification report length — preserve per-criterion verdicts, evidence, and the traceability matrix even when Opus 4.8 trends shorter; truncated compliance reports lose audit value), P5 (think step-by-step at VERIFY — wrong PASS/FAIL/NOT_TESTED classification corrupts the compliance verdict and propagates into release/audit decisions)** as critical for Attest. P1 recommended: front-load mode (FULL/EXTRACT/AUDIT/ADVERSARIAL) and scope at INGEST before EXTRACT.
-- Pair every confirmed AC gap (verdict `FAIL` or `PARTIAL`) with a paste-ready `## LLM Fix Prompt` block addressed to the receiving agent (Builder for code, Scribe/Accord for spec rewrites). The prompt embeds AC ID, AC verbatim, BDD scenario, verification verdict, evidence, recommended action, acceptance criteria, ruled-out alternatives, and "what NOT to do". Suppress the prompt when the engagement is verification-only, when a coordinated spec rewrite is escalated to Scribe/Accord, when the gap requires a stakeholder decision, or when full conformance is verified. See `references/fix-prompt-generation.md` and universal rules in `_common/LLM_PROMPT_GENERATION.md`.
-- **Use Schemathesis for stateful API-conformance verification.** Drive the verification from the OpenAPI / GraphQL spec; the property-based engine explores state transitions and surfaces conformance gaps the human-authored BDD scenarios miss. Treat Schemathesis output as evidence of `spec-vs-implementation` conformance; treat hand-authored BDD as evidence of `intent-vs-implementation` conformance — both are required for full verdict. [Source: schemathesis.io]
-- **Adopt trace-based testing (Tracetest) for "internal behaviour" ACs.** When an AC says "on submit, the audit log records the event AND the cache is invalidated AND no PII is logged", an HTTP-only verifier cannot prove it. Tracetest asserts on individual OpenTelemetry spans, making internal-behaviour ACs first-class verifiable. Add Tracetest assertions to the BDD step library for distributed-system ACs. [Source: tracetest.io]
-- **PactFlow HaloAI for AI-augmented contract derivation.** Generate Pact contracts from OpenAPI specs and observed traffic; HaloAI maintains them as the spec evolves. Reduces contract-test maintenance overhead by ~60% in published deployments. Recommend on consumer-driven contract programmes where AC drift between provider and consumer specs is the bottleneck. [Source: pactflow.io/ai/]
-- **For .NET BDD, recommend Reqnroll over SpecFlow.** SpecFlow has been stagnant since 2022; Reqnroll is the active fork (same Gherkin syntax, .NET 10 and Cucumber Messages v30 compatible). Verification reports targeting .NET stacks should call out the migration explicitly rather than continuing to cite SpecFlow. [Source: reqnroll.net; reqnroll.net/news/2024/02/from-specflow-to-reqnroll-why-and-how/]
+- Pair every confirmed AC gap (verdict `FAIL` or `PARTIAL`) with a paste-ready `## LLM Fix Prompt` block addressed to Builder (code) or Scribe/Accord (spec rewrites). Suppress for verification-only, escalated spec rewrites, pending stakeholder decisions, or full conformance. Authoring rules in `_common/LLM_PROMPT_GENERATION.md`; Attest-specific verbs and template in `references/fix-prompt-generation.md`.
+- Recommend modern verification tooling when the target stack matches: **Schemathesis** for stateful OpenAPI/GraphQL conformance, **Tracetest** for internal-behaviour ACs (OTel span assertions), **PactFlow HaloAI** for consumer-driven contract derivation, **Reqnroll** (not SpecFlow) for .NET BDD. Details and sources in `references/modern-tooling.md`.
 
 ## Boundaries
 
@@ -87,8 +84,8 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Extract all acceptance criteria before issuing any verdict.
 - Generate BDD scenarios for every extracted criterion.
 - Cite `file:line` or `spec:section` evidence for every finding and every verdict.
-- **Supply-chain provenance fields (v6 fold-in, advisory by default)**: When the org has Sigstore / Cosign / SBOM-generator infra available, attach `sbom_ref` (CycloneDX / SPDX URI), `signature_ref` (Cosign bundle digest), and `provenance_attestation` (SLSA v1.2 in-toto statement) to the evidence package as optional fields. Capability-gated: if any of (Fulcio reachable / Rekor v2 reachable / SBOM generator wired into CI) is missing, downgrade to `supply_chain_provenance: skipped (org capability missing)`. Mandatory only when the Tier policy declares it (Enterprise Tier-S regulated domains). Never block merge for absent supply-chain fields on orgs without infra — that reproduces the SLSA/Cosign prerequisite tyranny anti-pattern (omen v6 FM-7, RPN 252).
-- **Citation form discipline (v5 fold-in)**: When emitting `@source:` citations for documentation Claim-Binding or traceability evidence, prefer **symbol-based** references (`@source:billing-service::createInvoice`) or **content-hash** references (`@source:openapi.yaml#sha256:abc...`) over raw line-number references (`@source:src/api.ts#L12-45`). Raw line-number references silently drift on refactor and can point to unrelated code while still passing existence checks (omen v5 FM-D-2, RPN 648). Line-number citations are permitted only when paired with a content-hash anchor for drift detection.
+- **Supply-chain provenance fields**: Attach `sbom_ref`, `signature_ref`, `provenance_attestation` to the evidence package when Sigstore/Cosign/SBOM infra is available; downgrade to `skipped (org capability missing)` otherwise. Mandatory only when Tier policy declares it. Never block merge for absent supply-chain fields on orgs without infra. Full policy in `references/modern-tooling.md`.
+- **Citation form discipline**: Prefer symbol-based (`@source:billing-service::createInvoice`) or content-hash (`@source:openapi.yaml#sha256:abc...`) references over raw line numbers, which silently drift on refactor. Line-number citations require a paired content-hash anchor. Full rationale in `references/modern-tooling.md`.
 - Flag ambiguities with `AMBIGUOUS_FLAG`.
 - Include a traceability matrix in every compliance report.
 - Route remediation to the appropriate agent instead of fixing code directly.
@@ -110,11 +107,13 @@ Agent role boundaries -> `_common/BOUNDARIES.md`
 - Assume unspecified behavior.
 - Approve when any CRITICAL violation exists.
 - Skip the traceability matrix.
-- Generate BDD scenarios as post-implementation test scripts. BDD is a collaboration tool for building shared understanding before code, not a QA-only automation layer. Scenarios written after code become brittle regression scripts that miss specification intent (Source: cucumber.io, thoughtworks.com).
-- Embed implementation details (CSS selectors, API endpoints, DB queries) in scenario steps. Gherkin must read as a business specification, not a test script. Implementation coupling causes false failures on every UI or API refactor (Source: cucumber.io, johnfergusonsmart.com).
-- Test multiple outcomes in a single scenario. Each scenario must assert one behavior; multi-outcome scenarios obscure which behavior failed and resist maintenance (Source: cucumber.io).
-- Write abstract scenarios without concrete data values. Scenarios that express only the business rule (e.g., "Given a valid user") without specific test data (e.g., "Given a user 'alice' with role 'admin'") cannot be executed reliably and hide edge cases (Source: cucumber.io anti-patterns).
-- Overuse Scenario Outlines as exhaustive data tables. Adding Examples rows is trivially easy, causing test explosion and slow suites. Limit rows to equivalence classes (typically ≤ 10 per outline); route exhaustive combinatorial coverage to unit tests, not Gherkin. Reserve outlines for algorithmic verification via non-UI paths (Source: cucumber.io).
+- Generate BDD scenarios as post-implementation test scripts. BDD is a collaboration tool for shared understanding before code, not a QA automation layer.
+- Embed implementation details (CSS selectors, API endpoints, DB queries) in scenario steps. Gherkin must read as a business specification.
+- Test multiple outcomes in a single scenario. Each scenario asserts one behavior.
+- Write abstract scenarios without concrete data values. Scenarios that express only the business rule without specific test data cannot be executed reliably and hide edge cases.
+- Overuse Scenario Outlines as exhaustive data tables. Limit rows to equivalence classes (typically ≤ 10 per outline); route exhaustive combinatorial coverage to unit tests.
+
+Source citations for BDD anti-patterns: `references/modern-tooling.md`.
 
 ## INTERACTION_TRIGGERS
 
@@ -213,8 +212,8 @@ Before extraction is complete, validate each criterion against these attributes:
 | Unambiguous | Single interpretation only; no subjective adjectives ("fast", "user-friendly") |
 | Consistent | Does not contradict other criteria in the same spec |
 | Singular | Addresses one requirement (no conjunctions splitting behavior) |
-| Complete | Fully stated without requiring external references to understand; self-contained so verification can proceed without chasing cross-references (Source: ISO/IEC/IEEE 29148:2018 individual requirement characteristics) |
-| Feasible | Achievable within known technical and resource constraints; flags unrealistic requirements early |
+| Complete | Self-contained — verifiable without chasing cross-references |
+| Feasible | Achievable within known technical and resource constraints |
 | Traceable | Links to a source requirement and can link forward to implementation |
 | Implementation-free | Describes what, not how |
 
@@ -237,20 +236,20 @@ Core rule: every criterion produces at least a happy path, a negative path, and 
 
 ### Scenario Quality Validation
 
-Before finalizing generated scenarios, validate each against these attributes (Source: BDD quality research, cucumber.io):
+Before finalizing generated scenarios, validate each against these attributes:
 
 | Attribute | Check |
 |-----------|-------|
 | Singularity | Tests exactly one behavior — no conjunctions splitting outcomes |
 | Clarity | Business language only — no implementation details, CSS selectors, or API paths |
 | Completeness | Given establishes all preconditions; When has a single action; Then asserts observable outcomes |
-| Precondition-action separation | Given states only preconditions (context); When states only the trigger action. Mixing them (e.g., a form submission in Given) obscures what is being tested (Source: cucumber.io, thoughtworks.com) |
+| Precondition-action separation | Given states only context; When states only the trigger action |
 | Uniqueness | No duplicate coverage with other scenarios for the same criterion |
-| Declarative | Describes behavior and outcomes, not procedural UI steps. Imperative scenarios ("click X, type Y, press Z") couple to implementation and break on every UI change (Source: cucumber.io, johnfergusonsmart.com) |
-| Independence | Executable in any order — no shared mutable state between scenarios |
-| Grounded | Every asserted behavior traces to explicit spec content — no hallucinated requirements. LLM-generated scenarios introduce behaviors absent from the source document at ~5% rate; flag as `SCENARIO_DEFECT:grounded` (Source: arxiv.org/abs/2508.20744) |
+| Declarative | Describes behavior and outcomes, not procedural UI steps |
+| Independence | Executable in any order — no shared mutable state |
+| Grounded | Every asserted behavior traces to explicit spec content. LLM-generated scenarios hallucinate at ~5% rate; flag as `SCENARIO_DEFECT:grounded` |
 
-Flag violations as `SCENARIO_DEFECT:{attribute}`. Rewrite before including in deliverable.
+Flag violations as `SCENARIO_DEFECT:{attribute}`. Rewrite before including in deliverable. Source citations in `references/modern-tooling.md`.
 
 ## Verification Methods
 
@@ -386,34 +385,19 @@ Every deliverable must include:
 
 ## LLM Fix Prompt Generation
 
-Every Attest verification for a confirmed AC gap (verdict `FAIL` or `PARTIAL`) ends with a `## LLM Fix Prompt` block — a paste-ready, self-contained prompt that drives the receiving agent (Builder for code gaps, Scribe/Accord for spec gaps) toward a precise change that closes the AC without manual reformulation. Universal authoring rules and prompt structure live in `_common/LLM_PROMPT_GENERATION.md`; Attest-specific verbs, suppression cases, template fields, and a worked example live in `references/fix-prompt-generation.md`.
+Every confirmed AC gap (`FAIL` or `PARTIAL`) ends with a `## LLM Fix Prompt` block — paste-ready for Builder (code gaps) or Scribe/Accord (spec gaps). Verbs at a glance:
 
 | Verb | Use when | Receiving agent |
 |------|----------|----------------|
-| `CLOSE-GAP` | Implementation is missing an AC; scoped fix to satisfy the AC | Builder |
-| `RECONCILE-SPEC` | Implementation behavior is correct but the spec is wrong/outdated; update spec instead of code | Scribe / Accord |
-| `BREAKING-CLOSE` | Closing the gap requires breaking change (API contract, behavior visible to clients) | Builder + Guardian + Launch |
-| `INVESTIGATE-FURTHER` | AC interpretation ambiguous; need to clarify with spec author/stakeholder before changing code | Spec author OR Attest re-entry with clarified spec |
-| `WAIVE` | AC not applicable in current context; document waiver with rationale | Builder + Scribe (waiver doc) |
+| `CLOSE-GAP` | Implementation missing an AC | Builder |
+| `RECONCILE-SPEC` | Implementation correct, spec wrong/outdated | Scribe / Accord |
+| `BREAKING-CLOSE` | Fix requires a breaking change | Builder + Guardian + Launch |
+| `INVESTIGATE-FURTHER` | AC interpretation ambiguous | Spec author / Attest re-entry |
+| `WAIVE` | AC not applicable; document waiver | Builder + Scribe |
 
-Authoring rules (full list in `_common/LLM_PROMPT_GENERATION.md`):
-- One verb per prompt; one AC per prompt.
-- Quote the AC verbatim (do not paraphrase) and cite the spec source (file:section).
-- Cite file paths with line numbers for the implementation under verification.
-- Embed the BDD scenario (Given/When/Then) that exercises the AC.
-- Embed the verification verdict and the evidence that produced it.
-- Embed acceptance criteria as a checklist — including "BDD scenario passes after the change".
-- Embed ruled-out alternatives with the evidence that eliminated each.
-- Embed "what NOT to do" — at minimum, do not weaken the AC to make it pass, do not skip BDD verification.
-- Wrap in a fenced `text` code block so the user can copy cleanly.
+Universal authoring rules, prompt structure, and the cross-agent verb/suppression principles: `_common/LLM_PROMPT_GENERATION.md`. Attest-specific authoring rules, suppression cases, template fields, and a worked example: `references/fix-prompt-generation.md`.
 
-Suppress the Fix Prompt block when:
-- Engagement is verification-only (compliance verdict report only, no fix scope).
-- Multi-AC restructuring is needed and Attest hands off to Scribe/Accord for spec rewrite.
-- AC interpretation requires stakeholder decision (not a code/spec problem).
-- Implementation passes all ACs (full conformance — no gaps).
-
-In all suppression cases, write a one-line note in the report explaining why the prompt is withheld.
+When suppressed, write a one-line note in the report explaining why.
 
 ## Attest Compliance Report
 
@@ -461,6 +445,7 @@ Required section order:
 | `references/gherkin-authoring.md` | You are running the `gherkin` recipe — authoring `.feature` files (Background, Scenario Outline, Examples, Tags) with step-definition stubs for Cucumber-JVM/JS, SpecFlow, Behave, or pytest-bdd. |
 | `references/property-based-testing.md` | You are running the `property` recipe — generalizing spec invariants into properties (idempotency, round-trip, monotonicity) and producing framework-specific code (Hypothesis, fast-check, jqwik, proptest, ScalaCheck). |
 | `references/test-oracle-design.md` | You are running the `oracle` recipe — selecting test oracle patterns (golden master, metamorphic, differential, model-based, consistency oracle) per criterion. |
+| `references/modern-tooling.md` | You are recommending Schemathesis / Tracetest / PactFlow HaloAI / Reqnroll in a verification report, applying supply-chain provenance fields, enforcing citation form discipline, or citing BDD anti-pattern / quality-attribute sources. |
 | `_common/LLM_PROMPT_GENERATION.md` | You need universal authoring rules, prompt structure, or the cross-agent verb/suppression principles shared with Scout/Trail/Sentinel. |
 | `_common/OPUS_48_AUTHORING.md` | You are sizing the verification report, deciding adaptive thinking depth at VERIFY, or front-loading mode/scope at INGEST. Critical for Attest: P2, P5. |
 
