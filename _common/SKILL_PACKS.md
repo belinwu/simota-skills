@@ -1,10 +1,10 @@
 # Skill Packs
 
-Skill membership matrix for selective enablement across the 134-skill ecosystem.
+Skill membership matrix for selective enablement across the 130-skill ecosystem.
 
 ## Why this exists
 
-Anthropic guidance is **8-12 skills** before "context tax" (token overhead per turn) starts to dominate; routing degradation begins in the **dozens**, and a **15,000-character cap** on the available skills list is a hard ceiling. This repository's 134 skills exceed all three thresholds.
+Anthropic guidance is **8-12 skills** before "context tax" (token overhead per turn) starts to dominate; routing degradation begins in the **dozens**, and a **15,000-character cap** on the available skills list is a hard ceiling. This repository's 130 skills exceed all three thresholds.
 
 This file defines **10 Packs** (overlapping subsets of the ecosystem) so that any single workstream can enable ~20-30 skills instead of the full 134. Selective enablement is driven by the Claude Code `skills` filter in `~/.claude/settings.json` (`"all"` / `[list]` / `[]`); Codex CLI and agy use equivalent allowlist mechanisms when available.
 
@@ -35,7 +35,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 | `infra-ops` | `core + infra` | ~40 |
 | `research` | `core + research` | ~35 |
 | `package-author` | `core + package-gen + design + research` | ~75 |
-| `all` | `"all"` (no filter) | 134 (debugging / discovery only) |
+| `all` | `"all"` (no filter) | 130 (debugging / discovery only) |
 
 ---
 
@@ -65,7 +65,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** pure-native (Swift/SwiftUI, Kotlin/Compose) + cross-platform (RN/Flutter/KMP/CMP) + store release.
 
-**Members:** `native`, `port`, `snap`, `berth`, `voyager`, `forge`, `frame`
+**Members:** `native`, `port`, `snap`, `voyager`, `forge`, `frame`
 
 **Triggers:** `ios`, `android`, `swift`, `swiftui`, `kotlin`, `jetpack compose`, `xcuitest`, `appium`, `detox`, `maestro`, `react native`, `flutter`, `kmp`, `cmp`, `liquid glass`, `material 3`, `app store`, `play store`
 
@@ -85,7 +85,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** LLM/agent evaluation, multi-engine review, observability, reliability eng, failure mode analysis.
 
-**Members:** `judge`, `magi`, `arena`, `attest`, `oracle`, `beacon`, `mend`, `siege`, `specter`, `omen`, `ripple`, `void`, `warden`, `drill`, `matrix`, `mint`
+**Members:** `judge`, `magi`, `arena`, `attest`, `oracle`, `beacon`, `mend`, `siege`, `specter`, `omen`, `ripple`, `void`, `drill`, `matrix`, `mint`
 
 **Triggers:** `llm`, `rag`, `prompt engineering`, `ai safety`, `evaluation`, `eval`, `slo`, `sli`, `observability`, `tracing`, `incident`, `chaos`, `mutation testing`, `load test`, `pre-mortem`, `race condition`, `memory leak`, `deadlock`, `multi-engine review`, `manual qa`, `testrail`, `zephyr`, `xray`, `qase`, `bva`, `equivalence class`, `combinatorial`, `coverage matrix`, `test data`, `fixture`, `factory pattern`
 
@@ -115,7 +115,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** design system construction, visual asset generation, slide/video production, brand work.
 
-**Members:** `muse`, `vision`, `atelier`, `canvas`, `frame`, `showcase`, `palette`, `prose`, `flow`, `pixel`, `forge`, `artisan`, `ink`, `dot`, `sketch`, `saga`, `cue`, `director`, `reel`, `stage`, `prism`
+**Members:** `muse`, `vision`, `atelier`, `canvas`, `frame`, `showcase`, `palette`, `prose`, `flow`, `pixel`, `forge`, `artisan`, `ink`, `dot`, `sketch`, `saga`, `cue`, `director`, `stage`
 
 **Triggers:** `design system`, `design tokens`, `figma`, `figjam`, `figma make`, `storybook`, `mermaid`, `draw.io`, `ascii diagram`, `svg`, `icon`, `pixel art`, `3d`, `meshy`, `tripo`, `slide`, `marp`, `reveal.js`, `slidev`, `keynote`, `presentation`, `notebooklm`, `video`, `screencast`, `cli demo`, `vhs`, `terminalizer`, `asciinema`, `audio`, `bgm`, `sfx`, `voice synthesis`, `aituber`, `vtuber`, `game design`, `gdd`
 
@@ -135,7 +135,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** end-to-end document package production via the `package` Recipe (12 domain presets — startup / career / learning / hiring / local-gov / etc.). Heavy union with `research`, `design`, and `core`.
 
-**Members:** `accord`, `scribe`, `tome`, `quill`, `rank`, `spark`, `magi`, `void`, `morph`, `canon`, `prose`, `saga`, `pulse`, `cast`, `researcher`, `plea`, `echo`, `voice`, `compete`, `attest`, `judge`, `clause`, `comply`, `cloak`, `vigil`, `ascent`, `mentor`, `guild`, `spider`, `stage`, `prism`, `cue`, `showcase`, `pixel`, `artisan`, `frame`, `muse`, `palette`, `vision`
+**Members:** `accord`, `scribe`, `tome`, `quill`, `rank`, `spark`, `magi`, `void`, `morph`, `canon`, `prose`, `saga`, `pulse`, `cast`, `researcher`, `plea`, `echo`, `voice`, `compete`, `attest`, `judge`, `clause`, `comply`, `cloak`, `vigil`, `ascent`, `mentor`, `guild`, `spider`, `stage`, `cue`, `showcase`, `pixel`, `artisan`, `frame`, `muse`, `palette`, `vision`
 
 **Triggers:** `business plan`, `venture`, `mvp dossier`, `pitch package`, `documentation package`, `package`, `startup dossier`, `domain preset`, `traceability matrix`, `feature_id`, `f-001`
 

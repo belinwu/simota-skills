@@ -751,7 +751,6 @@ skills/
 ├── orbit/SKILL.md      # Nexus-autoloop完走スペシャリスト
 ├── palette/SKILL.md    # UX
 ├── polyglot/SKILL.md   # i18n
-├── prism/SKILL.md      # NotebookLMステアリングプロンプト設計
 ├── pipe/SKILL.md       # GitHub Actionsワークフロー設計
 ├── probe/SKILL.md      # セキュリティ動的テスト（DAST）
 ├── prose/SKILL.md      # UXライティング＆コンテンツ戦略
@@ -759,8 +758,6 @@ skills/
 ├── quill/SKILL.md      # ドキュメント
 ├── radar/SKILL.md      # テスト
 ├── rally/SKILL.md      # マルチセッション並列オーケストレーター
-├── (realm sunset 2026-06-06)
-├── reel/SKILL.md       # ターミナル録画・CLIデモ動画生成
 ├── relay/SKILL.md      # メッセージング統合・リアルタイム通信
 ├── researcher/SKILL.md # ユーザーリサーチ
 ├── ripple/SKILL.md     # 変更前影響分析
@@ -793,7 +790,6 @@ skills/
 ├── void/SKILL.md       # YAGNI検証・複雑性削減
 ├── voice/SKILL.md      # ユーザーフィードバック
 ├── voyager/SKILL.md    # E2Eテスト
-├── warden/SKILL.md     # V.A.I.R.E.品質ゲート
 └── zen/SKILL.md        # リファクタリング
 ```
 

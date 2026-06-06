@@ -131,7 +131,6 @@ Where `summit` triangulates strategic code decisions, podium triangulates **pros
                                     │  ┌──────────────────────────────┐    │
                                     │  │ TRACK C: LAYOUT / FORMAT     │    │
                                     │  │  Codex: stage, morph         │    │
-                                    │  │  Claude: prism (NotebookLM)  │    │
                                     │  │  agy: figma:figma-use-slides │    │
                                     │  └──────────────────────────────┘    │
                                     │  Convergence: doc ↔ slide cross-refs │
@@ -439,12 +438,6 @@ layout_track:
       engine: codex
       mission: cross-format conversion (intermediate MD → target)
       output: dist/
-
-    - if: target_platform == NotebookLM
-      use: [prism]
-      engine: claude
-      mission: NotebookLM Custom Goal / Audio Overview steering prompt
-      output: notebooklm_steering.md
 
     - if: target_platform == Figma Slides
       use: [figma:figma-use-slides]
@@ -764,7 +757,6 @@ phase_chain:
         agents_by_target:
           - if: includes_slide,         use: [stage],      engine: codex
           - if: target_format_needed,   use: [morph],      engine: codex
-          - if: target == notebooklm,   use: [prism],      engine: claude
           - if: target == figma_slides, use: [figma:figma-use-slides], engine: agy
     convergence: cross_reference_resolution
     duration_minutes: [15, 45]
@@ -881,7 +873,7 @@ phase_chain:
 
 ```
 Is the goal a single narrow content task with no cross-format need?
-  └─ YES → single skill (zine / stage / scribe / quill / tome / morph / prism)
+  └─ YES → single skill (zine / stage / scribe / quill / tome / morph)
   └─ NO ↓
 
 Is the goal a UI design + code pipeline?

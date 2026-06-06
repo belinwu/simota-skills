@@ -758,7 +758,6 @@ skills/
 ├── oracle/SKILL.md     # AI/ML design & evaluation
 ├── palette/SKILL.md    # UX
 ├── polyglot/SKILL.md   # i18n
-├── prism/SKILL.md      # NotebookLM steering prompt design
 ├── prose/SKILL.md      # UX writing & content strategy
 ├── pipe/SKILL.md       # GitHub Actions workflow design
 ├── probe/SKILL.md      # Dynamic security testing (DAST)
@@ -766,8 +765,6 @@ skills/
 ├── quill/SKILL.md      # Documentation
 ├── radar/SKILL.md      # Testing
 ├── rally/SKILL.md      # Multi-session parallel orchestrator
-├── (realm sunset 2026-06-06)
-├── reel/SKILL.md       # Terminal recording & CLI demo video generation
 ├── relay/SKILL.md      # Messaging integration & real-time communication
 ├── researcher/SKILL.md # User research
 ├── ripple/SKILL.md     # Pre-change impact analysis
@@ -800,7 +797,6 @@ skills/
 ├── void/SKILL.md       # YAGNI enforcement & complexity reduction
 ├── voice/SKILL.md      # User feedback
 ├── voyager/SKILL.md    # E2E testing
-├── warden/SKILL.md     # V.A.I.R.E. quality gate
 └── zen/SKILL.md        # Refactoring
 ```
 

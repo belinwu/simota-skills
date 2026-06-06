@@ -87,7 +87,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **plea**: request★ / need / challenge / roleplay / jtbd / 5whys / opportunity
 - **polyglot**: extract★ / intl / keys / rtl / pluralize / locale / translate
 - **port**: blueprint★ / survey / parity / map / roadmap / risk / regulatory / xplat
-- **prism**: audio★ / video / slide / infographic / persona / sources / multilingual / mindmap
 - **probe**: zap★ / burp / nuclei / pentest / api / mobile / recon
 - **prose**: microcopy★ / errors / onboarding / a11y / tone / empty-state / notification / status
 - **pulse**: kpi★ / funnel / cohort / event / dashboard / northstar / retention / activation
@@ -95,7 +94,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **radar**: edge★ / flaky / coverage / regression / ci / unit / integration / mutation
 - **rally**: parallel★ / teams / codex-subagents / coordinate
 - **rank**: ice★ / rice / wsjf / moscow / kano / cod / value-effort / pokerplan
-- **reel**: vhs★ / terminalizer / asciinema / readme / optimize / theme / narration
 - **relay**: webhook★ / bot / websocket / adapter / sse / queue / rate
 - **researcher**: interview★ / usability / analysis / persona / journey / survey / diary / cards
 - **retain**: reengagement★ / churn / gamification / habit / loyalty / winback / lifecycle-email / power-user
@@ -135,14 +133,13 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **voice**: nps★ / review / sentiment / classify / insight / kano / thematic / csat
 - **void**: prune★ / cut / question / simplify
 - **voyager**: playwright★ / page-object / auth / a11y / visual / api / mobile / component
-- **warden**: gate★ / scorecard / value / resilience / agency / identity / experience
 - **weave**: design★ / saga / approval / detect / retry / timeout / compensation
 - **zen**: refactor★ / naming / extract / constants / dead / simplify / split / guard
 - **zine**: note★ / zenn / qiita / devto / series / headline / repurpose / interview
 
 ---
 
-**Total**: 129 skills with Recipes.
+**Total**: 126 skills with Recipes.
 
 Auto-generated from SKILL.md `## Recipes` tables by `_common/scripts/generate-recipes-directory.py`. Do not edit by hand.
 

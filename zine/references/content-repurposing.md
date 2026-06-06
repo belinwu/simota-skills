@@ -7,7 +7,7 @@ One canonical article should become many deliverables across platforms — note,
 ## Scope Boundary
 
 - IN scope: canonical-to-variant transformation, atomic asset extraction (threads, quote cards, snippets), platform-specific re-tone, canonical URL strategy, scheduling cadence.
-- OUT of scope: original article authoring (`note`/`zenn`/`qiita`/`devto`), SEO duplicate-content audit (delegate to `growth`), social ad creative (different domain), video/audio cuts (delegate to `cue`/`reel`), thumbnail design (delegate to `director`).
+- OUT of scope: original article authoring (`note`/`zenn`/`qiita`/`devto`), SEO duplicate-content audit (delegate to `growth`), social ad creative (different domain), video cuts (delegate to `cue`/`director`), thumbnail design (delegate to `director`).
 
 ## Core Concepts
 
