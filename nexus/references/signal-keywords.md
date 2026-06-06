@@ -80,7 +80,6 @@
 | `career package`, `job-change plan`, `career strategy package`, `portfolio + interview + negotiation kit` | `package domain=career` (owner skill `ascent`) |
 | `learning package`, `curriculum package`, `course design package`, `training program docs` | `package domain=learning` (owner skill `mentor`) |
 | `hiring package`, `recruitment package`, `JD + interview + onboarding kit`, `org design docs` | `package domain=hiring` (owner skill `guild`) |
-| `local-gov package`, `civic project package`, `public-sector plan`, `regional initiative docs`, `citizen participation plan` | `package domain=local-gov` (owner skill `civic`) |
 
 ---
 

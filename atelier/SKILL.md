@@ -111,7 +111,7 @@ Agent role boundaries → `_common/BOUNDARIES.md`
 - Scope crosses from scoped update to full redesign (3+ pages, identity-touching).
 - Token refresh would invalidate the persisted system for other agents mid-project.
 - Fan-out would exceed 5 concurrent delegates.
-- External paid APIs (Meshy for Clay, Suno for lyric-adjacent work, etc.) would be triggered.
+- External paid APIs (Meshy for Clay, etc.) would be triggered.
 - Warden pre-check returns `CONDITIONAL` and the conditions are not auto-resolvable.
 
 ### Ask First (operational additions)

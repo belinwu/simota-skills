@@ -115,7 +115,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** design system construction, visual asset generation, slide/video production, brand work.
 
-**Members:** `muse`, `vision`, `atelier`, `canvas`, `frame`, `showcase`, `palette`, `prose`, `flow`, `pixel`, `forge`, `artisan`, `ink`, `dot`, `haul`, `sketch`, `clay`, `loom`, `saga`, `cue`, `director`, `reel`, `stage`, `prism`, `tone`, `sonar`, `lyric`, `quest`, `aether`
+**Members:** `muse`, `vision`, `atelier`, `canvas`, `frame`, `showcase`, `palette`, `prose`, `flow`, `pixel`, `forge`, `artisan`, `ink`, `dot`, `haul`, `sketch`, `clay`, `loom`, `saga`, `cue`, `director`, `reel`, `stage`, `prism`, `quest`
 
 **Triggers:** `design system`, `design tokens`, `figma`, `figjam`, `figma make`, `storybook`, `mermaid`, `draw.io`, `ascii diagram`, `svg`, `icon`, `pixel art`, `3d`, `meshy`, `tripo`, `slide`, `marp`, `reveal.js`, `slidev`, `keynote`, `presentation`, `notebooklm`, `video`, `screencast`, `cli demo`, `vhs`, `terminalizer`, `asciinema`, `audio`, `bgm`, `sfx`, `voice synthesis`, `aituber`, `vtuber`, `game design`, `gdd`
 
@@ -125,7 +125,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** discovery-side work — user research, brainstorming, strategic decisions, career/learning/hiring/civic content generation, prose authoring.
 
-**Members:** `researcher`, `plea`, `lens`, `cast`, `voice`, `echo`, `trace`, `compete`, `spark`, `riff`, `flux`, `omen`, `magi`, `rank`, `ascent`, `crest`, `mentor`, `guild`, `civic`, `dawn`, `sage`, `helm`, `harvest`, `tome`, `scribe`, `accord`, `void`, `quill`, `zine`, `saga`, `levy`
+**Members:** `researcher`, `plea`, `lens`, `cast`, `voice`, `echo`, `trace`, `compete`, `spark`, `riff`, `flux`, `omen`, `magi`, `rank`, `ascent`, `crest`, `mentor`, `guild`, `dawn`, `sage`, `helm`, `harvest`, `tome`, `scribe`, `accord`, `void`, `quill`, `zine`, `saga`
 
 **Triggers:** `user research`, `interview`, `usability test`, `persona`, `journey map`, `jtbd`, `brainstorm`, `ideate`, `reframe`, `assumption challenge`, `pre-mortem`, `deliberation`, `prioritization`, `career`, `job change`, `side business`, `learning`, `curriculum`, `hiring`, `interview rubric`, `local government`, `civic`, `side project idea`, `office hours`, `advisory`, `strategy simulation`, `yagni`, `scope cut`, `documentation`, `jsdoc`, `tsdoc`, `tech blog`, `note`, `zenn`, `qiita`, `tax filing`, `tome`
 
@@ -135,7 +135,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 **Purpose:** end-to-end document package production via the `package` Recipe (12 domain presets — startup / career / learning / hiring / local-gov / etc.). Heavy union with `research`, `design`, and `core`.
 
-**Members:** `accord`, `scribe`, `tome`, `quill`, `rank`, `spark`, `magi`, `void`, `morph`, `canon`, `prose`, `saga`, `pulse`, `cast`, `researcher`, `plea`, `echo`, `voice`, `compete`, `attest`, `judge`, `clause`, `comply`, `cloak`, `vigil`, `ascent`, `mentor`, `guild`, `civic`, `spider`, `stage`, `prism`, `cue`, `showcase`, `pixel`, `artisan`, `frame`, `muse`, `palette`, `vision`
+**Members:** `accord`, `scribe`, `tome`, `quill`, `rank`, `spark`, `magi`, `void`, `morph`, `canon`, `prose`, `saga`, `pulse`, `cast`, `researcher`, `plea`, `echo`, `voice`, `compete`, `attest`, `judge`, `clause`, `comply`, `cloak`, `vigil`, `ascent`, `mentor`, `guild`, `spider`, `stage`, `prism`, `cue`, `showcase`, `pixel`, `artisan`, `frame`, `muse`, `palette`, `vision`
 
 **Triggers:** `business plan`, `venture`, `mvp dossier`, `pitch package`, `documentation package`, `package`, `startup dossier`, `domain preset`, `traceability matrix`, `feature_id`, `f-001`
 

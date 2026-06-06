@@ -11,7 +11,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 ---
 
 - **accord**: vision★ / requirements / detail / ac / story-map / stakeholder / raci
-- **aether**: stream★ / chat / avatar / tts / obs / latency / safety / monetize
 - **anvil**: cli★ / tui / wrap / devtool / completion / config / pkg
 - **architect**: create★ / improve / compress / evolve
 - **arena**: compete★ / collaborate / solo / quick
@@ -69,11 +68,9 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **launch**: plan★ / changelog / notes / rollback / flag / hotfix / canary
 - **ledger**: estimate★ / rightsizing / anomaly / ri-sp / gpu-cost / tagging / finops-framework / unit-economics / greenops
 - **lens**: map★ / discover / trace / responsibility / dependency / hotspot / evolution
-- **levy**: classify★ / deduction / calc / file / invoice / crypto / foreign
 - **loom**: guidelines★ / analyze / prompt / validate / variants / motion / rtl
 - **lore**: curate★ / decay / propagate / extract
 - **lure**: premium★ / lead-gen / saas / ecom / event / magnet
-- **lyric**: compose★ / metatags / style / refine / verse / hook / bridge
 - **magi**: decide★ / tradeoff / arbitrate / strategic / sixhat / devil / delphi
 - **matrix**: combine★ / cover / plan / prioritize / pairwise / equiv-class / risk-cover
 - **mend**: runbook★ / diagnose / rollback / verify / scale / circuit / canary
@@ -133,7 +130,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **tempo**: cron★ / timezone / retry / backfill / calendar / deadline / window / idempotent
 - **titan**: deliver★ / small / medium / epic
 - **tome**: learn★ / diff / onboard / record / worked / kata / quickstart
-- **tone**: sfx★ / bgm / voice / ambient / ui / spatial / adaptive / lufs
 - **trace**: replay★ / persona / story / archaeology / rageclick / funnel / heatmap
 - **trail**: regression★ / bisect / blame / history / flame / delta / revert
 - **triage**: respond★ / impact / recover / postmortem / first-response / escalation / comms

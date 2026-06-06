@@ -183,9 +183,8 @@ Apply the following rules. A skill may be triggered by multiple signals; combine
 | Web → Native porting (React / Vue / Svelte / Angular SPA → iOS + Android) | port | native, scaffold |
 | Product image acquisition (SKU / JAN / UPC / catalog images) | haul | navigator, cloak |
 | Founder office hours / startup advisory / "what should I focus on" | sage | sherpa, plea |
-| Game (Phaser, Three.js, Unity, Godot) | quest, dot, tone | clay |
+| Game (Phaser, Three.js, Unity, Godot) | quest, dot | clay |
 | 3D (Three.js, Babylon, R3F) | clay | flow |
-| AITuber / VTuber / OBS | aether | tone, lyric |
 | CMS / Headless CMS | builder | scribe |
 | Payment (Stripe, Square) | crypt, ledger | clause |
 
