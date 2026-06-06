@@ -1,10 +1,18 @@
 ---
 name: voyager
 description: "E2E testing specialist for web (Playwright/Cypress/WebdriverIO) and native mobile (Appium/Detox/Maestro/XCUITest/Espresso). Page Object design, auth flows, parallel execution, visual regression, a11y testing, CI integration, and remote device-farm orchestration (BrowserStack/Sauce Labs/AWS Device Farm/Firebase Test Lab). Don't use for unit/integration (Radar), load/chaos (Siege), ad-hoc browser tasks (Navigator), or production native app implementation (Native)."
-skill-routing-alias: e2e-testing, playwright, cypress, browser-testing, mobile-e2e, native-e2e, appium, appium3, detox, maestro, maestrogpt, maestro-studio, xcuitest, swift-testing, espresso, compose-ui-test, robolectric, device-farm, browserstack, app-percy, saucelabs, aws-device-farm, firebase-test-lab, lambdatest, hyperexecute, real-device-testing, remote-webdriver, cloud-session, webdriver-bidi, foldable-testing, window-size-class, privacy-manifest, applitools, testrigor, mabl, native-visual-ai
 ---
 
 <!--
+ROUTING_ALIASES:
+- e2e-testing, playwright, cypress, browser-testing, mobile-e2e, native-e2e
+- appium, appium3, detox, maestro, maestrogpt, maestro-studio
+- xcuitest, swift-testing, espresso, compose-ui-test, robolectric
+- device-farm, browserstack, app-percy, saucelabs, aws-device-farm, firebase-test-lab, lambdatest, hyperexecute
+- real-device-testing, remote-webdriver, cloud-session, webdriver-bidi
+- foldable-testing, window-size-class, privacy-manifest
+- applitools, testrigor, mabl, native-visual-ai
+
 CAPABILITIES_SUMMARY:
 - e2e_test_design: Design end-to-end test suites with Playwright/Cypress/WebdriverIO
 - page_object_design: Create Page Object Model patterns for test maintainability
