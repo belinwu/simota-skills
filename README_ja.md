@@ -39,7 +39,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 
 ## エージェント一覧
 
-> 🏰 **[Realm Directory を探訪する](https://simota.github.io/agent-skills/realm-directory/)** — 全 145 エージェントのキャラクターポートレート、クラス・カテゴリ別フィルター、関係性マップが揃ったインタラクティブサイト。
+> 全 130 エージェントのカテゴリ別カタログ。
 
 ### オーケストレーション
 

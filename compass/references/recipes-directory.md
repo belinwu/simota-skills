@@ -27,7 +27,6 @@ Regenerate with: `python3 _common/scripts/generate-recipes-directory.py`
 - **cast**: generate★ / registry / evolve / distribute / archetype / segment / bias-audit
 - **chain**: intake★ / audit / mcp / scan / recover
 - **clause**: tos★ / privacy / tokushoho / gap / dpa / eula / cookie
-- **clay**: text★ / image / retopo / uv / game / rigging / baking / retarget
 - **cloak**: pii★ / flow / consent / dpia / gdpr / ccpa / appi / pseudonymize
 - **compass**: recommend★ / catalog / onboard / recipes / init / refresh
 - **compete**: matrix★ / swot / battle-card / positioning / llm-visibility / battle / winloss / moat

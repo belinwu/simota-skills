@@ -39,7 +39,7 @@ This repository contains 145 specialized AI agents covering various aspects of s
 
 ## Agent Catalog
 
-> 🏰 **[Explore the Realm Directory](https://simota.github.io/agent-skills/realm-directory/)** — interactive site with character portraits, class/category filters, and a visual relationship map for all 145 agents.
+> Category-by-category catalog for all 130 agents.
 
 ### Orchestration
 
@@ -804,7 +804,7 @@ skills/
 
 ### Single Agent Usage
 
-> Category-by-category examples for all 145 agents.
+> Category-by-category examples for all 130 agents.
 
 #### Orchestration
 

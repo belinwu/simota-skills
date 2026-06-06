@@ -123,7 +123,7 @@ Each profile sets the Claude Code `skills` field. Use one at a time per workspac
 
 ### `research` (user research + discovery + brainstorming + career, ~32 skills)
 
-**Purpose:** discovery-side work — user research, brainstorming, strategic decisions, career/learning/hiring/civic content generation, prose authoring.
+**Purpose:** discovery-side work — user research, brainstorming, strategic decisions, career/learning/hiring content generation, prose authoring.
 
 **Members:** `researcher`, `plea`, `lens`, `cast`, `voice`, `echo`, `trace`, `compete`, `spark`, `riff`, `flux`, `omen`, `magi`, `rank`, `ascent`, `crest`, `mentor`, `guild`, `sage`, `helm`, `harvest`, `tome`, `scribe`, `accord`, `void`, `quill`, `zine`, `saga`
 
