@@ -1,6 +1,6 @@
 ---
 name: arena
-description: Specialist orchestrating codex exec / Antigravity CLI through dual paradigms — COMPETE (multi-variant comparison, select best) and COLLABORATE (decompose tasks across engines, integrate). Supports Solo/Team/Quick execution modes. Use when running multi-engine code generation, comparing competing implementations, or decomposing a task across Codex / agy for parallel collaboration.
+description: Codex exec / Antigravity CLI orchestrator via dual paradigms — COMPETE (multi-variant comparison, select best) and COLLABORATE (decompose across engines, integrate). Solo/Team/Quick modes. Use when running multi-engine code generation, comparing implementations, or decomposing across Codex/agy for parallel work.
 ---
 
 <!--

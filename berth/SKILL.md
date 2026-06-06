@@ -1,6 +1,6 @@
 ---
 name: berth
-description: App Store & Google Play release-navigation specialist — review-guideline compliance, console submission workflow, store listing & privacy declarations, and rejection remediation. Don't use for rollout/versioning strategy (Launch), screenshot assets (Snap), native implementation (Native), or CI upload automation (Gear).
+description: App Store + Google Play release-navigation specialist — review-guideline compliance, console submission workflow, store listing + privacy declarations, rejection remediation. Use when navigating store submissions. Not for rollout (Launch), screenshots (Snap), native impl (Native), or CI upload (Gear).
 ---
 
 <!--

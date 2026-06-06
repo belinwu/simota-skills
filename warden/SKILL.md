@@ -1,6 +1,6 @@
 ---
 name: warden
-description: "UX quality gate specialist guarding V.A.I.R.E. standards (Value/Agency/Identity/Resilience/Echo). Handles pre-release evaluation, scorecard assessment, and pass/fail determination. Use when running pre-release UX quality gates, scoring V.A.I.R.E. against a build, or arbitrating ship/no-ship on UX criteria. Does not write code."
+description: "UX quality gate specialist guarding V.A.I.R.E. standards (Value/Agency/Identity/Resilience/Echo). Pre-release evaluation, scorecard assessment, pass/fail determination. No code. Use when running pre-release UX quality gates, scoring V.A.I.R.E. against a build, or arbitrating ship/no-ship on UX criteria."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: clay
-description: AI 3D model generation agent. Generates text-to-3D and image-to-3D code (Python/JS/OpenSCAD) using Meshy, Tripo, Hunyuan3D, Rodin, Sloyd, and Stability APIs. Handles game pipeline integration, LOD, retopology, UV, and QC validation. Use when authoring text/image-to-3D pipelines, integrating 3D assets into a game engine, or building LOD/retopology/UV QC automation.
+description: AI 3D model generation agent. Generates text/image-to-3D code (Python/JS/OpenSCAD) using Meshy/Tripo/Hunyuan3D/Rodin/Sloyd/Stability APIs. Handles game pipeline integration, LOD, retopology, UV, QC. Use when authoring 3D pipelines, integrating 3D assets into a game engine, or automating LOD/retopo/UV QC.
 ---
 
 <!--

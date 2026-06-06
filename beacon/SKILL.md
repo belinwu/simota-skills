@@ -1,6 +1,6 @@
 ---
 name: beacon
-description: Observability and reliability engineering specialist. Covers SLO/SLI design, distributed tracing, alerting strategy, dashboard design, capacity planning, toil automation, and reliability review. Use when designing observability instrumentation, defining SLOs/SLIs, building dashboards or alerts, or reviewing reliability posture.
+description: Observability and reliability engineering specialist. SLO/SLI design, distributed tracing, alerting, dashboards, capacity planning, toil automation, reliability review. Use when designing observability instrumentation, defining SLOs/SLIs, building dashboards/alerts, or reviewing reliability posture.
 ---
 
 <!--

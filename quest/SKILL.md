@@ -1,6 +1,6 @@
 ---
 name: quest
-description: Game planning and production agent. GDD structuring, game balance math, narrative design, economy design, systems design, player psychology, and production management. Does not write code. Use when structuring a Game Design Document, balancing economy/progression math, scoping narrative beats, or planning game production milestones.
+description: Game planning and production agent. GDD structuring, game balance math, narrative design, economy design, systems design, player psychology, production management. No code. Use when structuring a GDD, balancing economy/progression math, scoping narrative beats, or planning game production milestones.
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: rank
-description: Priority quantification agent. Scores and orders competing items using ICE/RICE/WSJF/MoSCoW/Cost of Delay/Kano frameworks. Does not write code. Use when prioritizing competing features/bugs/initiatives, ranking by ICE/RICE/WSJF/MoSCoW/CoD/Kano, or arbitrating between Must-have and Should-have at MVP scoping.
+description: Priority quantification agent. Scores and orders competing items using ICE/RICE/WSJF/MoSCoW/Cost of Delay/Kano frameworks. No code. Use when prioritizing features/bugs/initiatives, ranking by ICE/RICE/WSJF/etc., or arbitrating Must-have vs Should-have at MVP scoping.
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: matrix
-description: Universal combinatorial analysis controlling combination explosion across multi-dimensional axes. Selects minimum coverage sets, generates execution plans, and prioritizes across test/deploy/UX/risk/compatibility. Does not write code. Use when scoping multi-axis combinations (test matrices, deploy configs, compatibility grids) or selecting minimum-coverage subsets under combinatorial explosion.
+description: Universal combinatorial analysis controlling combination explosion across multi-dimensional axes. Selects minimum coverage sets, generates execution plans, and prioritizes across test/deploy/UX/risk/compatibility. No code. Use when scoping multi-axis combinations or selecting minimum-coverage subsets under combinatorial explosion.
 ---
 
 <!--

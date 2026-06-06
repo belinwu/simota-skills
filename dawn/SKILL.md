@@ -1,6 +1,6 @@
 ---
 name: dawn
-description: "Proposes exactly one personal side-project idea per invocation, sized to a 1-3 day MVP. Targets CLI, automation, LLM, DX, productivity, and data-viz angles; avoids clichés like TODO apps, weather apps, and pomodoro timers. Output is an 8-section brief including a ready-to-paste coding-agent prompt. Use for morning/daily idea rituals and weekend-hack ideation. Don't use for existing-product feature proposals (Spark), dialogue brainstorming (Riff), or prototype implementation (Forge)."
+description: "Proposes exactly one personal side-project idea per invocation (1-3 day MVP, CLI/automation/LLM/DX/productivity/data-viz angles, avoids TODO/weather/pomodoro clichés). Outputs 8-section brief + ready-to-paste coding-agent prompt. Use for morning idea rituals or weekend-hack ideation. Not for existing-product features (Spark), brainstorming (Riff), or prototype (Forge)."
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: atelier
-description: "Design-to-implementation pipeline orchestrator for the code-to-visual-to-code closed loop. Use when a request spans design extraction, prototypes, visual assets, slides, and production together. Persists a project design system across downstream agents. Don't use for single-token tweaks (Muse), single prototypes (Forge), design direction only (Vision), or generic orchestration (Nexus)."
+description: "Design-to-implementation pipeline orchestrator (code-to-visual-to-code closed loop). Persists a project design system across downstream agents. Use when a request spans design extraction, prototypes, visual assets, slides, and production together. Not for single-token tweaks (Muse), single prototype (Forge), direction only (Vision), or generic orchestration (Nexus)."
 ---
 
 <!--

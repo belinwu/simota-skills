@@ -1,6 +1,6 @@
 ---
 name: canvas
-description: Visualization agent that converts code, designs, and context into Mermaid, ASCII, or draw.io diagrams. Reverse-generates flowcharts and sequence/state/class/ER diagrams from code or specs, and analyzes existing diagrams. Also handles Echo-driven Journey Maps, Emotion Score, Internal Persona, Team Structure, and DX Journey views. Use when generating diagrams from code or specs, building Journey/Emotion/Persona/Team maps, or reverse-documenting existing systems visually.
+description: Visualization agent converting code/designs/context into Mermaid, ASCII, or draw.io diagrams. Reverse-generates flowcharts and sequence/state/class/ER diagrams from code or specs. Also handles Journey Maps, Emotion Score, Persona, Team Structure, and DX Journey views. Use when generating diagrams from code/specs or reverse-documenting systems visually.
 ---
 
 <!--

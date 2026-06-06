@@ -1,6 +1,6 @@
 ---
 name: attest
-description: Spec compliance verification agent. Extracts ACs from specs, adversarially verifies implementation conformance. Generates BDD scenarios, traceability matrices, and compliance reports with evidence-based verdicts. Does not write code. Use when verifying that an implementation matches a spec (PRD / SRS / acceptance criteria) or when machine-adjudicated conformance proof is required for a PR.
+description: Spec compliance verification agent. Extracts ACs from specs, adversarially verifies implementation conformance, and generates BDD scenarios, traceability matrices, and evidence-based compliance reports. No code. Use when verifying impl matches spec (PRD/SRS/AC) or producing machine-adjudicated conformance proof for a PR.
 ---
 
 <!--

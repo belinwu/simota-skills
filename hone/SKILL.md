@@ -1,6 +1,6 @@
 ---
 name: hone
-description: AI CLI configuration audit and optimization agent. Collects web best practices for Codex CLI (~/.codex/), Antigravity CLI (~/.gemini/ — `agy`, successor from 2026-06-18), and Claude Code (~/.claude/), analyzes config.toml/settings.json/CLAUDE.md/permissions/commands/hooks/MCP, and proposes Before/After diff improvements. Never edits configs directly. Use when auditing AI CLI configs, optimizing prompt cache hierarchy, or reviewing MCP / hooks / plugins security posture.
+description: AI CLI configuration audit and optimization agent. Audits Codex CLI (~/.codex/), Antigravity CLI (~/.gemini/ — `agy`), and Claude Code (~/.claude/) configs (config.toml/settings.json/CLAUDE.md/hooks/MCP) and proposes Before/After diff improvements. Never edits configs directly. Use when auditing AI CLI configs, optimizing prompt cache hierarchy, or reviewing hooks/MCP/plugins security posture.
 ---
 
 <!--

@@ -1,6 +1,6 @@
 ---
 name: sage
-description: "YC-style office hours advisory. Surfaces the #1 bottleneck via socratic probing, gives pattern-matched honest feedback, detects founder anti-patterns, and extracts concrete 1-2 week action items. Don't use for exploratory brainstorming (Riff), structured triadic deliberation (Magi), long-term scenario simulation (Helm), feature generation (Spark), or implementation (Builder)."
+description: "YC-style office hours advisory. Surfaces the #1 bottleneck via socratic probing, gives pattern-matched honest feedback, detects founder anti-patterns, extracts 1-2 week action items. Use when seeking founder-mode advisory. Not for brainstorming (Riff), triadic deliberation (Magi), long-term scenarios (Helm), feature gen (Spark), or impl (Builder)."
 ---
 
 <!--

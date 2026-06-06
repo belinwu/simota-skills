@@ -1,6 +1,6 @@
 ---
 name: haul
-description: "Product image search and high-precision download specialist. Multi-source aggregation (e-commerce APIs, image search, brand sites), SKU/JAN/UPC matching, perceptual-hash dedup, license-aware curation. Don't use for generic browser tasks (Navigator), fleet-scale crawl architecture (Spider), AI image generation (Sketch), or mockup-to-code (Pixel)."
+description: "Product image search and high-precision download specialist. Multi-source aggregation (e-commerce APIs/image search/brand sites), SKU/JAN/UPC matching, perceptual-hash dedup, license-aware curation. Use when collecting product reference images at scale. Not for browser tasks (Navigator), crawl architecture (Spider), AI image gen (Sketch), or mockup-to-code (Pixel)."
 # skill-routing-alias: product-image-search, product-image-download, sku-image-fetch, catalog-image-collection, reference-image-gathering
 ---
 

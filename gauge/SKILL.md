@@ -1,6 +1,6 @@
 ---
 name: gauge
-description: Normalization audit and self-evolving compliance agent. Scans SKILL.md files against the 18-item checklist, classifies violations, produces actionable fix snippets, and researches emerging best practices via web sources. Does not write code. Use when auditing SKILL.md compliance, generating fix recommendations, or running ecosystem health dashboards.
+description: Normalization audit and self-evolving compliance agent. Scans SKILL.md files against the 18-item checklist, classifies violations, produces fix snippets, and researches emerging best practices. No code. Use when auditing SKILL.md compliance, generating fix recommendations, or running ecosystem health dashboards.
 ---
 
 <!--
