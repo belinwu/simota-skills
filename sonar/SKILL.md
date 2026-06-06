@@ -223,35 +223,9 @@ Behavior notes per Recipe:
 - `explore`: INGEST → MEASURE (chromaprint fingerprint + CLAP/AST embeddings) → LOOKUP (consent-gated network calls; cache-first via `requests-cache`) → INFER (instruments via CLAP zero-shot / AST, effectors via PLR + RT60 + autocorrelation heuristics) → REPORT (confidence-tagged findings). Required first-turn inputs: audio path, `--scope` flag (default `all`), `--network` consent flag (default `ask`). Network calls REFUSE without explicit consent or `--network=allow`. All inferred labels carry `confidence` and `method`. Honesty rule: on ambiguous fingerprint lookup return ALL candidates ranked — never silently pick top hit. **Spotify Web API audio-features/recommendations is deprecated for new apps since 2024-11-27 — do not target.**
 - `variation`: Requires prior `analyze` or `explore` output (or runs `analyze` first for measured features). PROPOSE phase: 3-5 variation candidates per requested axis (`--axes`: one or more of `genre|tempo-key|arrangement|instrument|effector|all`). Output is a Markdown proposal — NO audio generation (route to Tone for synthesis, Lyric for re-write). Each proposal cites which measured feature drove the suggestion. **Think step-by-step before recommending arrangement reorders** — structural reconstruction breaks listener expectations more than tempo/instrument/effector shifts.
 
-## Supported Formats & Tooling
+## Formats & Loudness Targets
 
-| Format | Container | Codec | Best Tool | Notes |
-|--------|-----------|-------|-----------|-------|
-| WAV / BWF | WAV / RF64 | PCM 16/24/32, IEEE float | `librosa`, `soundfile`, `ffmpeg` | Reference format for measurement |
-| FLAC | FLAC | FLAC (lossless) | `soundfile`, `librosa` | Lossless; mastering-grade |
-| AIFF | AIFF / AIFC | PCM | `soundfile` | Apple lossless container |
-| MP3 | MP3 | MPEG-1/2 Layer 3 | `librosa` (via audioread/ffmpeg) | Lossy; flag measurement drift |
-| AAC / M4A | MP4 | AAC-LC / HE-AAC | `librosa` (via ffmpeg) | Lossy; Apple/YouTube default |
-| OGG | OGG | Vorbis | `librosa` | Lossy |
-| Opus | OGG / WebM | Opus | `librosa` (via ffmpeg) | Lossy; streaming-favored |
-| DSD | DSF / DFF | DSD | `ffmpeg` decode → PCM | Decode to PCM 24/96 first |
-| Multi-channel | WAV / MP4 | PCM / AAC 5.1/7.1 | `soundfile` + manual downmix | Confirm downmix policy first |
-
-## Critical Loudness Targets
-
-See `references/loudness-standards.md` for the full table; canonical defaults inline:
-
-| Platform | Integrated LUFS | True Peak (dBTP) | LRA | Notes |
-|----------|----------------|------------------|-----|-------|
-| Spotify | -14 | -1.0 | — | Normalize on/off both honored; quiet masters get +gain |
-| Apple Music | -16 | -1.0 | — | Sound Check; gain reduction stricter |
-| YouTube | -14 | -1.0 | — | Per-track normalize |
-| Tidal | -14 | -1.0 | — | Aligns with Spotify |
-| Amazon Music | -14 | -2.0 | — | Slightly tighter TP |
-| SoundCloud | -14 to -8 | -1.0 | — | Loose; let mastering breathe |
-| Broadcast (EBU R128) | -23 ±0.5 | -1.0 | ≤20 | Hard compliance for TV / radio |
-| Broadcast (ATSC A/85) | -24 ±2 | -2.0 | — | US broadcast |
-| Cinema (Dolby) | Dialnorm -27 | — | — | Theatrical mix |
+Format/tooling matrix (WAV/BWF, FLAC, AIFF, MP3, AAC/M4A, OGG, Opus, DSD, multi-channel) and canonical platform loudness targets (Spotify -14, Apple -16, YouTube -14, Tidal -14, Amazon -14/-2.0 TP, SoundCloud -14..-8, EBU R128 -23, ATSC A/85 -24, Dolby Dialnorm -27): `references/handoff-schemas.md` (summary) and `references/loudness-standards.md` (full).
 
 ## Output Requirements
 
@@ -283,42 +257,7 @@ Default tier: **M** (per `_common/OUTPUT_STYLE.md`). Per-recipe length envelopes
 
 ## Collaboration
 
-Sonar receives audio files and QC requests from User, Tone, Aether, Cue, Director, and Lyric. Sonar sends mastering feedback, QC reports, and visualization handoffs to Tone, Judge, Canvas, and Scribe.
-
-| Direction | Handoff | Purpose |
-|-----------|---------|---------|
-| Tone → Sonar | `TONE_TO_SONAR_QC` | Generated audio LUFS / True Peak / spectral QC |
-| Aether → Sonar | `AETHER_TO_SONAR_TTS_QC` | AITuber TTS output loudness verification |
-| Cue → Sonar | `CUE_TO_SONAR_NARRATION_QC` | Narration broadcast EBU R128 compliance |
-| Director → Sonar | `DIRECTOR_TO_SONAR_DEMO_QC` | Demo video audio track loudness check |
-| Lyric → Sonar | `LYRIC_TO_SONAR_MASTERING_QC` | Generated song mastering verification |
-| Sonar → Tone | `SONAR_TO_TONE_MASTERING_FEEDBACK` | Re-normalize / re-render with adjusted parameters |
-| Sonar → Lyric | `SONAR_TO_LYRIC_VOCAL_FEEDBACK` | Vocal alignment / pronunciation issues for re-generation |
-| Sonar → Cue | `SONAR_TO_CUE_NARRATION_FEEDBACK` | Narration pacing / loudness drift for script revision |
-| Sonar → Aether | `SONAR_TO_AETHER_TTS_ALERT` | Real-time TTS latency or loudness anomaly during streaming |
-| Sonar → Judge | `SONAR_TO_JUDGE_RELEASE_GATE` | QC report for release-gate review |
-| Sonar → Canvas | `SONAR_TO_CANVAS_VISUALIZATION` | Spectrogram / loudness-history plot handoff |
-| Sonar → Scribe | `SONAR_TO_SCRIBE_REPORT` | Audio analysis report formatting |
-| Sonar → Spark | `SONAR_TO_SPARK_VARIATION_SEED` | Creative variation proposal as feature/track-concept seed |
-| Sonar → Compete | `SONAR_TO_COMPETE_SIMILAR_ARTIST` | Similar-artist surface for competitive/market-positioning context |
-| Sonar → Lyric (rewrite) | `SONAR_TO_LYRIC_REWRITE_BRIEF` | Variation-derived re-write brief (genre/mood shift) |
-| Researcher → Sonar | `RESEARCHER_TO_SONAR_METADATA_GAP` | Metadata gap-fill request for emerging-artist tracks |
-
-### Overlap Boundaries
-
-| Agent | Sonar owns | They own |
-|-------|------------|----------|
-| Tone | Measurement of audio files (existing) | Generation of audio (new) |
-| Lyric | Measurement of rendered Suno output | Lyric text + style prompts |
-| Cue | Narration audio loudness measurement | Narration script / storyboard |
-| Aether | Stream-time TTS output verification | TTS pipeline orchestration |
-| Director | Demo video audio track measurement | Playwright-based video production |
-| Canvas | Producing visualization data (loudness curve, spectrogram array) | Rendering as diagrams/charts |
-| Judge | Audio quality evidence collection | Release-gate verdict integration |
-| Spark | Variation proposals as raw seeds (one-shot, measurement-grounded) | Feature-spec elaboration, prioritization, product framing |
-| Compete | Similar-artist data surface (raw similarity list) | Competitive analysis, positioning, market sizing |
-| Researcher | Fingerprint + metadata retrieval (audio-anchored) | General web research, interview design, qual analysis |
-| Lyric (rewrite path) | Re-write brief derived from variation axis (genre/mood) | Lyric authoring, Suno style prompts |
+Sonar receives audio files and QC requests from User, Tone, Aether, Cue, Director, Lyric, Researcher. Sonar sends mastering feedback, QC reports, visualization handoffs, variation seeds, and similar-artist surfaces to Tone, Judge, Canvas, Scribe, Spark, Compete, Lyric. Per-direction handoff names and overlap-boundary ownership tables: `references/handoff-schemas.md`.
 
 ## Reference Map
 
@@ -332,6 +271,7 @@ Sonar receives audio files and QC requests from User, Tone, Aether, Cue, Directo
 | [`references/web-sources.md`](references/web-sources.md) | You need third-party metadata/fingerprint API selection (AcoustID, MusicBrainz, Last.fm, Discogs, Genius), Chromaprint fingerprint generation, consent-gated lookup pipeline, cache-first patterns, or Spotify Web API deprecation notes |
 | [`references/similarity-inference.md`](references/similarity-inference.md) | You need similar-artist/track recommendation (Last.fm / ListenBrainz / local CLAP-embedding k-NN), instrument detection (LAION-CLAP zero-shot / AST / YAMNet / demucs proxy), or effector inference (RT60 via Schroeder / PLR / autocorrelation / stereo width) — all confidence-tagged |
 | [`references/creative-variation.md`](references/creative-variation.md) | You are proposing genre recast, tempo/key variants, arrangement reorders, instrument swaps, or effector chain alternatives — grounded in measured features from prior phases |
+| [`references/handoff-schemas.md`](references/handoff-schemas.md) | You need the full collaboration handoff matrix, overlap-boundary ownership table, AUTORUN `_STEP_COMPLETE` YAML, `## NEXUS_HANDOFF` template, supported format/tool matrix, or canonical platform loudness target table |
 | [`_common/BOUNDARIES.md`](_common/BOUNDARIES.md) | Role boundaries are ambiguous |
 | [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md) | You need journal, activity log, AUTORUN, Nexus, Git, or shared operational defaults |
 
@@ -346,81 +286,11 @@ Shared protocols: [`_common/OPERATIONAL.md`](_common/OPERATIONAL.md)
 
 ## AUTORUN Support
 
-When Sonar receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints` (audio file paths, target platform, reference track if any), execute the standard workflow (skip verbose explanations, focus on deliverables), and return `_STEP_COMPLETE`.
-
-### `_STEP_COMPLETE`
-
-```yaml
-_STEP_COMPLETE:
-  Agent: Sonar
-  Task_Type: analyze | qc | loudness | compare | batch | stems | explore | variation
-  Status: SUCCESS | PARTIAL | BLOCKED | FAILED
-  Output:
-    deliverable: [pipeline script + report]
-    artifact_type: "python_pipeline | shell_pipeline | qc_report | comparison_report | batch_pipeline"
-    parameters:
-      input_files: ["path/to/track.wav"]
-      target_platform: "spotify | apple_music | youtube | tidal | amazon | soundcloud | ebu_r128 | atsc_a85 | custom"
-      reference_track: "path/to/reference.wav | none"
-      measurement_standards: ["BS.1770-4", "EBU R128"]
-      network_consent: "allow | ask | deny | n/a"
-      lookup_apis: ["acoustid", "musicbrainz", "lastfm", "discogs", "genius"]
-      inference_models: ["laion-clap", "yamnet", "ast", "openl3", "demucs"]
-      variation_axes: ["genre", "tempo-key", "arrangement", "instrument", "effector"]
-    measurements:
-      integrated_lufs: -13.2
-      true_peak_dbtp: -0.8
-      lra: 7.4
-      bpm: 128.0
-      key: "A minor"
-    inferences:
-      instruments: [{name: "drums", confidence: 0.94, method: "laion-clap-zero-shot"}]
-      effectors: [{family: "reverb", subtype: "plate", rt60_s: 1.4, confidence: 0.71, method: "schroeder-decay"}]
-      similar_tracks: [{title: "...", artist: "...", similarity: 0.83, method: "clap-knn"}]
-      fingerprint_match: {mbid: "...", title: "...", artist: "...", confidence: 0.99}
-  Validations:
-    format_inspected: "passed"
-    standards_cited: "passed"
-    target_declared: "passed | n/a"
-    verdict: "PASS | WARN | FAIL"
-    inference_confidence_tagged: "passed | failed"
-    network_consent_recorded: "passed | n/a"
-    source_api_cited: "passed | n/a"
-  Next: Tone | Judge | Canvas | Scribe | DONE
-  Reason: [Why this next step — e.g., "FAIL on True Peak; route to Tone for re-render with -1.0 dBTP ceiling"]
-```
+When Sonar receives `_AGENT_CONTEXT`, parse `task_type`, `description`, and `Constraints` (audio file paths, target platform, reference track if any), execute the standard workflow (skip verbose explanations, focus on deliverables), and return `_STEP_COMPLETE`. Full `_STEP_COMPLETE` YAML schema (measurements, inferences, validations, parameters): `references/handoff-schemas.md`.
 
 ## Nexus Hub Mode
 
-When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`.
-
-### `## NEXUS_HANDOFF`
-
-```text
-## NEXUS_HANDOFF
-- Step: [X/Y]
-- Agent: Sonar
-- Summary: [1-3 lines — file inspected, target platform, verdict]
-- Key findings / decisions:
-  - Integrated LUFS: [value] (BS.1770-4) vs target [value]
-  - True Peak: [value] dBTP vs ceiling [value]
-  - LRA: [value] LU
-  - Acoustic: BPM [value], Key [value], Time Sig [value]
-  - Quality issues: [clipping / phase / masking / none]
-- Artifacts: [pipeline script path], [report path]
-- Risks: [codec drift, downmix loss, measurement-tool disagreement]
-- Open questions (blocking/non-blocking):
-  - [blocking: yes/no] [question]
-- Pending Confirmations:
-  - Trigger: [INTERACTION_TRIGGER name if any]
-  - Question: [Question for user]
-  - Options: [Available options]
-  - Recommended: [Recommended option]
-- User Confirmations:
-  - Q: [Previous question] → A: [User's answer]
-- Suggested next agent: [Tone | Judge | Canvas | Scribe] (reason)
-- Next action: CONTINUE | VERIFY | DONE
-```
+When input contains `## NEXUS_ROUTING`, do not call other agents directly. Return all work via `## NEXUS_HANDOFF`. Template (summary, key findings, artifacts, risks, pending confirmations, suggested next agent): `references/handoff-schemas.md`.
 
 ---
 
