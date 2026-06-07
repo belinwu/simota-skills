@@ -262,6 +262,7 @@ Hook sources (merged at runtime): `~/.claude/settings.json` (user), `.claude/set
 | Security | `security` | | PreToolUse security guard — PII / secret regex denial, dangerous Bash command interception (`rm -rf /`, `git push --force` to main), env var leakage block, MCP tool ACL | `reference/security-guard-hook.md` |
 | Skill Quarantine | `quarantine` | | SessionStart drift / unaudited-skill detection + PreToolUse plugin-install gate + MCP tool description rug-pull check (works with `chain` audit) | `reference/skill-quarantine-hook.md` |
 | CLAUDE.md Proposer | `claudemd-update` | | Stop hook that drafts non-blocking `CLAUDE.md` update proposals from the just-finished session (extracts "should have known" patterns; never auto-edits) — pairs with Hone for downstream density audit | `reference/claude-md-update-proposer.md` |
+| Skill Usage Telemetry | `skill-telemetry` | | PreToolUse hook logging `Skill` invocations to append-only JSONL — popularity + under-trigger analysis feeding Darwin / Prune / Gauge / Lore | `reference/skill-usage-telemetry.md` |
 
 ### Signal Keywords → Recipe
 
@@ -279,6 +280,7 @@ For natural-language input without an explicit subcommand. Subcommand match wins
 | `security hook`, `block`, `deny`, `secret regex`, `mcp acl` | `security` |
 | `quarantine`, `skill drift`, `plugin install gate`, `mcp rug-pull` | `quarantine` |
 | `claudemd-update`, `claude.md proposer`, `should have known` | `claudemd-update` |
+| `skill telemetry`, `skill usage`, `popular skill`, `under-trigger`, `usage log` | `skill-telemetry` |
 | `quality gate`, `stop hook`, `completion gate` | Stop/SubagentStop → `reference/hook-recipes.md` |
 | `webhook`, `http hook`, `audit log` | HTTP hook → `reference/hook-system.md` |
 | `mcp governance`, `mcp audit` | MCP audit hook → `reference/hook-system.md` |
@@ -336,6 +338,10 @@ Read `reference/skill-quarantine-hook.md` first. Guards the **distribution side*
 
 Read `reference/claude-md-update-proposer.md` first. Stop hook extracting "should have known" candidates to `.claude/proposals/`. Always `exit 0` + `async: true` (advisory only, never trap shutdown). Filters out linter-duplicates, single-anecdote observations, rules better expressed as hooks. Pair with Hone when 3+ proposals accumulate.
 
+### `skill-telemetry` — PreToolUse skill-usage logger
+
+Read `reference/skill-usage-telemetry.md` first. PreToolUse hook on the `Skill` matcher appending `{ts, skill, session, cwd}` JSONL to `${CLAUDE_PLUGIN_DATA:-$HOME/.claude}/telemetry/skill-usage.jsonl`. Always `async: true` + `exit 0` (monitoring, never enforcement). No `tool_input` capture (PII risk). Provides Darwin/Prune/Gauge/Lore with usage signals. Pattern source: Anthropic "Lessons from Building Claude Code".
+
 ## Output Requirements
 
 Every deliverable must include:
@@ -363,6 +369,7 @@ Every deliverable must include:
 | `reference/security-guard-hook.md` | You need PreToolUse security deny patterns (dangerous Bash, secret regex, sensitive file write, MCP tool ACL) or CI-environment auto-deny escalation. |
 | `reference/skill-quarantine-hook.md` | You need SessionStart skill-manifest drift detection, PreToolUse plugin-install gate, or MCP tool description rug-pull verification. Pairs with the `chain` audit agent and `_common/SECURITY.md`. |
 | `reference/claude-md-update-proposer.md` | You are designing a Stop hook that drafts non-blocking CLAUDE.md update proposals from the just-finished session — covers event/matcher selection, command and prompt variants, filtering rules for what NOT to propose, anti-patterns, and the Hone density-audit pairing. |
+| `reference/skill-usage-telemetry.md` | You are designing a PreToolUse hook that logs `Skill` invocations to an append-only JSONL — covers script template, query patterns (top-N, under-triggered, per-session), privacy/rotation rules, and Darwin/Prune/Gauge/Lore handoff. |
 | `_common/OPUS_48_AUTHORING.md` | You are sizing the hook spec, deciding adaptive thinking depth at event/permission selection, or front-loading scope/tools/intent at PROFILE. Critical for Latch: P3, P5. |
 
 ## Collaboration

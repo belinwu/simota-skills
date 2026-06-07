@@ -113,6 +113,32 @@ Behavior notes per Recipe (keep English — describe the step sequence and any r
 <!-- Use tables for decision logic and quick reference -->
 <!-- Keep actionable knowledge inline; move detailed reference material to reference/ -->
 
+## Gotchas
+
+<!--
+Highest-signal section per Anthropic's "Lessons from Building Claude Code: How We Use Skills".
+Capture only what overrides the model's default assumption. Skip self-evident programming
+knowledge. Each entry should be a trap a competent agent would otherwise step into.
+
+Recommended entry shape:
+- **<trigger>**: <what naive default does wrong> → <correct behavior>. <one-line why>.
+
+Categories to consider:
+- Field naming or unit mismatches across systems
+- Append-only / immutable semantics
+- Staging vs production environment divergences
+- Pagination, retry, or rate-limit edge cases
+- Timezone / locale traps
+- Silent failure modes (returns 200 but discards payload, etc.)
+- Library API quirks not in upstream docs
+
+Keep this list short (3-7 items). Move long-form rationale to `reference/`.
+-->
+
+- **<trigger 1>**: <trap and correct behavior>.
+- **<trigger 2>**: <trap and correct behavior>.
+- **<trigger 3>**: <trap and correct behavior>.
+
 ## Output Requirements
 
 Every deliverable must include:
