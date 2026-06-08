@@ -150,7 +150,7 @@ UI/UX design and improvement.
 | **Funnel** | Landing-page construction | LP design and optimization | Mixed |
 | **Voice** | User-feedback analysis | NPS design, review analysis, sentiment analysis | No |
 
-## DevOps (7)
+## DevOps (8)
 
 Infrastructure, CI/CD, and operations.
 
@@ -163,6 +163,7 @@ Infrastructure, CI/CD, and operations.
 | **Launch** | Release management | Versioning, CHANGELOG, rollback | Mixed |
 | **Oath** | Compliance | SOC2 / PCI-DSS / HIPAA conformance checks | Mixed |
 | **Ledger** | FinOps | Cloud cost optimization, RI / SP recommendations | No |
+| **Wield** | macOS desktop automation | AppleScript / JXA / osascript, Apple Events app control | Yes |
 
 ## Modernization (3)
 

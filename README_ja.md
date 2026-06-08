@@ -1,14 +1,14 @@
 # AI Agent Skills
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Agents](https://img.shields.io/badge/Agents-124-blue.svg)]()
+[![Agents](https://img.shields.io/badge/Agents-125-blue.svg)]()
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🤖 124種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
+🤖 125種類の専門AIエージェントチームによる協調開発を実現するスキルコレクション
 
 ## ✨ Features
 
-- **124種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
+- **125種類の専門エージェント** - バグ調査、テスト、セキュリティ、UI/UX、AI/ML、可観測性、インフラまで網羅
 - **Nexusオーケストレーター** - タスクを分析し最適なエージェントチェーンを自動設計
 - **プラットフォーム非依存** - Claude Code、Codex CLI、Antigravity CLI等で動作
 
@@ -57,7 +57,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Lore** | _"Forgotten lessons are lessons repeated. Institutional memory is the compound interest of experience."_ - エコシステム横断の知識統合・パターン抽出・伝播を担うメモリキュレーター。エージェントjournalから共通パターンを発見し、カタログ化して関連エージェントへ配信。知識の腐敗検出・ベストプラクティス伝播により制度的記憶を維持 | METAPATTERNS.md、知識インサイト |
 | **Atelier** | _"Design decided upstream. Assets produced downstream. atelier is the studio floor in between."_ - デザインから実装までを閉ループで繋ぐパイプラインオーケストレーター。Vision → Muse/Frame → Forge → Artisan → Vitrine → Canvas を統括し、デザイン抽出・プロトタイプ・ビジュアルアセット・スライド・本番実装をプロジェクトデザインシステムを永続化しながら一気通貫で提供 | デザインシステムパッケージ、統合成果物 |
 | **Bazaar** | _"A landing page is one promise, one path, one decision. bazaar runs the studio that delivers all three."_ - 超高品質LP制作スタジオチェーン・オーケストレーター。Field → Cast → Pulse → Funnel → Vision → Saga → Compete → Muse → Flow → Artisan → Growth → Bolt → Judge → Launch を、LP種別レシピと9段階の品質ゲート（Discover → Audience → Strategy → Structure → Design → Build → Optimize → Verify → Launch）で束ね、6つのクラフト軸（デザイン／アニメーション／ブランディング／マーケティング／SEO／IA）すべてにルーブリックと納品閾値を課したLPを納品 | 6軸ルーブリック通過済みLPパッケージ、CVR最適化された本番コード、ブランド整合性のあるビジュアル、トークン化されたモーション、スキーマ妥当性のあるSEO、AI検索引用対応GEO、計測稼働 |
-| **Compass** | _"When in doubt, ask Compass. It finds the right skill for you among 124+."_ - スキルエコシステムのナビゲーター・オンボーディングガイド。エージェントを一覧化し、タスクに最適な担当を推薦し、初心者が適切なスペシャリストを発見できるよう支援 | レコメンド、エージェントマップ |
+| **Compass** | _"When in doubt, ask Compass. It finds the right skill for you among 125+."_ - スキルエコシステムのナビゲーター・オンボーディングガイド。エージェントを一覧化し、タスクに最適な担当を推薦し、初心者が適切なスペシャリストを発見できるよう支援 | レコメンド、エージェントマップ |
 
 ### 調査・企画（コードを書かない）
 
@@ -277,6 +277,7 @@ git clone https://github.com/simota/agent-skills.git /path/to/your/skills
 | **Pipe** | _"Workflows are pipelines. Pipelines are promises."_ - GitHub Actionsワークフローの深い専門家。トリガー戦略、セキュリティ強化、パフォーマンス最適化、PR自動化、Reusable Workflow設計 | GHAワークフロー |
 | **Ledger** | _"Every dollar has a story. Make it a short one."_ - FinOps／クラウドコスト最適化エージェント。IaCコードからのコスト推定、right-sizing提案、RI/SP推奨、コスト異常検知 | レポート、設定 |
 | **Shift** | _"Migration is not moving. It's transforming."_ - マイグレーション＆アップグレードオーケストレーター。フレームワーク・ライブラリ・API・DB・インフラの移行をcodemod生成・段階的戦略でエンドツーエンド実行 | マイグレーション計画 |
+| **Wield** | _"Tell the Mac what to do — and it does."_ - AppleScript/JXA/osascript による macOS デスクトップ自動化。Apple Events でネイティブアプリ（Finder/Mail/Safari/Calendar/Notes/Music/System Events）を制御、非対応アプリの UI スクリプティング、複数アプリ連携、osascript の shell/Python/Node 統合。辞書優先・TCC考慮・破壊的操作はゲート | AppleScript/JXAスクリプト |
 
 **Hearth vs Hone vs Gear vs Scaffold vs Latch vs Pipe の役割分担**:
 - **Hearth**: 個人環境（dotfiles、シェル、エディタ、ターミナル）
