@@ -46,6 +46,7 @@ Complete task type → agent chain mapping. The SKILL.md Routing Quick Start con
 | UX_RESEARCH | Field → Echo → Palette | Field[interview], Echo[walkthrough], Palette[usability], Trace[replay], Trace[persona] | +Cast[generate] (persona), +Trace (session data) |
 | E2E | Voyager → Lens | Voyager[playwright], Radar[edge] | +Gear (CI), +Echo (persona-based), +Matrix (test matrix) |
 | BROWSER | Vector → Builder | Vector[collect], Scout[bug], Builder[fix] | +Scout (bug repro), +Bolt[frontend] (perf), +Lens (evidence), +Haul (product image acquisition) |
+| MACOS_AUTOMATION | Wield | Wield[automate], Wield[control], Wield[ui-script], Wield[integrate], Wield[audit], Wield[convert] | +Tempo (schedule as cron/launchd), +Anvil (graduate to packaged CLI), +Latch (wire as Claude Code hook), +Vector (web step before native step), +Sentinel (security screen generated do-shell-script/subprocess), +Scout (diagnose broken automation). Trigger: "AppleScript", "osascript", "JXA", "Apple Events", "macOS automation", "tell application", "UI scripting". macOS-only; dictionary-first, TCC-aware, destructive ops gated behind dry-run |
 | DB_DESIGN | Schema → Builder → Radar | Schema[design], Builder[ddd], Radar[edge] | +Tuner[explain] (optimize), +Atlas[analyze] (arch review) |
 | OBSERVABILITY | Beacon → Gear → Builder | Beacon[slo], Builder[fix] | +Triage (incident link), +Scaffold (capacity) |
 | AI_FEATURE | Oracle → Builder → Radar | Oracle[prompt], Builder[api], Radar[edge] | +Gateway (API), +Stream (pipeline), +Sentinel (safety) |
