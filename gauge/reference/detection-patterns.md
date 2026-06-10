@@ -262,6 +262,31 @@
 
 ---
 
+## RR-1: Reasoning-Reproduction (Fable 5 refusal risk)
+
+> Content-quality rule (not part of the 18 structural items). Flags instructions that tell the model or a spawned agent to reproduce its **internal reasoning as response text**. On a Claude Fable 5 hub these trip the `reasoning_extraction` safety classifier → `stop_reason:"refusal"` → forced Opus 4.8 fallback (elevated, silent fallback rate). Source: Nexus `reference/hub-authoring.md` § Claude Code hub — Fable 5 (F1); Anthropic "Prompting Claude Fable 5".
+
+**Detection (grep, case-insensitive):**
+1. `(show|echo|transcribe|reproduce|narrate|verbalize|output|include|display|reveal|expose|print|render) .{0,30}(reasoning|thinking|thought process|chain[ -]of[ -]thought|internal monologue|deliberation)`
+2. `show your work|show your (reasoning|thinking)|think out loud|thinking out loud|reasoning trace|reasoning aloud|walk .{0,20}through your (thought|reasoning)|step-by-step reasoning in (the |your )?(response|output|answer)|reasoning in your (response|answer|output)`
+3. `explain your (reasoning|thinking)` **only** when the target is response text (not a thinking block)
+
+**FAIL trigger:** a directive instructs the model/spawned agent to emit its own internal chain-of-thought verbatim in the user-facing response or `_STEP_COMPLETE.Output`.
+
+**Contextual-validity guards (do NOT flag — these are valid, per the 2026-06 corpus audit which found 0 true violations / 10 false positives):**
+- **Descriptive prose** about CoT/thinking (e.g. multi-agent degradation, JTBD) — not an instruction.
+- **Thinking nudges** ("think step-by-step *before responding/classifying*", P5) — reasoning stays in the thinking block, not reproduced as output.
+- **Explaining a decision or output** ("explain the rationale behind the chain selection", "explain rationale in the commit body") — explaining a result ≠ reproducing internal CoT.
+- **Config-key / API docs** (e.g. Codex `show_raw_agent_reasoning`) and **UI code examples** (e.g. `// Show thinking indicator`).
+- **Human-facing facilitation** ("voters explain their reasoning") — directed at people, not the model.
+- **Domain advice about third-party classifiers** (e.g. "require a rationale signal before acting on LLM classifications") — about the user's product, not the agent's own CoT.
+
+**Fix:** delete the reproduction directive, or replace with summarized-thinking handling — read structured `thinking` blocks (adaptive thinking, `display:"summarized"`) and surface progress via a send-to-user tool, not response-text echo. See Nexus `reference/hub-authoring.md` F1.
+
+**Apply only on a Fable 5 hub** (or when authoring engine-agnostic skills intended to run there). On an Opus 4.8 hub this is informational, not a FAIL.
+
+---
+
 ## Compound Detection Rules
 
 ### Full HTML Comment Block Validation (H1 + H2 + H3)
