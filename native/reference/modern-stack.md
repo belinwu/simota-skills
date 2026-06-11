@@ -203,7 +203,7 @@ Adoption policy:
 - **Control Center API** — `ControlWidgetToggle`, `AppIntentControlValueProvider` to add toggles / value providers to Control Center / Lock Screen / Action Button
 - **Live Activities + Dynamic Island** — `ActivityKit` / max 8h active + 4h stale / payload ~4KB / APNs `apns-priority` 5 recommended. Advertising / marketing copy is forbidden
 - **App Intents + Apple Intelligence** — Surfaces in Spotlight / Siri / Action Button. Use `opensAppWhenRun = false` for "answer without opening the app" UX
-- **Foundation Models framework** — On-device ~3B quantized + Private Cloud Compute fallback. The primary uplift opportunity for Web→Native migrations
+- **Foundation Models framework** — On-device ~3B quantized + Private Cloud Compute fallback. The primary uplift opportunity for Web→Native migrations. For larger context / frontier reasoning / server-side tools, the **same `LanguageModelSession` API can drive Claude server-side** via the `ClaudeForFoundationModels` package (OS 27 beta) — swap the `model:` arg, no API rewrite → `reference/claude-foundation-models.md`
 
 ### Core principles (recap)
 
