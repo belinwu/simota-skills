@@ -386,6 +386,7 @@ Read only the files that match the current decision point.
 | `reference/output-formats.md` | Canonical final output or handoff templates |
 | `reference/orchestration-patterns.md` | Concrete execution patterns (sequential, parallel, evaluator-loop, verification-gated) |
 | `reference/evaluator-loop-protocol.md` | Generator-Evaluator separation: Sprint Contract + Rubric + orchestration pattern |
+| `reference/loop-engineering-primitives.md` | Mapping the loop-engineering pattern onto Claude Code / Codex primitives (`/loop`, `/goal`, worktree, subagents, memory) with 2026-06 version detail — read when designing a `goal`/apex/summit loop or explaining which primitive implements which loop part |
 | `reference/context-strategy.md` | Decide how context flows between agents |
 | `reference/routing-learning.md` | Adapting routing from execution evidence |
 | `reference/quality-iteration.md` | Output needs post-delivery PDCA improvement |
