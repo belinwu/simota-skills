@@ -408,7 +408,7 @@ Read only the files that match the current decision point.
 | `reference/pack-subcommand.md` | `/nexus pack` — skill profile switch, settings.json edit, backup, diff, confirm |
 | `_common/SKILL_PACKS.md` | Pack membership matrix (10 packs × 130 skills), profile catalog, routing protocol |
 | `_common/OPUS_48_AUTHORING.md` | **Claude Code hub** — P4 / P6 / P7 spawn prompts, output envelopes, effort |
-| `reference/hub-authoring.md` § Claude Code hub — Fable 5 | **Hub runs on `claude-fable-5`** — F-principles: lighter spawn prompts, `high` default effort, longer-turn / async harness, progress grounding, no-reasoning-reproduction rule |
+| `reference/hub-authoring.md` § Claude Code hub — Fable 5 | **Hub runs on `claude-fable-5`** — F-principles: lighter spawn prompts, `high` default effort, longer-turn / async harness, progress grounding, no-reasoning-reproduction rule, verbatim `send_to_user` tool for async runs |
 | `_common/CODEX_ORCHESTRATION.md` | **Codex CLI hub** — C1 spawn-depth, C2 sync fan-out, C3 effort-by-model, C6 checkpoint-resume |
 | `_common/IMAGE_INPUT.md` | Routing request carries an image — five-stage pipeline at CLASSIFY |
 

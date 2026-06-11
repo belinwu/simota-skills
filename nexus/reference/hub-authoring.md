@@ -30,6 +30,7 @@ Fable 5 is a Mythos-class model: 1M context, adaptive-thinking-only (raw CoT nev
 - **F4 — Async fan-out.** Spawn parallel subagents freely; communicate asynchronously; keep the orchestrator working while branches run. Don't serialize on `wait` unless a barrier is genuinely required.
 - **F5 — Ground long-run progress.** For chains ≥ 4 steps or autonomous runs, instruct each agent: "Before reporting progress, audit each claim against a tool result from this session; if unverified, say so." Nearly eliminates fabricated status.
 - **F6 — Refusal-aware routing.** Steps in offensive-security / biology-life-sciences / reasoning-extraction domains can return `stop_reason:"refusal"` (HTTP 200, not an error). Configure fallback to Opus 4.8 (`fallbacks` param or SDK middleware); a refused-before-output step is not billed. Treat `refusal` as a routing signal, not a failure.
+- **F7 — Verbatim user surfacing in async runs.** For long, asynchronous chains (apex/summit/goal-loop) where a deliverable, a numeric progress update, or a mid-loop reply must reach the user *exactly as written*, give the orchestrating agent a `send_to_user` tool (input = the message; render the input directly, return a bare ack). Tool inputs are never summarized, so the content arrives intact — unlike a final summary, which Fable 5 may re-ground or compress. Use it only when UX depends on verbatim delivery; routine progress narration needs no tool. Pairs with F5 (grounded claims) and the no-reasoning-reproduction rule (F1 — surface summarized `thinking`, never raw CoT).
 
 ## Codex CLI hub
 
