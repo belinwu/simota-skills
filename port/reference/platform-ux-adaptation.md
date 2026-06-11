@@ -2,6 +2,8 @@
 
 Translate web UX into Apple HIG (iOS) and Material Design 3 (Android). The two are different in philosophy — accept divergence as a feature, not a bug.
 
+Component **naming** translation (Web ↔ HIG ↔ Material 3 / Compose terms) → `ui-terminology-matrix.md`. This file covers **behavior** adaptation.
+
 ---
 
 ## Core Principle
