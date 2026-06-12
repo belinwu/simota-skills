@@ -99,6 +99,16 @@ Default if user unspecified: `safe-bounded` (least-privilege wins).
 - If confidence ≥ 0.7 → auto-select use case
 - Else → ask user one focused question with the four options
 
+### Phase 2.5 — COMPLETION_CRITERION (inline gate, the precondition for any autonomous run)
+
+An autonomous `/goal` run converges only if "done" is **machine-checkable**. This gate pins the stop condition BEFORE configuring anything, and is the single most important determinant of a successful run.
+
+- **Elicit a verifiable completion oracle** — a command (or small set) that **exits 0 ⟺ the goal is done**: e.g. `npm test && npm run lint`, `pytest tests/contract/`, `cargo build && cargo test`. The oracle is the goal's analogue of a bug's repro test or a feature's acceptance criteria.
+- **Reject unverifiable goals.** A goal with no machine-checkable stop condition ("improve the code", "make it better", "clean things up") causes the loop to **stop prematurely (false done) or never stop (budget runaway)**. If the user's goal is vague, ask one focused question to convert it into a checkable predicate, or stop with that requirement — do not produce a launch command for an unverifiable goal.
+- **Single source of truth.** The SAME oracle command threads into BOTH (a) Latch's completion-verification hook (Phase 4) AND (b) the launch goal statement (the `/goal "<...>"` text). The loop's stop condition and the post-run verification must check the identical thing — otherwise the run can "complete" against a different bar than it's verified against.
+
+Emit `COMPLETION_ORACLE = <command(s)>` and `GOAL_STATEMENT = <observable, oracle-aligned objective>` to chain state.
+
 ### Phase 3 — AUDIT (Hone)
 
 **Agent:** Hone
@@ -119,10 +129,12 @@ Hone never edits files; it produces diff suggestions only.
 
 | Hook | Purpose | Both Platforms |
 |---|---|---|
-| Completion verification | Run tests, check build, validate exit code at goal stop | Stop hook + PostToolUse hook |
+| Completion verification | Run **the `COMPLETION_ORACLE` from Phase 2.5** (same command as the goal statement), validate exit code at goal stop | Stop hook + PostToolUse hook |
 | Notification | Desktop / Slack / webhook on goal completion | Stop hook + `notify` (Codex) |
-| Budget alert | Warn at token/cost threshold | PreToolUse hook (Claude Code), TUI notification (Codex) |
+| **Hard-stop bound (MANDATORY for autonomous runs)** | Cap the run so it cannot loop unbounded — the #1 autonomous-run risk is cost/turn runaway. Use native `--max-turns`/`--max-budget-usd` when present; **when absent (verify per the 2026-06 note below), a budget-guard hook is the required fallback**, not optional | PreToolUse hook (Claude Code), TUI notification + budget guard (Codex) |
 | Guard | Block dangerous commands during `/goal` | PreToolUse hook with `deny` patterns |
+
+The completion-verification hook and the hard-stop bound are the two non-negotiables: one proves the goal is actually met, the other guarantees the loop terminates.
 
 See **Hook Templates** below for concrete snippets.
 
@@ -338,6 +350,12 @@ steps:
     default: safe-bounded
     ask_on_low_confidence: true
 
+  - phase: COMPLETION_CRITERION
+    execution: inline
+    emits: [COMPLETION_ORACLE, GOAL_STATEMENT]
+    gate: reject_unverifiable_goal   # no machine-checkable stop condition → ask once or stop
+    ask_on_vague_goal: true
+
   - phase: AUDIT
     agent: hone
     inputs: [PLATFORM, USE_CASE, repo_path]
@@ -386,6 +404,8 @@ steps:
 ```
 
 ### Verification checklist
+- [ ] **Completion oracle is machine-checkable** and identical in the goal statement and the verification hook (exit 0 ⟺ done)
+- [ ] **Hard-stop bound in place** (native `--max-turns`/`--max-budget-usd` or budget-guard hook) — run cannot loop unbounded
 - [ ] Hooks installed and validated with `claude --debug` / `codex /hooks`
 - [ ] Permission rules / sandbox settings applied
 - [ ] CLAUDE.md / AGENTS.md updated with completion criteria vocabulary
@@ -400,6 +420,8 @@ steps:
 
 | Failure | Response |
 |---|---|
+| Goal has no machine-checkable completion oracle | Ask once to convert it into a checkable predicate; if still vague, stop — do not produce a launch command for an unverifiable goal (it will runaway or false-complete) |
+| No hard-stop bound available (native flags absent + no budget hook) | Do not deliver an unbounded autonomous launch; require the budget-guard hook first |
 | Platform unknown after detection + ask | Stop with install instructions; do not guess |
 | `/goal` version too old (Claude Code < v2.1.139) | Emit upgrade instruction; do not produce launch command |
 | Codex CLI lacks `[features] goals = true` | Include the toggle step in the audit diff; warn it is experimental |
