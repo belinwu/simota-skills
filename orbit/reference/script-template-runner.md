@@ -45,6 +45,19 @@ STRUCTURED_LOG="${STRUCTURED_LOG:-true}"
 COST_TRACKING="${COST_TRACKING:-false}"
 TOKEN_BUDGET="${TOKEN_BUDGET:-0}"
 
+#--- External terminators (beyond MAX_ITERATIONS) ---
+# Core Contract: termination MUST be enforced externally (iteration cap, timeout, budget).
+LOOP_TIMEOUT="${LOOP_TIMEOUT:-0}"            # total wall-clock seconds; 0 = unlimited
+USD_PER_RUN_CAP="${USD_PER_RUN_CAP:-0}"      # absolute USD cap per run; 0 = unlimited
+USD_PER_ITER_CAP="${USD_PER_ITER_CAP:-0}"    # absolute USD cap per iteration; 0 = unlimited
+# Executors that know their cost append a USD float line to ${LOOP_DIR}/.cost-usd each iteration.
+
+#--- Semantic-stall & evidence gates ---
+CONVERGENCE_THRESHOLD="${CONVERGENCE_THRESHOLD:-0.85}"
+CONVERGENCE_WINDOW="${CONVERGENCE_WINDOW:-3}"
+PLACEHOLDER_GREP="${PLACEHOLDER_GREP:-true}"
+GOAL_IMMUTABLE="${GOAL_IMMUTABLE:-true}"
+
 #--- Portable timeout (macOS + Linux) ---
 portable_timeout() {
   local secs="$1"; shift
@@ -223,6 +236,77 @@ record_circuit_success() {
   save_circuit_state
 }
 
+#--- Budget gate (reads optional executor-emitted ${LOOP_DIR}/.cost-usd) ---
+# Never run unmonitored loops without budget caps. Enforcement is a no-op only when
+# both caps are 0 AND no cost signal exists; otherwise caps are hard external terminators.
+cost_total_usd() {
+  [[ -f "${LOOP_DIR}/.cost-usd" ]] || { echo 0; return; }
+  awk '{s+=$1} END{printf "%.4f", s+0}' "${LOOP_DIR}/.cost-usd"
+}
+cost_last_usd() {
+  [[ -f "${LOOP_DIR}/.cost-usd" ]] || { echo 0; return; }
+  tail -1 "${LOOP_DIR}/.cost-usd" 2>/dev/null | awk '{printf "%.4f", $1+0}'
+}
+budget_exceeded() {
+  # returns 0 (true) when a configured cap is exceeded
+  local total last
+  total=$(cost_total_usd); last=$(cost_last_usd)
+  if [[ "${USD_PER_RUN_CAP}" != "0" ]] && awk "BEGIN{exit !(${total} > ${USD_PER_RUN_CAP})}"; then
+    echo "[BUDGET:RUN] run cost \$${total} exceeded USD_PER_RUN_CAP=\$${USD_PER_RUN_CAP}"; return 0
+  fi
+  if [[ "${USD_PER_ITER_CAP}" != "0" ]] && awk "BEGIN{exit !(${last} > ${USD_PER_ITER_CAP})}"; then
+    echo "[BUDGET:ITER] iter cost \$${last} exceeded USD_PER_ITER_CAP=\$${USD_PER_ITER_CAP}"; return 0
+  fi
+  return 1
+}
+
+# Loop change base: all loop work is visible as ORIGIN_BRANCH..HEAD (autocommit) plus the
+# working tree (uncommitted). Using a base ref keeps gates correct when AUTOCOMMIT commits
+# each iteration (working-tree diff would otherwise be empty).
+loop_changed_files() {
+  local base="${ORIGIN_BRANCH:-}"
+  {
+    if [[ -n "${base}" ]] && git rev-parse --verify "${base}" >/dev/null 2>&1; then
+      git diff --name-only "${base}...HEAD" 2>/dev/null || true
+    fi
+    git diff --name-only HEAD 2>/dev/null || true
+    git ls-files --others --exclude-standard 2>/dev/null || true
+  } | sort -u
+}
+
+#--- Placeholder gate: verify PASS alone is not DONE evidence (AP-12) ---
+placeholder_clean() {
+  [[ "${PLACEHOLDER_GREP}" == "true" ]] || return 0
+  local changed
+  changed=$(loop_changed_files | grep -E '\.(js|ts|tsx|jsx|py|go|rb|rs|java|kt|swift|php|c|cc|cpp|h)$' || true)
+  [[ -z "${changed}" ]] && return 0
+  if echo "${changed}" | xargs grep -nE 'TODO|FIXME|NotImplementedError|raise NotImplemented|^[[:space:]]*pass[[:space:]]*$|return None[[:space:]]*#|throw new Error\("not implemented"\)' 2>/dev/null; then
+    return 1
+  fi
+  return 0
+}
+
+#--- Convergence / stuck-loop gate (semantic stall, not just exit codes) ---
+# Signature = HEAD tree hash + working-tree diff hash + verify result. CONVERGENCE_WINDOW
+# identical signatures in a row => CONVERGENCE_STALL (no net progress despite "success").
+# Tree hash advances on every real commit, so healthy autocommit loops never false-trip.
+SIG_LOG="${LOOP_DIR}/.action-sig.log"
+record_signature() {
+  local verify="$1" tree wt sig
+  tree=$(git rev-parse 'HEAD^{tree}' 2>/dev/null || echo "no-tree")
+  wt=$( { git diff HEAD 2>/dev/null || true; git ls-files --others --exclude-standard 2>/dev/null || true; } \
+    | shasum -a 256 | awk '{print $1}')
+  sig=$(printf '%s:%s:%s' "${tree}" "${wt}" "${verify}" | shasum -a 256 | awk '{print $1}')
+  echo "${sig}" >> "${SIG_LOG}"
+}
+convergence_stalled() {
+  [[ -f "${SIG_LOG}" ]] || return 1
+  local n; n="${CONVERGENCE_WINDOW}"
+  local lines; lines=$(tail -n "${n}" "${SIG_LOG}")
+  [[ "$(echo "${lines}" | wc -l | tr -d ' ')" -lt "${n}" ]] && return 1
+  [[ "$(echo "${lines}" | sort -u | wc -l | tr -d ' ')" -eq 1 ]]
+}
+
 #--- Graceful shutdown (SIGINT/SIGTERM) ---
 SHUTDOWN=0
 cleanup() {
@@ -357,12 +441,67 @@ if [[ "${ADAPTIVE_TIMEOUT}" == "true" ]] && [[ -f "${TIMING_LOG}" ]]; then
   fi
 fi
 
+#--- Goal/AC immutability pin (AP-16: mid-run goal drift ABORTs) ---
+GOAL_SHA_FILE="${LOOP_DIR}/.goal.sha256"
+if [[ "${GOAL_IMMUTABLE}" == "true" ]] && [[ -f "${LOOP_DIR}/goal.md" ]]; then
+  if [[ ! -f "${GOAL_SHA_FILE}" ]]; then
+    shasum -a 256 "${LOOP_DIR}/goal.md" | awk '{print $1}' > "${GOAL_SHA_FILE}"
+  fi
+fi
+check_goal_immutable() {
+  [[ "${GOAL_IMMUTABLE}" == "true" ]] || return 0
+  [[ -f "${GOAL_SHA_FILE}" ]] || return 0
+  local now; now=$(shasum -a 256 "${LOOP_DIR}/goal.md" 2>/dev/null | awk '{print $1}')
+  [[ "${now}" == "$(cat "${GOAL_SHA_FILE}")" ]]
+}
+
+#--- Loop-level external terminator (wall clock) ---
+LOOP_START_TS=$(date +%s)
+LOOP_DEADLINE=0
+[[ "${LOOP_TIMEOUT}" -gt 0 ]] && LOOP_DEADLINE=$((LOOP_START_TS + LOOP_TIMEOUT))
+
+write_terminal_state() {
+  local status="$1"
+  local tmp; tmp=$(mktemp "${LOOP_DIR}/state.env.XXXXXX")
+  cat > "${tmp}" <<STATE_EOF
+NEXT_ITERATION=${ITER}
+LAST_STATUS=${status}
+LAST_UPDATED_AT=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+ORIGIN_BRANCH=${ORIGIN_BRANCH:-}
+ITER_BRANCH=${ITER_BRANCH:-}
+STATE_EOF
+  mv "${tmp}" "${LOOP_DIR}/state.env"
+  shasum -a 256 "${LOOP_DIR}/state.env" | awk '{print $1}' > "${LOOP_DIR}/state.env.sha256"
+}
+
 #--- Main loop ---
 VERIFY_RESULT="N/A"
 COMMIT_HASH="no-commit"
 
 while [[ "${STATUS}" != "DONE" ]] && [[ "${ITER}" -le "${MAX_ITERATIONS}" ]]; do
   [[ "${SHUTDOWN}" -eq 1 ]] && break
+
+  #--- External terminators: wall-clock timeout & budget caps ---
+  if [[ "${LOOP_DEADLINE}" -gt 0 ]] && [[ "$(date +%s)" -ge "${LOOP_DEADLINE}" ]]; then
+    echo "[TIMEOUT] LOOP_TIMEOUT=${LOOP_TIMEOUT}s exceeded — external terminator" | tee -a "${LOOP_DIR}/runner.log"
+    emit_log "WARN" "loop_timeout" "elapsed" "$(( $(date +%s) - LOOP_START_TS ))"
+    STATUS="BLOCKED"; write_terminal_state BLOCKED; break
+  fi
+  if BUDGET_MSG=$(budget_exceeded); then
+    echo "[ABORT] ${BUDGET_MSG} — pausing; explicit human resume required" | tee -a "${LOOP_DIR}/runner.log"
+    emit_log "ERROR" "budget_exceeded" "detail" "${BUDGET_MSG}"
+    STATUS="BLOCKED"; write_terminal_state BLOCKED; break
+  fi
+  if ! check_goal_immutable; then
+    echo "[ABORT] goal.md changed mid-run (GOAL_DRIFT / AP-16)" | tee -a "${LOOP_DIR}/runner.log"
+    emit_log "ERROR" "goal_drift" "file" "goal.md"
+    STATUS="BLOCKED"; write_terminal_state BLOCKED; break
+  fi
+  if convergence_stalled; then
+    echo "[CONVERGENCE:STALL] ${CONVERGENCE_WINDOW} identical-signature iterations — no net progress" | tee -a "${LOOP_DIR}/runner.log"
+    emit_log "ERROR" "convergence_stall" "window" "${CONVERGENCE_WINDOW}"
+    STATUS="BLOCKED"; write_terminal_state BLOCKED; break
+  fi
 
   # Circuit breaker gate
   if ! check_circuit; then
@@ -517,10 +656,16 @@ STATE_EOF
     fi
   fi
 
-  #--- DONE detection (dual gate: done.md + verify) ---
+  #--- DONE detection (triple gate: done.md + verify + placeholder-clean) ---
   if [[ -f "${LOOP_DIR}/done.md" ]]; then
     if [[ "${VERIFY_RESULT}" == "PASS" || "${VERIFY_RESULT}" == "SKIP" ]]; then
-      STATUS="DONE"
+      if placeholder_clean; then
+        STATUS="DONE"
+      else
+        STATUS="CONTINUE"
+        echo "[INFO] done.md + verify=${VERIFY_RESULT} but placeholders found in changed src — continuing (AP-12)"
+        emit_log "WARN" "placeholder_block" "verify" "${VERIFY_RESULT}"
+      fi
     else
       STATUS="CONTINUE"
       echo "[INFO] done.md exists but verification failed — continuing"
@@ -528,6 +673,9 @@ STATE_EOF
   else
     STATUS="CONTINUE"
   fi
+
+  #--- Record action signature for convergence detection ---
+  record_signature "${VERIFY_RESULT}"
 
   #--- Atomic state write ---
   NEXT_ITER=$((ITER + 1))

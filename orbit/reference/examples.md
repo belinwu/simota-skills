@@ -29,6 +29,9 @@ Purpose: load this when matching a live issue to a known Orbit scenario. Each ex
 | H. Loop-of-loops scoped failure | inner loop fails repeatedly while outer loop continues | `severity: P1`, classify inner failure independently, update outer progress, do not start dependent inner loops |
 | I. `PREFLIGHT:FAIL` | disk below `100MB`, stale lock exists, checksum valid | stale lock auto-clears, disk failure aborts run before iteration start |
 | J. Branch-isolation squash | `BRANCH_ISOLATION=true`, `SQUASH_ON_DONE=true`, verify `PASS`, iter branch has 8 commits | squash to summary branch, commit once, delete iteration branch, final footer `DONE` |
+| K. `CONVERGENCE_STALL` | `.action-sig.log` last `3` lines identical; iters report success but no net artifact change | `status_assessment: CONVERGENCE_STALL`, `severity: P1`, persist state, inject disambiguation / re-scope, escalate to human |
+| L. `BURN_RATE_ANOMALY` budget cap | `.cost-usd` sum `> USD_PER_RUN_CAP`; loop still running | `severity: P1`, PAUSE, require explicit human resume (never auto-continue), snapshot state |
+| M. Terminator-bound gap | unattended loop with only `MAX_ITERATIONS` set, no `LOOP_TIMEOUT`/`USD_PER_RUN_CAP` | `status_assessment: CONTRACT_MISSING`, `severity: P1`, apply Terminator-bound gate, declare a hard bound before resuming |
 
 ## Notes
 
@@ -36,3 +39,5 @@ Purpose: load this when matching a live issue to a known Orbit scenario. Each ex
 - Example G preserves sequential handoff enforcement because it distinguishes "done file exists" from "prerequisites independently verified."
 - Example I preserves the `100MB` pre-flight threshold and stale-lock auto-clear behavior.
 - Example J preserves the `BRANCH_ISOLATION` plus `SQUASH_ON_DONE` completion path.
+- Example K anchors semantic-stall classification to `.action-sig.log` evidence (exit-code success ≠ progress).
+- Examples L and M preserve the hard-cap / mandatory-terminator contract added in operation-contract `v1.2.0`.

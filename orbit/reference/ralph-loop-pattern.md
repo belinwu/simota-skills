@@ -89,6 +89,17 @@ Orbit-generated `PROMPT.md` must include at minimum:
 - `997_DO_NOT_EDIT_TESTS_OR_VERIFY` (covers AP-13 Reward Hacking)
 - `996_DO_NOT_EDIT_SETTINGS_JSON` (covers AP-20 Permission Hijack, a P0 security event)
 
+**9xx rules are prompt-level salience; the upgraded `run-loop.sh` backstops them with hard enforcement** — a prompt-rule violation also trips a runner ABORT, not just lowered salience:
+
+| 9xx rule | Runner backstop |
+|----------|-----------------|
+| `990_DO_NOT_IMPLEMENT_PLACEHOLDERS` | `PLACEHOLDER_GREP` in the triple DONE gate — placeholders in changed src force `CONTINUE`, never `DONE` |
+| `998_DO_NOT_EDIT_GOAL_MD` | `GOAL_IMMUTABLE` `.goal.sha256` pin — mid-run `goal.md` change ABORTs |
+| `997_DO_NOT_EDIT_TESTS_OR_VERIFY` | `TESTS_IMMUTABLE` (`chmod 0444` + sha256 pin) |
+| `996_DO_NOT_EDIT_SETTINGS_JSON` | `SETTINGS_IMMUTABLE` sha256 pin |
+
+The prompt rule reduces the *probability* of the action; the runner pin makes it *non-completable*. Generate both — neither alone is sufficient.
+
 ## 5. AGENTS.md Constraints
 
 `AGENTS.md` is the agent-facing operations file. Strict rules:
@@ -121,12 +132,15 @@ The plan is a scratchpad, not a contract. When the agent detects any of the foll
 - An item references a file or symbol that no longer exists.
 - An item depends on an assumption contradicted by current `progress.md`.
 
+**Runner backstop**: the upgraded `run-loop.sh` writes a per-iteration change signature to `.action-sig.log` and stops the loop (`CONVERGENCE_STALL`) when `CONVERGENCE_WINDOW` (default `3`) signatures are identical — a runner-level Witness even if the agent fails to self-detect plan fixation. On resume after plan regeneration, clear the counter with `recover.sh --clear-stall` so the fresh plan is not immediately re-flagged against stale signatures.
+
 Regeneration steps:
 
 1. Archive the current plan to `IMPLEMENTATION_PLAN_archive_<ISO8601>.md` (do not delete).
 2. Re-enter `plan` mode.
 3. Re-derive `fix_plan.md` from `specs/` and current code state.
-4. Continue.
+4. Run `recover.sh --clear-stall` to reset the convergence counter.
+5. Continue.
 
 ## 8. Filesystem-as-Memory Model
 
@@ -144,19 +158,21 @@ Regeneration steps:
 
 ## 9. Termination Conditions
 
-Ralph Loop is unbounded by construction. Termination must be enforced externally. Acceptable terminators (any one is sufficient):
+Ralph Loop is unbounded by construction. Termination must be enforced externally. Acceptable terminators:
 
-| Terminator | Mechanism | When to use |
-|------------|-----------|-------------|
-| `<promise>COMPLETE</promise>` | Agent emits sentinel in stdout; runner greps and exits | well-defined goal with clear completion semantics (snarktank/ralph style) |
-| `MAX_ITERATIONS` cap | Runner counter | safety cap regardless of agent claim |
-| `LOOP_TIMEOUT` | Runner wall clock | overnight runs |
-| `TOKEN_BUDGET` USD cap | Runner accumulator | every Ralph Loop must have this |
-| `verify.sh PASS` + `done.md` | DONE Evidence Gate | Orbit standard |
+| Terminator | Mechanism | Runner-enforced? | When to use |
+|------------|-----------|------------------|-------------|
+| `<promise>COMPLETE</promise>` | Agent emits sentinel in stdout; runner greps and exits | **No** (agent-emitted) | well-defined goal with clear completion semantics (snarktank/ralph style) |
+| `MAX_ITERATIONS` cap | Runner counter | Yes | safety cap regardless of agent claim |
+| `LOOP_TIMEOUT` | Runner wall-clock deadline (`run-loop.sh`) | Yes | overnight runs |
+| `USD_PER_RUN_CAP` / `USD_PER_ITER_CAP` | Runner sums `.cost-usd`, hard-ABORTs on breach (PAUSE + human resume) | Yes | **every Ralph Loop must set `USD_PER_RUN_CAP > 0`** |
+| `verify.sh PASS` + `done.md` + placeholder-clean | Triple DONE Evidence Gate | Yes | Orbit standard |
+
+`TOKEN_BUDGET` is a **soft** alert threshold only (`[COST:WARN]` at 0.8×, `[COST:BLOCKED]` at 1.0×); it is **not** a hard terminator. Use `USD_PER_RUN_CAP` (operation-contract `v1.2.0` hard cap) for guaranteed budget termination.
 
 [Source: https://github.com/snarktank/ralph]
 
-**Hard rule**: Never rely on the agent's self-assessment alone. A Ralph Loop must have at least two independent terminators active.
+**Hard rule**: Never rely on the agent's self-assessment alone. A Ralph Loop must have **at least two _runner-enforced_ terminators** active (the `<promise>` sentinel does **not** count — it is agent-emitted). The `ralph` subcommand satisfies this by forcing `MAX_ITERATIONS` plus one of `LOOP_TIMEOUT > 0` / `USD_PER_RUN_CAP > 0` before generation (SKILL `ralph` Core-Defaults override).
 
 ## 10. Green-field-only Constraint
 
@@ -222,11 +238,11 @@ Orbit's three already-promoted defaults (BP-1 cache, BP-4 critic, BP-7 worktree)
 - [ ] Goal directory is green-field (Section 10 heuristic passes).
 - [ ] `PROMPT.md`, `PROMPT_plan.md`, `PROMPT_build.md` are planned distinct files (RP-2).
 - [ ] `AGENTS.md` skeleton ≤ 60 lines (RP-4).
-- [ ] At least two independent terminators configured (Section 9).
-- [ ] `<promise>COMPLETE</promise>` sentinel or equivalent included.
-- [ ] `9xx` critical rules cover placeholders, assume-missing, prompt-immutability, tests-immutability, goal-immutability, settings-immutability (Section 4).
+- [ ] At least two **runner-enforced** terminators configured — `MAX_ITERATIONS` plus `LOOP_TIMEOUT > 0` and/or `USD_PER_RUN_CAP > 0` (Section 9; the `<promise>` sentinel does not count).
+- [ ] `<promise>COMPLETE</promise>` sentinel or equivalent included (convenience exit, not one of the two required terminators).
+- [ ] `9xx` critical rules cover placeholders, assume-missing, prompt-immutability, tests-immutability, goal-immutability, settings-immutability — **each paired with its runner sha256/grep backstop** (Section 4).
 - [ ] Build/test subagent count is exactly 1 (RP-5).
-- [ ] `WORKTREE_ISOLATION=true` and `TOKEN_BUDGET > 0` (default-on).
+- [ ] `WORKTREE_ISOLATION=true` and `USD_PER_RUN_CAP > 0` (hard cap; `TOKEN_BUDGET` soft-alert is not sufficient alone).
 - [ ] Plan disposability triggers wired to CONVERGENCE_STALL / OSCILLATION_LOOP (RP-6).
 - [ ] User has acknowledged green-field constraint if running long unattended sessions.
 

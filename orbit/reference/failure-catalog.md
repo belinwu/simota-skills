@@ -99,6 +99,17 @@ These are runtime-detected contract gaps surfaced by the audit pipeline; they sh
 | `RETRY_LIMIT` exhausted | classify `P1`, record `BLOCKED` | investigate via `ORBIT_TO_SCOUT_HANDOFF` |
 | circuit breaker `OPEN` | classify `P1`, record `BLOCKED` | cooldown or manual reset via `recover.sh --reset-circuit` |
 
+### Additional semantic-stall signals (`CONVERGENCE_STALL` / `OSCILLATION_LOOP`)
+
+Runtime-detected by the audit pipeline from `.action-sig.log` (per-iteration change signature written by the runner). Circuit breakers catch exit-code failures but miss these — iterations "succeed" while producing no net progress.
+
+| Signal | Class | First response | Recovery |
+|--------|-------|----------------|----------|
+| `CONVERGENCE_WINDOW` (default `3`) identical `.action-sig.log` lines | `CONVERGENCE_STALL` | classify `P1`, persist state, escalate to human | inject disambiguation context or narrow scope, then `recover.sh --clear-stall`; if exhausted, `ORBIT_TO_SCOUT_HANDOFF` |
+| action similarity `>= CONVERGENCE_THRESHOLD` (`0.85`) over `3` iters | `CONVERGENCE_STALL` | classify `P1`, pause loop | re-scope AC or split the goal, then `recover.sh --clear-stall`; resume with narrower target |
+| A↔B alternation `>= 3` cycles in last `6` iters | `OSCILLATION_LOOP` | classify `P1`, pause loop | restrict action space or inject tie-breaking context, then `recover.sh --clear-stall` and escalate |
+| output delta `< 5%` net artifact change across `3` iters | `CONVERGENCE_STALL` | classify `P2`, flag as stalled | review whether the goal is already met (false-incomplete) or genuinely stuck |
+
 ## High-Impact Top 3
 
 Apply first when generating new runners; these are the highest-leverage protections.
@@ -167,6 +178,11 @@ ORBIT_FAILURE_REPORT:
 | Partial | candidate scope may include baseline paths | `COMMIT_SCOPE_RISK` | `P0` | hand off to Guardian |
 | Partial | `runner.log` contains failure entries | `TOOL_FAILURE` | `P2` | retry policy and environment check |
 | Complete | retry budget exhausted | `TOOL_FAILURE` | `P1` | investigate via Scout |
+| Partial | no external terminator declared (`LOOP_TIMEOUT`/`USD_PER_RUN_CAP` unset) on an unattended loop | `CONTRACT_MISSING` | `P1` | apply Terminator-bound gate (`operation-contract.md`); declare a hard bound |
+| Partial | an AC has no verify-command mapping (oracle gap) | `CONTRACT_MISSING` | `P1` | apply AC-oracle gate; strengthen via `vague-goal-handling.md` |
+| Partial | `.goal.sha256` absent while `GOAL_IMMUTABLE=true` | `GOAL_DRIFT` | `P1` | re-pin baseline at next clean iteration; investigate why pin is missing |
+| Partial | `.cost-usd` present and `sum > USD_PER_RUN_CAP` | `BURN_RATE_ANOMALY` | `P1` | PAUSE; require explicit human resume (never auto-continue) |
+| Partial | `.action-sig.log` shows `CONVERGENCE_WINDOW` identical trailing lines | `CONVERGENCE_STALL` | `P1` | persist state, escalate; inject disambiguation or re-scope |
 | Complete | artifacts consistent | none | — | continue safely |
 
 ## Rules for Multiple Failure Classes
@@ -218,6 +234,20 @@ Run before launching a loop:
 - [ ] `.claude/settings*.json` sha256-pinned at loop start
 - [ ] tool-call argv dedup is active (last `DEDUP_WINDOW` calls hashed)
 
+## Live-Loop Audit Checklist
+
+Run in `AUDIT` mode against a running or completed loop (vs the pre-launch Prevention Checklist above). Inspects evidence the runner produces; maps each miss to a class via the tables above.
+
+- [ ] `state.env.sha256` matches `state.env` (integrity) and `NEXT_ITERATION` agrees with the last `progress.md` entry
+- [ ] `CONTRACT_VERSION` in `state.env` ≥ runner's contract version (else migration per `operation-contract.md`)
+- [ ] a hard external terminator is declared (`LOOP_TIMEOUT` or `USD_PER_RUN_CAP`) — not iteration-cap only
+- [ ] every AC in `goal.md` resolves to a verify command (oracle completeness)
+- [ ] `.goal.sha256` exists and still matches `goal.md` (no `GOAL_DRIFT`)
+- [ ] `.cost-usd` (when present) sum is within `USD_PER_RUN_CAP`; last line within `USD_PER_ITER_CAP`
+- [ ] `.action-sig.log` tail shows no `CONVERGENCE_WINDOW` identical lines and no A↔B oscillation
+- [ ] any `DONE` claim has `done.md` + verify `PASS`/`SKIP` + placeholder-clean changed source (triple gate)
+- [ ] footer `NEXUS_LOOP_STATUS` is one of `READY`/`CONTINUE`/`DONE` and parses deterministically
+
 ## Quick Detection Reference
 
 | ID | Detection |
@@ -243,3 +273,5 @@ Run before launching a loop:
 | `AP-19` | post-compaction iter produces diff > 2x baseline, or ADR contradicts implementation |
 | `AP-20` | `.claude/settings*.json` sha256 changed mid-run |
 | `AP-21` | last `DEDUP_WINDOW` tool argv hashes contain a duplicate with no mtime change |
+| `CONVERGENCE_STALL` | `.action-sig.log` has `CONVERGENCE_WINDOW` identical trailing lines |
+| `OSCILLATION_LOOP` | `.action-sig.log` shows A↔B alternation `>= 3` cycles in last `6` lines |
