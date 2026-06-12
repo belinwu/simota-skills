@@ -41,6 +41,7 @@ Read `_common/PROOF_CARRYING.md` v2 Tier table. Classify the change by inspectin
 
 **Outputs**:
 - `tier: S | A | B | C`. If C, abort with a recommendation to use `feature` instead — `acceptance` is over-scope for Tier-C.
+- `spec_graph_present: true | false` — **enforced precondition, not prose.** Verify a spec graph (or amendable partial) actually exists for the touched surface before any oracle work. If **absent**, abort and redirect to `apex` to author the spec first — `acceptance` validates *against* a spec; with no spec, Phase 1's spec-diff has nothing to adjudicate and the "proof" would be self-referential. This gate fires alongside the Tier-C abort.
 - `ui_dimension: none | partial | full`:
   - `none` — pure backend / infrastructure / data pipeline / no rendered UI change → Layer B is skipped
   - `partial` — minor UI surface (a copy change, a single component touch) → Layer B runs minimal subset (token + a11y + copy)
@@ -216,6 +217,14 @@ Each adversarial agent (Layer A or B) must produce a non-trivial exploration rep
 
 **Output**: PASS / PASS_WITH_ADVISORY / FAIL (specific gaps) / ESCALATE
 
+#### Evidence Provenance & Post-Gate Invalidation (integrity backbone of a Proof-Carrying PR)
+
+A "proof" only carries weight if it is bound to **exactly what merges**. The Gate enforces:
+
+- **Provenance binding** — the evidence package is stamped with the triple `{commit SHA, spec-graph hash, Design-Code Contract hash}` it was generated against. `guardian` records this in the PR; a verdict whose evidence cites a different SHA/hash than the PR head is **invalid**, not stale-but-acceptable.
+- **Tamper-evidence** — each evidence field carries the producing agent + engine + seed; the package is hashed so a hand-edited field is detectable. A package that cannot be reproduced from its recorded seeds is rejected (extends the semantic-emptiness rule to fabrication).
+- **Post-Gate invalidation** — **any change to the PR head after the verdict (new commit, force-push, rebase) invalidates PASS** and re-runs the layers whose inputs changed (Code-side change → re-run Layer A; UI-side change → re-run Layer B). A merge may only proceed on a PASS whose provenance triple matches the current head. Approval does not survive a force-push.
+
 ### Phase 5 — Runtime Oracle Hookup (sequential, on PASS only)
 
 **Agents**:
@@ -238,9 +247,10 @@ This phase does **not** block merge. It audits the Gate, not the change.
 ## Chain Template (AUTORUN)
 
 ```
-Phase 0: Nexus[classify-tier + detect-ui-dimension + check-design-proof-mode]
+Phase 0: Nexus[classify-tier + detect-ui-dimension + check-design-proof-mode + check-spec-graph-present]
          → if tier=C: abort with feature recommendation
-         → outputs: {tier, ui_dimension, design_proof_mode}
+         → if no spec graph: abort, redirect to apex (author spec first)
+         → outputs: {tier, ui_dimension, design_proof_mode, spec_graph_present}
 
 Phase 1: attest[spec-diff] (+ accord[spec-amend] if spec changes; + scribe if human-readable spec needed)
 
@@ -287,7 +297,8 @@ Phase 4B (Design Acceptance Gate, sequential, atelier sub-orchestration, IF ui_d
   → outputs: PASS_B / FAIL_B / ESCALATE_B / SKIP_B
 
 Phase 4C (Joint Verdict, sequential):
-  guardian[PR with both Layer A + Layer B evidence]
+  guardian[PR with both Layer A + Layer B evidence, stamped with provenance triple {commit SHA, spec-graph hash, contract hash}]
+  → PASS is valid only while the triple matches PR head; any post-Gate head change invalidates + re-runs affected layer
   Joint Verdict rules:
     PASS_A + (PASS_B | SKIP_B) → PASS
     FAIL_A + * → FAIL
@@ -313,6 +324,10 @@ Phase 6 (Random Sampling Audit, async post-merge, non-blocking):
 
 | Failure | Trigger | Escalation |
 |---------|---------|------------|
+| No spec graph for the touched surface | Phase 0 | Abort; redirect to `apex` to author the spec first — `acceptance` cannot validate against a non-existent spec |
+| Evidence provenance triple ≠ PR head | Phase 4C | Block; evidence was generated against a different SHA/spec/contract — re-run affected layer against current head |
+| PR head changed after PASS (commit / force-push / rebase) | Post-Gate | Invalidate PASS; re-run the layer whose inputs changed; merge only on a head-matching PASS |
+| Evidence field not reproducible from recorded seed | Phase 4 | Reject as fabricated/tampered; hard re-generate under provenance binding |
 | Spec parse fails | Phase 1 | Block; ask user to fix spec syntax or remove spec changes |
 | Meta-oracle fails | Phase 1 | Block; spec change is internally inconsistent (e.g., unreachable state) |
 | Oracle generation non-deterministic | Phase 2 | Block; seed not stable or generator has un-seeded randomness — investigate before allowing as Gate-blocking |
@@ -361,6 +376,9 @@ Phase 6 (Random Sampling Audit, async post-merge, non-blocking):
 | Anti-Pattern | Counter-Rule |
 |--------------|--------------|
 | Running `acceptance` on Tier-C scope | Phase 0 aborts; use `feature` |
+| Running `acceptance` with no spec graph | Phase 0 spec-existence gate aborts; author the spec via `apex` first |
+| Merging on a PASS whose evidence predates the current PR head | Provenance binding + post-Gate invalidation: PASS is void unless its `{SHA, spec-hash, contract-hash}` triple matches head |
+| Hand-editing an evidence field to flip a verdict | Tamper-evidence: package must reproduce from recorded seeds, else rejected |
 | Single-engine evidence for Tier-S | G1 cross-engine diversity is mandatory; Phase 4 quorum check enforces |
 | Skipping shadow-run on new oracles | Phase 2 Gate; new oracles are shadow-only until 3 weeks of stability |
 | Treating "no findings" as proof | Phase 3 requires exploration log; semantic-emptiness is rejected |
