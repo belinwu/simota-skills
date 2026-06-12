@@ -9,7 +9,7 @@ Extends the inline Routing Quick Start in `SKILL.md`. Canonical matrix: `referen
 | `BUG` | Scout[RCA] → Sherpa? → Radar[failing repro] → Builder[root-cause] → Radar[verify] → Guardian | `+Sentinel` for security, `+Trail` when a past commit introduced it, `+Ripple` for wide blast radius. Sherpa skip when files ≤ 2 or single-component fix. Phase contract ↓ |
 | `FEATURE` | Lens?[reuse] → Sherpa[spec+AC] → Forge? → Builder → Radar[+verify gate] → Guardian | Lens reuse-scan on existing codebases (skip greenfield). Forge only when approach unproven (spike, not shipped). `+Muse`/`+Palette` for UI (skip on backend/CLI), `+Artisan` for frontend production. Phase contract ↓ |
 | `SECURITY` | Sentinel[triage] → Probe?[confirm-exploit] → Builder[root-cause] → Probe/Radar[verify-closed] → Vigil? → Guardian | Confirm-exploit before & verify-closed after the fix. `+Breach` red-team, `+Specter` concurrency, `+Shift` dep-CVE upgrade, `+Crypt` crypto. Phase contract ↓ |
-| `REFACTOR` | Zen → Radar? | `+Sherpa` for multi-file refactors, `+Atlas` for architecture, `+Grove` for structure. Radar skip for pure rename/extract |
+| `REFACTOR` | Radar?[safety-net] → Zen → Radar[verify-equivalence] → Guardian | Green-before / same-suite-same-result-after. Safety-net skip for tool-assisted pure rename/extract. `+Sherpa` multi-file, `+Atlas` architecture, `+Grove` structure. Phase contract ↓ |
 | `OPTIMIZE` | Bolt (code-side) / Tuner (DB queries) → Radar | `+Schema` for DB index/migration |
 | `DESIGN_SYSTEM_DOCS` | Muse → Vitrine + Canvas → Quill | `+Vision` for direction, `+Artisan` for live examples |
 | `DESIGN_WORKFLOW` | Atelier (orchestrates: Vision → Muse/Frame → Forge → Artisan → Vitrine → Canvas) | Full design→code loop with design-system persistence. When request spans direction + tokens + prototype + implementation + catalog |
@@ -57,6 +57,18 @@ A security fix is only real when the exploit is **confirmed closed** — static 
 **Add-ons**: `+Specter` (concurrency/race), `+Crypt` (cryptographic design fix), `+Shift` (dependency CVE → upgrade), `+Cloak`/`+Oath` (privacy/compliance dimension), `+Sentinel` re-scan after fix.
 
 **Anti-patterns prevented**: (1) "fixing" a SAST false positive (TRIAGE + CONFIRM-EXPLOIT), (2) band-aid filter the next payload bypasses (FIX root-cause/right-layer), (3) faith-based fix never validated against the actual exploit (VERIFY-CLOSED re-run), (4) same vuln class silently reintroduced (DETECT rule), (5) premature exploit disclosure in a public commit (SHIP security-aware PR), (6) secret "removed" but still in git history (VERIFY-CLOSED history check).
+
+## REFACTOR Phase Contract
+
+Refactoring's invariant is **no external behavior change** — and the only proof of that is a test suite that passes identically before and after. The order matters:
+
+- **SAFETY-NET (Radar, first — green before you refactor)** — refactoring is safe **only under a passing suite**; the tests are what prove behavior is preserved. Confirm the code under refactor has green coverage; if it's untested, add **characterization tests that pin current behavior FIRST**. You cannot preserve behavior you never captured. (This is the Fowler precondition the default `Zen → Radar` order inverts.) **Skip only** for tool-assisted pure rename/extract where the compiler/type-system guarantees equivalence.
+- **SCOPE-GUARD** — confirm this is **internal-only**: no public API / signature / output-contract change. If external behavior must change, it is a `feature` or `bug`, not a refactor — redirect. Keeps the invariant honest.
+- **REFACTOR (Zen)** — rename / extract / constant-ify / dead-code removal in **small reversible steps**. `+Atlas` when module boundaries move, `+Grove`/`+Nest` for structure, `+Sherpa` for multi-file.
+- **VERIFY-EQUIVALENCE (Radar + gate)** — re-run the **SAME suite**: identical pass results (no behavior delta), build/lint green, public surface unchanged. Not just "tests pass" — *the same tests pass the same way*. A refactor that changes a test's expected value is a behavior change masquerading as a refactor.
+- **SHIP (Guardian)** — **behavior-neutral** PR/commit, reviewable as a pure refactor, kept separate from any behavior-changing work.
+
+**Anti-patterns prevented**: (1) refactoring untested code with no behavior proof (SAFETY-NET green-first), (2) "refactor" that changes external behavior (SCOPE-GUARD), (3) silent behavior drift hidden inside a refactor (VERIFY-EQUIVALENCE same-suite-same-result), (4) refactor + behavior change mixed into one unreviewable commit (SHIP behavior-neutral).
 
 ## Sherpa Skip Conditions
 
