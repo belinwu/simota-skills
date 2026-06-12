@@ -64,7 +64,7 @@ Identical to venture's engine; only the blueprint binds differ.
 | **2 Spine [BARRIER]** | Preset's spine skills produce the **canonical entity-id table** (see anchor below) | entity list bound to every Phase 3 track |
 | **3 Parallel Tracks** | Preset's track→skill map, each consuming the entity-id table, writing disjoint files (run in waves, ≤7/hub) | all domain dirs |
 | **4 Overview** | spark + scribe (+ magi at depth ≥ raise) synthesize after tracks | overview dir |
-| **5 Integrate+Validate** | attest/judge build the traceability matrix + cross-doc consistency; Nexus writes `document_manifest.csv`, `validation_report.md`, `README.md`; format syntax lint | manifest + report + README |
+| **5 Integrate+Validate** | attest/judge build the traceability matrix + cross-doc consistency + **Universal Grounding Gate** (every external fact sourced / `ASSUMPTION` / research-to-do — fails on ungrounded fact, all presets); Nexus writes `document_manifest.csv`, `validation_report.md`, `README.md`; format syntax lint | manifest + report + README |
 | **6 Package** | Write tree (UTF-8) → `zip -r` → `unzip -l` test → secrets/PII scrub → report absolute zip path | zip |
 
 `package_contract` (Phase 0 emit):
@@ -99,6 +99,20 @@ venture's "feature_id (F-001) barrier" generalizes to a **canonical entity-id ba
 | career | Target role | `T-001` | self-analysis ↔ market/salary ↔ positioning ↔ skill-gap ↔ job-search ↔ asset |
 | learning | Learning objective | `LO-001` | objective ↔ curriculum ↔ material ↔ assessment (alignment matrix) |
 | hiring | Role | `R-001` | role ↔ JD ↔ competency ↔ rubric ↔ scorecard ↔ onboarding |
+
+## Universal Grounding Gate (all presets — not just research)
+
+The entity-id barrier guards *structural* integrity; this gate guards *factual* integrity. **Every preset generates factual claims** (market sizes, adoption stats, "studies show", competitor numbers, salary ranges), and an AI document package is exactly where plausible-but-fabricated numbers slip in. So claim-grounding is a **cross-preset Phase 5 gate**, not a research/career-only rule:
+
+- **Every factual claim is one of three things, explicitly:**
+  1. **Sourced** — cites a row in `references.md` (live source when `web_grounding == available`).
+  2. **Assumption** — marked inline `ASSUMPTION — confirm` and logged in `00_*/assumptions.md` with the assumed value + why.
+  3. **Research-to-do** — when grounding was unavailable, enumerated in `research_todo.md` as a lookup, not stated as fact.
+- **A bare number or external-fact stated as fact with none of the three fails Phase 5 validation** — for *all* presets, not only `research`. Fabricated market/statistic/citation claims presented as established fact are the package equivalent of a hallucinated source.
+- **Internal design content** (the user's own roadmap, the proposed feature set, opinions, recommendations) is exempt — the gate targets **externally-checkable facts**, not the plan's own propositions.
+- Preset-specific grounding rules **layer on top**, not replace: `research` requires reproducibility+ethics files; `career` marks unsourced salary `ASSUMPTION`; `legal`/`hiring` add the lawyer-review disclaimer. The universal gate is the floor every preset clears.
+
+`validation_report.md` reports the count of: sourced claims / assumptions / research-to-dos / **ungrounded-fact failures (must be 0 to ship)**.
 
 ## Domain Preset Registry
 
@@ -205,6 +219,7 @@ Owner skill: `guild`. Distinctive: `recruitment_strategy.md`, `job_descriptions.
 | labor-law / anti-discrimination | hiring | Every hiring-law doc carries "requires lawyer review"; protected-class screening criteria removed, not encoded (Phase 5 fails on encoded criteria) |
 | alignment (learning) | learning | Phase 5 fails on `ALIGNMENT_GAP` (objective w/o assessment) or `ORPHAN_ASSESSMENT` (assessment w/o objective); regulated domains need official-syllabus confirmation |
 | hallucination / data-sensitivity | ai-adoption, saas | Every use case requires an eval case + human-review rule; forbidden-use entries for high-risk use cases |
+| ungrounded fact (fabrication) | **all presets** | Universal Grounding Gate: every external fact must be sourced / `ASSUMPTION` / research-to-do; Phase 5 fails on a bare fabricated number or citation stated as fact |
 
 ## Conditional Inclusion
 
@@ -238,6 +253,7 @@ Nexus AUTORUN package domain=<preset> theme="<X>" depth=<...> mode=<...>
   → spark + scribe (+ magi if depth≥raise)
   ── Phase 5 Integrate + Validate ─────────────────────
   → attest/judge(traceability matrix per preset anchor + cross-doc consistency)
+  → universal grounding gate (ALL presets) → fail on ungrounded external fact (not sourced / ASSUMPTION / research-to-do)
   → risk gate (legal/ai-adoption presets) → fail on missing disclaimer/eval/review
   → Nexus: document_manifest.csv + validation_report.md + README.md + syntax lint
   ── Phase 6 Package ──────────────────────────────────
@@ -254,6 +270,7 @@ Nexus AUTORUN package domain=<preset> theme="<X>" depth=<...> mode=<...>
 | Theme/domain unidentifiable | Phase 0 clarify gate | ≤3 questions with fallback assumptions |
 | Phase 2 entity table incomplete | spine skills | Block Phase 3; re-run spine — barrier must not be bypassed |
 | Track references non-existent entity-id | Phase 5 traceability | Return that track for correction |
+| Ungrounded external fact stated as fact (any preset) | Phase 5 grounding gate | Fail package; convert to sourced citation, `ASSUMPTION — confirm`, or `research_todo.md` entry, then re-validate |
 | Legal draft missing review reference | Phase 5 legal gate | Fail package; add `lawyer_review_points`, re-validate |
 | AI use case missing eval/human-review | Phase 5 ai gate | Return ai-adoption track |
 | Format syntax invalid | Phase 6 lint | Fix file, re-lint before zipping |
