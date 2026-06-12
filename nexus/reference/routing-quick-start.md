@@ -6,7 +6,7 @@ Extends the inline Routing Quick Start in `SKILL.md`. Canonical matrix: `referen
 
 | Task Type | Default Chain | Add When |
 |-----------|---------------|----------|
-| `BUG` | Scout → Sherpa? → Builder → Radar | `+Sentinel` for security. Sherpa skip when files ≤ 2 or single-component fix |
+| `BUG` | Scout[RCA] → Sherpa? → Radar[failing repro] → Builder[root-cause] → Radar[verify] → Guardian | `+Sentinel` for security, `+Trail` when a past commit introduced it, `+Ripple` for wide blast radius. Sherpa skip when files ≤ 2 or single-component fix. Phase contract ↓ |
 | `FEATURE` | Sherpa[spec+AC] → Forge? → Builder → Radar[+verify gate] → Guardian | Forge only when approach unproven (spike, not shipped). `+Muse`/`+Palette` for UI (skip on backend/CLI), `+Artisan` for frontend production. Phase contract ↓ |
 | `SECURITY` | Sentinel → Builder → Radar | `+Probe` for dynamic testing, `+Specter` for concurrency risk |
 | `REFACTOR` | Zen → Radar? | `+Sherpa` for multi-file refactors, `+Atlas` for architecture, `+Grove` for structure. Radar skip for pure rename/extract |
@@ -28,6 +28,19 @@ Extends the inline Routing Quick Start in `SKILL.md`. Canonical matrix: `referen
 - **SHIP (Guardian)** — PR-prep: commit granularity, PR title/description, ACs linked to evidence.
 
 **Anti-patterns prevented**: (1) prototype-shipped-as-production (PROTOTYPE spike discipline), (2) feature-without-acceptance-criteria (SPEC front-loads ACs), (3) "new tests green but build broken" (VERIFY runs the full suite, not just Radar's additions), (4) feature lands with no PR discipline (SHIP/Guardian — previously absent from the chain).
+
+## BUG Phase Contract
+
+Bug-fixing has a best-practice order the default chain must honor — **reproduce before you fix**:
+
+- **RCA (Scout)** — root-cause analysis: why the bug occurs, where to fix, reproduction steps, impact/blast radius. **Confirm it IS a defect** (not expected behavior / misconfig / user error) before proceeding — a misread "bug" exits here with an explanation, no code.
+- **DECOMPOSE (Sherpa, conditional)** — only when the fix touches 3+ files or spans components. Skip for single-component atomic fixes.
+- **REPRODUCE-FIRST (Radar)** — encode Scout's reproduction steps as a **failing automated test BEFORE any fix**. The failing test is the acceptance criterion: red now, green after the fix. A regression test written *after* the fix can't prove it actually addresses the reported bug — it never failed.
+- **FIX (Builder)** — fix the **root cause** Scout identified, not the symptom. Symptom-only patches (swallowing the error, masking the output, broad `try/except`) are rejected — repo rule: fix root causes, don't silence.
+- **VERIFY (Radar + gate)** — the repro test now **passes** (bug gone), the existing build + test suite stays green (no new regression), and Scout's blast-radius areas are spot-checked. `+Sentinel` when the bug has a security dimension.
+- **SHIP (Guardian)** — PR carrying the repro test + root-cause explanation, so the fix is auditable and the regression is permanently guarded.
+
+**Anti-patterns prevented**: (1) regression test written after the fix that never actually failed (REPRODUCE-FIRST red→green), (2) symptom patch leaving the cause live (FIX root-cause discipline), (3) fix that breaks something else (VERIFY suite + blast-radius), (4) "fix" for a non-bug (RCA defect-confirmation gate), (5) fix lands with no PR/regression guard (SHIP — previously absent from the chain).
 
 ## Sherpa Skip Conditions
 

@@ -27,7 +27,7 @@ Complete task type → agent chain mapping. The SKILL.md Routing Quick Start con
 
 | Task Type | Primary Chain | Recipe Hints | Additions |
 |-----------|---------------|-------------|-----------|
-| BUG | Scout → **Sherpa** → Builder → Radar | Scout[bug], Sherpa[epic], Builder[fix], Radar[regression] | +Sentinel (security). Skip Sherpa only when single-file atomic fix |
+| BUG | Scout → **Sherpa?** → Radar → Builder → Radar → Guardian | Scout[RCA+defect-confirm], Sherpa[epic], Radar[failing repro test], Builder[root-cause fix], Radar[verify+regression], Guardian[pr] | +Sentinel (security), +Trail (regression from a past commit), +Ripple (blast radius). Skip Sherpa only when single-file atomic fix. **Reproduce-before-fix**; phase contract → `routing-quick-start.md` |
 | INCIDENT | Triage → Scout → Builder | Triage[respond], Scout[bug], Builder[fix] | +Mend (known pattern), +Radar, +Triage (postmortem), +Flux (deep postmortem), +Matrix[combine] (failure scenarios) |
 | FEATURE | **Sherpa** → Forge? → Builder → Radar → Guardian | Sherpa[spec+AC], Forge[spike], Builder[api], Radar[edge+verify-gate], Guardian[pr] | +Muse/+Palette (UI), +Artisan (frontend prod), +Matrix (variant exploration), +Flux[reframe] (lateral thinking), +Riff[expand] (idea exploration). Forge only when approach unproven (spike, not shipped). Skip Sherpa only when single-file atomic change. Phase contract → `routing-quick-start.md` |
 | INVESTIGATE | Lens | Lens[map] | +Scout (bug-related), +Canvas (viz), +Trail[bisect] (git) |
