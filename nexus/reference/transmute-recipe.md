@@ -50,6 +50,7 @@ Phase 1 ARCHAEOLOGY ∥  Fossil[extract implicit business rules + invariants]
                        → output: behavior contract draft, source-language-independent
 Phase 2 CONTRACT       Accord[author language-NEUTRAL behavior spec + acceptance criteria]
                        → Mint[generate golden I/O fixtures from the SOURCE impl = differential oracle]
+                       → ORACLE GATE: adequacy (covers source branches/error-paths/boundaries) + determinism contract (below)
 Phase 3 STRATEGY       Magi[arbitrate big-bang|strangler-fig|FFI + RISK GATE]
                        → confirm Transmutation Map (type / error / concurrency / memory) for the pair
 Phase 4 TRANSMUTE      Builder/Artisan[idiomatic target-language implementation]
@@ -65,6 +66,15 @@ Phase 6 SHIP           Guardian[PR with Before/After parity report + strangler i
 **Parallelism:** Phase 1 branches run concurrently (hub-spoke, no shared mutable state). Phase 5 verifiers run concurrently. Phase 4 modules may parallelize under `isolation: worktree` when a strangler-fig splits the rewrite into independent modules.
 
 **Checkpoint-resume:** ≥4 phases → persist Phase 1 contract, Phase 2 oracle, and per-module Phase 4 outputs at boundaries so an interrupted run resumes from the last completed module.
+
+### 3a. Oracle Adequacy & Determinism Gate (Phase 2 — the integrity backbone of "parity over faith")
+
+Differential parity is only as strong as the oracle. A green parity run on a thin or non-deterministic oracle is *false confidence*, not proof. Phase 2 must clear two gates before Phase 5 may trust the oracle:
+
+- **Adequacy gate** — the golden corpus must exercise the **source's branches, error paths, and boundary classes**, not just the happy path. Capture the source's code coverage while generating fixtures (run the source under coverage as Mint produces inputs); require the differential corpus to hit the same branches + every `throw`/`error`/`panic` path + each boundary/equivalence class. If coverage falls short, **expand the corpus before Phase 5** — a target can diverge wildly on an untested branch and still pass a happy-path-only oracle. Record the achieved source-coverage % in the Parity Report.
+- **Determinism contract** — differential comparison assumes the source is deterministic per input, but real code emits **incidental non-determinism**: hash/map iteration order (Go map randomized, Rust `HashMap` randomized, Python dict insertion-ordered), timestamps, float ULP differences, locale, RNG, concurrency interleaving. For each output, declare which aspects are **semantically significant vs incidental**; **canonicalize the incidental aspects on both sides** before comparing (sort order-incidental collections, pin seeds, round floats to a declared tolerance, freeze clock/locale). Otherwise the differential test either **spuriously fails** on incidental divergence or **masks real divergence** under noise. Phase 5 Radar compares against the canonicalized form.
+
+**Gate:** Phase 5 differential verification runs against an oracle that has passed both gates. An oracle that is happy-path-only OR compares raw non-deterministic output is rejected — fix it in Phase 2, do not proceed to trust it.
 
 ---
 
@@ -134,6 +144,8 @@ The core knowledge of this recipe. Magi confirms the relevant table in Phase 3; 
 |---------|-----------|
 | Transliteration ("Go-in-Rust") | `judge` idiom review (Phase 5) blocks; `rally engine-paradigm` COMPETE surfaces idiomatic alternatives |
 | Behavior regression | Mint golden oracle (Phase 2) + Radar differential/property tests (Phase 5) |
+| **Thin oracle → false parity** (target diverges on an untested branch yet passes) | Phase 2 adequacy gate: corpus must cover source branches / error paths / boundaries; expand if source-coverage short before Phase 5 trusts it |
+| **Spurious parity failure on incidental non-determinism** (map order, timestamps, float ULP, locale, RNG) | Phase 2 determinism contract: declare significant-vs-incidental per output, canonicalize incidental aspects on both sides before comparing, pin seeds/clock |
 | "Rewrite everything at once" risk blindness | Magi risk gate (Phase 3) prefers strangler-fig; big-bang needs user confirm |
 | Source memory assumptions clash with target ownership | Phase 3 explicit lifetime/ownership design (esp. Go→Rust GC→borrow) |
 | Concurrency semantics drift (race conditions, ordering) | Concurrency axis in Transmutation Map + property tests on concurrent paths |
@@ -160,4 +172,4 @@ Crossing a language boundary?
 
 ## 8. Output
 
-`NEXUS_COMPLETE` with the standard `## Nexus Execution Report` plus a **Parity Report**: golden-oracle test count + pass rate, differential-test diff summary (must be empty for SHIP), idiom-review verdict, and strangler increment scope (which modules migrated this PR, which remain). For strangler-fig runs, each increment is a separate revertible PR.
+`NEXUS_COMPLETE` with the standard `## Nexus Execution Report` plus a **Parity Report**: golden-oracle test count + pass rate, **oracle adequacy (source-coverage % the corpus achieved: branches / error-paths / boundary classes)**, **determinism contract (which output aspects were canonicalized vs compared raw)**, differential-test diff summary (must be empty for SHIP), idiom-review verdict, and strangler increment scope (which modules migrated this PR, which remain). For strangler-fig runs, each increment is a separate revertible PR.
