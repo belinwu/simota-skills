@@ -260,6 +260,18 @@ Orbit audits via Codex subagent return values: `convergence_detection`, `dedupli
 
 **Engine availability check (Phase 5 → 6 handoff prerequisite):** Orbit verifies Codex CLI is reachable, `agents.max_depth ≥ 2`, and required subagent tools (`spawn_agent`, `wait_agent`, `send_input`, `resume_agent`, `close_agent`) are permitted before consuming the contract. If unavailable, Orbit fails the handoff with a clear runner error rather than silently falling back to Claude Code Agent — Apex's cost and convergence model assumes Codex execution.
 
+### Acceptance Verification (Phase 6 → Ship gate)
+
+Orbit detects **loop convergence** (the iteration stopped producing changes), but convergence is not correctness — a loop can converge on an implementation that passes its own tests yet does not satisfy the spec. Apex therefore gates Ship on an independent **acceptance verification** against accord's Phase 4 L3 ACs, closing the traceability loop that Phase 4 opened.
+
+| Agent | Role | Pass Criterion |
+|-------|------|----------------|
+| `attest` | Extract the L3 ACs from the accord spec, adversarially check the delivered implementation for conformance, emit a traceability matrix (AC → evidence → verdict) | AC-conformance ≥ scope-mode threshold (Full ≥95% / Standard ≥85% / Lite ≥70%), zero unaddressed **must-have** ACs |
+
+This is a distinct check from Phase 6's in-loop `judge` (code-quality review) and `radar` (tests pass) — `attest` verifies **meaning**: that what was built is what the spec required. Run on Claude Code (judgment tier), independent of the Codex build engine, so the verifier shares no context with the builder.
+
+**Exit gate:** `attest.conformance ≥ threshold ∧ attest.unmet_must_haves == 0`. On fail, escalate the unmet ACs back to Phase 6 (Orbit re-enters the loop with the gap list as added contract) — bounded to 2 re-entries, then escalate to user. Never ship with unmet must-have ACs.
+
 ### Ship
 
 | Agent | Role | Required |
@@ -271,7 +283,7 @@ Orbit audits via Codex subagent return values: `convergence_detection`, `dedupli
 
 | Sub-hub | Engine | Specialists | Cap |
 |---------|--------|-------------|-----|
-| Nexus (top) | Claude Code (Agent tool) | plea, field, riff, magi, accord, atlas, vision, orbit, guardian, launch | ≤10 (acceptable; phases serialise most) |
+| Nexus (top) | Claude Code (Agent tool) | plea, field, riff, magi, accord, atlas, vision, orbit, attest, guardian, launch | ≤11 (acceptable; phases serialise most — attest/guardian/launch run sequentially at the tail) |
 | Vision (UX sub) | Claude Code (Agent tool) | muse, palette, prose, flow, frame, forge, echo, polyglot, pixel | ≤9 (parallelisable inside) |
 | **Orbit (loop sub)** | **Codex CLI (`spawn_agent`)** — fixed | builder, artisan, vitrine, judge, radar, voyager | ≤6 (loop iterations) |
 
@@ -322,6 +334,7 @@ Verification gates are mandatory:
 - Phase 4 → 5: accord traceability ≥ scope-mode threshold
 - Phase 5 → 6: Risk Gate tri-axis pass
 - Phase 6 internal: orbit convergence + cost-per-task + circuit breaker
+- Phase 6 → Ship: attest AC-conformance ≥ scope-mode threshold ∧ zero unmet must-have ACs (convergence ≠ correctness)
 
 ## AUTORUN Chain Template
 
@@ -367,6 +380,10 @@ Nexus AUTORUN apex goal="<feature description>"
        └─ orbit audits via Codex return values:
              convergence + cost-per-task + circuit_breaker
        └─ on stuck/budget → codex.close_agent + escalate
+  ── Acceptance Verification (Phase 6 → Ship gate) ────
+  → attest(extract accord.L3 ACs, adversarial conformance check, traceability matrix)
+       pass = attest.conformance ≥ threshold ∧ attest.unmet_must_haves == 0
+       └─ fail → re-enter Phase 6 with gap list (max 2), then user
   ── Ship ─────────────────────────────────────────────
   → guardian(commit, branch, PR) → launch(release + rollback)
 
@@ -411,6 +428,8 @@ Nexus AUTORUN apex            # or: apex goal=auto
 | Orbit stuck loop | orbit (convergence_detection) | Triage handoff |
 | Orbit budget exceeded | orbit (cost-per-task) | User confirmation before continuation |
 | Builder/Artisan repeat failure | judge / radar | Scout investigation, then back to orbit |
+| Unmet acceptance criteria | attest (Phase 6 → Ship gate) | Re-enter Phase 6 loop with gap list (max 2), then user |
+| Run budget ceiling reached | apex (run-level envelope) | Hard-abort with resumable checkpoint; user resumes or raises ceiling |
 
 ## Cost and Latency Profile
 
@@ -422,6 +441,18 @@ Nexus AUTORUN apex            # or: apex goal=auto
 | Autonomous bootstrap (Phase 0 added) | + 4-8 agents (project_scan + spark + rank + voice/pulse/compete/sage/magi as available) | +4-8 over base | + 10-20% over base |
 
 Apex is not free. Budget guardrails (orbit cost-per-task, Nexus chain confirmation for 5+ agent chains, L4 confirmation gates) are enforced. Autonomous mode adds Phase 0 (~10-15 minutes, 4-8 agents) and one boundary-confirm checkpoint, but downstream cost is identical to goal-supplied mode. For repeated similar requests, propose a Sigil-generated project skill to amortise the chain design cost.
+
+### Run-Level Budget Envelope
+
+Orbit's cost-per-task circuit breaker bounds the *loop*, but the *whole apex run* (Phase 0-6 + Ship, up to 25 agents × loop iterations = 16-56 spawns) also carries a **pre-declared budget envelope**, surfaced at the launch confirmation alongside the agent/time/token estimate:
+
+- `budget_ceiling` (token or agent-spawn count) — apex tracks cumulative spend across all phases and **hard-aborts** with a resumable checkpoint when the ceiling is reached, rather than running open-ended. Default ceiling = the Cost-Profile estimate × 1.5; user may override at launch.
+- At **80% of ceiling**, apex emits a warning and (in `GUIDED`/`INTERACTIVE`) pauses for a continue/abort decision; in `AUTORUN_FULL` it logs the warning and proceeds to the ceiling.
+- The ceiling is a hard stop, not advisory — it protects against a runaway Phase 6 loop or a re-entry storm from the Acceptance Verification gate.
+
+### Cross-Phase Checkpoint-Resume
+
+Apex persists each phase-boundary output (Phase 0 goal artifact, Phase 3 verdict+AC, Phase 4 spec+traceability, Phase 5 design+Risk-Gate result, Phase 6 build state) as a resumable checkpoint, per the Nexus Safety Contract (chains with 4+ steps). A run that aborts mid-flight — budget ceiling hit, Risk Gate No-Go, Orbit circuit breaker, user interrupt — **resumes from the last good phase** instead of restarting from Phase 1. Orbit already owns in-loop checkpoint-resume (`CODEX_ORCHESTRATION.md` C6); this extends the same guarantee to the cross-phase boundaries so the most expensive recipe never re-pays for upstream phases it already completed.
 
 ---
 

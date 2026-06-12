@@ -20,7 +20,9 @@ The `⟲{…}⟲` block loops until target-met OR diminishing-returns OR iterati
 Full-cycle auto-implementation: discovery → spec → parallel design → risk gate → loop → ship. With no-args, Phase 0 autonomously discovers the goal. 8-25 agents, high-cost. **Confirm before launch.**
 
 **Chain template:**
-`(Phase 0 if no goal) → Discovery (plea+field+echo?) → Ideate (riff) → Verdict (magi) → Spec (accord+void?+scribe?) → Design [Tech (atlas+gateway?+schema?) ‖ UX (Vision sub-orchestrates muse+palette+prose+flow?+frame?+forge+echo)] → Risk Gate (omen+ripple+echo) → Loop (Orbit on Codex CLI drives builder+artisan?+vitrine?+judge+radar+voyager?) → Ship (guardian+launch)`
+`(Phase 0 if no goal) → Discovery (plea+field+echo?) → Ideate (riff) → Verdict (magi) → Spec (accord+void?+scribe?) → Design [Tech (atlas+gateway?+schema?) ‖ UX (Vision sub-orchestrates muse+palette+prose+flow?+frame?+forge+echo)] → Risk Gate (omen+ripple+echo) → Loop (Orbit on Codex CLI drives builder+artisan?+vitrine?+judge+radar+voyager?) → Acceptance Verification (attest: AC-conformance gate) → Ship (guardian+launch)`
+
+Guarded by a run-level budget envelope (hard-abort at ceiling) + cross-phase checkpoint-resume. `attest` gates Ship on accord's L3 ACs (convergence ≠ correctness).
 
 Read: `reference/apex-recipe.md`, `reference/apex-walkthrough.md`.
 
