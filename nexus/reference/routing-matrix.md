@@ -9,6 +9,22 @@ Complete task type → agent chain mapping. The SKILL.md Routing Quick Start con
 
 ---
 
+## Classify Flow — Default Recipe Phase Contract
+
+`classify` is the fallback when **no subcommand and no Signal-Keyword match** fires. It is the highest-traffic entry point, so its job is to resolve intent and route to the *best* chain — **preferring a curated Recipe over an ad-hoc one**. Phases: `RESOLVE → GATE → REDIRECT? → SELECT → CHAIN_SELECT`.
+
+- **RESOLVE (intent)** — apply `intent-clarification.md` (GATHER git log / `.agents/PROJECT.md` / history → READ tone/scope/urgency → DECIDE). Produce a one-line intent statement **with stated assumptions** (Three Laws #3: never hide assumptions).
+- **GATE (confidence floor)** — score `context_confidence` per `confidence-scoring.md`. `< 0.60` OR 2+ valid interpretations → ask **ONE** focused question with options (CIPHER_GATE), then re-score (+0.20 on success). Never build a chain on a sub-floor classification — proceeding on a guessed intent is forbidden (`Never: ignore blocking unknowns`).
+- **REDIRECT (Recipe-match check — the key step)** — before building an ad-hoc chain, translate the resolved intent to English canonical intent and test it against the Recipe set (semantic match, per the Signal Keywords table). If it maps to a Recipe (`bug` / `feature` / `security` / `refactor` / `optimize` / `kaizen` / `apex` / …), **redirect to that Recipe and run its phase contract** — do NOT hand-roll a chain that shadows a curated one. classify builds an ad-hoc chain ONLY for task types with **no Recipe** (the matrix-only types below). This prevents a worse ad-hoc chain from silently replacing a maintained Recipe.
+- **SELECT (task-type → chain)** — for the no-Recipe case: classify into one of the task types below, take its default chain, apply Sherpa-skip / add-when adjustments (`routing-quick-start.md`), and check guardrail needs (L4 / destructive / 10+ files).
+- **Multi-domain** — if the intent spans **2+ independent domains** (e.g. "add OAuth *and* fix the slow dashboard"), do NOT force one chain: decompose with **Sherpa** into per-domain subtasks, route each independently (each gets its own REDIRECT check), then run as parallel tracks under hub-spoke ownership. One chain straddling domains is an anti-pattern.
+
+**Exit:** a selected chain (or Recipe redirect) + confidence ≥ floor + documented intent/assumptions → `CHAIN_SELECT`.
+
+**Anti-patterns prevented:** (1) ad-hoc chain shadowing a curated Recipe (REDIRECT), (2) routing on a guessed intent (GATE floor), (3) one overloaded chain for a multi-domain ask (Multi-domain decompose), (4) hidden assumptions (RESOLVE states them).
+
+---
+
 | Task Type | Primary Chain | Recipe Hints | Additions |
 |-----------|---------------|-------------|-----------|
 | BUG | Scout → **Sherpa** → Builder → Radar | Scout[bug], Sherpa[epic], Builder[fix], Radar[regression] | +Sentinel (security). Skip Sherpa only when single-file atomic fix |

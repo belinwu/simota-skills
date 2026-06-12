@@ -135,7 +135,7 @@ Agent disambiguation → `reference/agent-disambiguation.md`
 
 | Recipe | Subcommand | When to Use | Chain Template | Read |
 |--------|-----------|-------------|----------------|------|
-| Auto Classify | `classify` (default) | No Recipe specified — auto-classification | `CLASSIFY → CHAIN_SELECT` (legacy flow) | `reference/routing-matrix.md` |
+| Auto Classify | `classify` (default) | No Recipe specified — auto-classification. **Redirects to a curated Recipe when the resolved intent matches one; ad-hoc chain only for no-Recipe task types.** | `RESOLVE → GATE → REDIRECT? → SELECT → CHAIN_SELECT` | `reference/routing-matrix.md` (Classify Flow contract) |
 | Bug Fix | `bug` | Bug reports and fix requests | `Scout → Sherpa? → Builder → Radar (+Sentinel)`<br>*Sherpa skip when files ≤ 2 or single-component fix* | `reference/routing-matrix.md` |
 | Feature | `feature` | New web/backend/generic feature. **iOS/Android native → `MOBILE_NATIVE` (Native) instead.** | `Sherpa[spec+AC] → Forge? → Builder → Radar[+verify gate] → Guardian`<br>*Forge spike only when approach unproven. +Muse/Palette/Artisan when UI surface; backend/CLI skip them. Phase contract: SPEC→PROTOTYPE→BUILD→VERIFY→SHIP.* | `reference/routing-quick-start.md`, `reference/routing-matrix.md` |
 | Security | `security` | Security response | `Sentinel → Builder → Radar (+Probe)` | `reference/routing-matrix.md` |
@@ -197,7 +197,7 @@ Specialist anchors (Chain / Cull-Triage-Crypt / Sonar / Clause-Scribe / Rank-Mag
 Parse the first token of user input:
 - Matches a Recipe Subcommand → skip CLASSIFY, pass Chain Template directly to CHAIN_SELECT. Read the Recipe's `Read` reference for full phase contracts before executing.
 - `/Nexus` with no arguments → `proactive` Recipe (`reference/proactive-mode.md`).
-- Otherwise → `classify` (default) = legacy CLASSIFY → CHAIN_SELECT.
+- Otherwise → `classify` (default) = `RESOLVE → GATE → REDIRECT? → SELECT → CHAIN_SELECT`. **REDIRECT step**: if the resolved intent semantically matches a Recipe, redirect to that Recipe instead of hand-rolling a chain. Full contract → `reference/routing-matrix.md` § Classify Flow.
 
 Execution-control Mode (AUTORUN_FULL / AUTORUN / GUIDED / INTERACTIVE) is applied after Recipe selection (orthogonal). Inline Recipes (`kaizen`, `essential`, `killer`) have no top-level reference — full phase contracts in `reference/inline-recipes.md`.
 
