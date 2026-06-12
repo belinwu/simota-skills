@@ -58,19 +58,22 @@ git log --oneline -10
 
 ### Phase 0-B: Health Assessment
 
-Assess project health across four indicators:
+Assess project health across four indicators. **Evidence-grounded — never assert a status you did not probe.** Each indicator's color MUST come from an actual cheap check (run it within the 5s timeout) or be reported as ⚪ `unknown (not probed)`. Fabricating a 🟢 you didn't verify is forbidden (repo rule: don't fabricate, measure don't guess).
 
-| Indicator | Evaluation Method | Status |
-|-----------|-------------------|--------|
-| `test_health` | Test results, coverage | 🟢/🟡/🔴 |
-| `security_health` | Vulnerability scans, dependencies | 🟢/🟡/🔴 |
-| `code_health` | Lint warnings, type errors | 🟢/🟡/🔴 |
-| `doc_health` | README freshness, JSDoc coverage | 🟢/🟡/🔴 |
+| Indicator | Probe command (run it — don't guess) | Status |
+|-----------|--------------------------------------|--------|
+| `test_health` | the repo's test runner (e.g. `npm test`, `pytest -q`) — or its last CI result if a run is too slow for the 5s budget | 🟢/🟡/🔴/⚪ |
+| `security_health` | `npm audit --json` / `pip-audit` / lockfile advisory scan | 🟢/🟡/🔴/⚪ |
+| `code_health` | the repo's lint/typecheck (e.g. `eslint`, `tsc --noEmit`, `ruff`) | 🟢/🟡/🔴/⚪ |
+| `doc_health` | README mtime vs last code commit; obvious doc gaps | 🟢/🟡/🔴/⚪ |
 
 **Assessment Criteria:**
-- 🟢 Healthy: No issues detected
-- 🟡 Warning: Minor issues present
-- 🔴 Action Required: Immediate attention needed
+- 🟢 Healthy: check ran, no issues detected
+- 🟡 Warning: check ran, minor issues present
+- 🔴 Action Required: check ran, immediate attention needed
+- ⚪ Unknown: not probed (check too slow / tool absent / no test suite) — **say so explicitly**, do not infer green from silence
+
+A recommendation may only cite an indicator that was actually probed. An ⚪ indicator yields a "verify X" recommendation (run the check), not a fix for an unconfirmed problem.
 
 ---
 
@@ -83,6 +86,14 @@ Assess project health across four indicators:
 | 🔴 High | Security issues, test failures, build errors |
 | 🟡 Medium | Lint warnings, coverage regression, missing documentation |
 | 🟢 Low | Refactoring opportunities, optimization suggestions |
+
+**Recommendations route to Recipes, not bare agents.** Each recommendation carries the **Recipe** that will run it, so the selected action executes the curated phase contract (and its VERIFY→SHIP discipline) rather than a one-shot agent call: failing tests / build errors → `bug`; vulnerabilities → `security`; slow paths → `optimize`; lint/dead-code/smells → `refactor`; missing capability → `feature`; multi-axis polish → `kaizen`; docs → Quill direct. The named agent is the Recipe's lead, not the whole chain.
+
+**Grounding + dedup rules (apply before surfacing any recommendation):**
+- **Verify it still exists.** Before recommending work on a file / flag / TODO, confirm it is still present in the current tree — git log and stale notes can name things already removed. Don't recommend fixing what isn't there.
+- **Dedup against in-flight work.** Exclude anything already underway: uncommitted changes, an open PR, or a branch for that work → recommend *continuing* it, not starting a duplicate.
+- **No busywork on a healthy project.** If all probed indicators are 🟢 and nothing is in-flight, say so plainly — surface at most 1-2 *forward-looking* opportunities (clearly marked optional) or recommend nothing. Do not manufacture low-value tasks to fill the table; "nothing urgent" is a valid, honest result.
+- **Confidence honesty.** An ⚪ unknown indicator yields a "run the check to confirm" recommendation, never a fix for an unverified problem.
 
 **Category-Specific Suggestion Templates:**
 
@@ -152,15 +163,17 @@ Assess project health across four indicators:
 
 ### Recommended Actions
 
-| # | Priority | Suggestion | Agent | Reason |
-|---|----------|------------|-------|--------|
-| 1 | 🔴 High | [suggestion] | [Agent] | [reason] |
-| 2 | 🟡 Medium | [suggestion] | [Agent] | [reason] |
-| 3 | 🟢 Low | [suggestion] | [Agent] | [reason] |
+| # | Priority | Suggestion | Recipe | Evidence | Reason |
+|---|----------|------------|--------|----------|--------|
+| 1 | 🔴 High | [suggestion] | [`bug`/`security`/…] | [probe result that grounds it] | [reason] |
+| 2 | 🟡 Medium | [suggestion] | [Recipe] | [evidence] | [reason] |
+| 3 | 🟢 Low | [suggestion] | [Recipe] | [evidence] | [reason] |
+
+*(If the project is healthy with nothing in-flight: state "Nothing urgent — all probed indicators 🟢" and list at most 1-2 optional forward-looking ideas, or none.)*
 
 ### Next Step
 
-Select a number to run a recommended action.
+Select a number to run a recommended action (it runs through its Recipe's phase contract).
 To start a new task, enter `/Nexus [task]`.
 ```
 
