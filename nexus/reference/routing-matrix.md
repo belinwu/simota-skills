@@ -13,7 +13,7 @@ Complete task type → agent chain mapping. The SKILL.md Routing Quick Start con
 |-----------|---------------|-------------|-----------|
 | BUG | Scout → **Sherpa** → Builder → Radar | Scout[bug], Sherpa[epic], Builder[fix], Radar[regression] | +Sentinel (security). Skip Sherpa only when single-file atomic fix |
 | INCIDENT | Triage → Scout → Builder | Triage[respond], Scout[bug], Builder[fix] | +Mend (known pattern), +Radar, +Triage (postmortem), +Flux (deep postmortem), +Matrix[combine] (failure scenarios) |
-| FEATURE | **Sherpa** → Forge → Builder → Radar | Sherpa[epic], Forge[ui], Builder[api], Radar[edge] | +Muse (UI), +Artisan (frontend), +Matrix (variant exploration), +Flux[reframe] (lateral thinking), +Riff[expand] (idea exploration). Skip Sherpa only when single-file atomic change |
+| FEATURE | **Sherpa** → Forge? → Builder → Radar → Guardian | Sherpa[spec+AC], Forge[spike], Builder[api], Radar[edge+verify-gate], Guardian[pr] | +Muse/+Palette (UI), +Artisan (frontend prod), +Matrix (variant exploration), +Flux[reframe] (lateral thinking), +Riff[expand] (idea exploration). Forge only when approach unproven (spike, not shipped). Skip Sherpa only when single-file atomic change. Phase contract → `routing-quick-start.md` |
 | INVESTIGATE | Lens | Lens[map] | +Scout (bug-related), +Canvas (viz), +Trail[bisect] (git) |
 | BRAINSTORM | Riff | Riff[expand] | +Flux (reframe first), +Spark (spec after), +Magi (decide after), +Void (prune after) |
 | DECISION | Magi | Magi[decide] | +Accord[vision] (biz-tech), +Flux (reframe), +Riff (explore before deciding) |

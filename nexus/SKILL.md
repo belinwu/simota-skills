@@ -137,7 +137,7 @@ Agent disambiguation → `reference/agent-disambiguation.md`
 |--------|-----------|-------------|----------------|------|
 | Auto Classify | `classify` (default) | No Recipe specified — auto-classification | `CLASSIFY → CHAIN_SELECT` (legacy flow) | `reference/routing-matrix.md` |
 | Bug Fix | `bug` | Bug reports and fix requests | `Scout → Sherpa? → Builder → Radar (+Sentinel)`<br>*Sherpa skip when files ≤ 2 or single-component fix* | `reference/routing-matrix.md` |
-| Feature | `feature` | New web/backend/generic feature. **iOS/Android native → `MOBILE_NATIVE` (Native) instead.** | `Sherpa → Forge → Builder → Radar (+Muse?)`<br>*Muse only when UI surface touched (design tokens). Backend/CLI features skip Muse.* | `reference/routing-matrix.md` |
+| Feature | `feature` | New web/backend/generic feature. **iOS/Android native → `MOBILE_NATIVE` (Native) instead.** | `Sherpa[spec+AC] → Forge? → Builder → Radar[+verify gate] → Guardian`<br>*Forge spike only when approach unproven. +Muse/Palette/Artisan when UI surface; backend/CLI skip them. Phase contract: SPEC→PROTOTYPE→BUILD→VERIFY→SHIP.* | `reference/routing-quick-start.md`, `reference/routing-matrix.md` |
 | Security | `security` | Security response | `Sentinel → Builder → Radar (+Probe)` | `reference/routing-matrix.md` |
 | Refactor | `refactor` | Internal-only refactor, no external behavior change | `Zen → Radar? (+Atlas?)`<br>*Radar skip for pure rename/extract; Atlas only when module boundaries change* | `reference/routing-matrix.md` |
 | Optimize | `optimize` | Performance-only improvement | `Bolt (code-side perf) / Tuner (DB queries) → Radar (+Schema?)`<br>*Schema only when index/migration recommended* | `reference/routing-matrix.md` |
