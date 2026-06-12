@@ -61,12 +61,12 @@ Full sequential funnel + verdict + conditional implementation → `reference/inl
 
 ## killer
 
-Killer-feature **verdict + conditional implementation with feature flag**. Converges on THE ONE decisive differentiator via cross-engine triangulation. Default baseline: **Claude + Codex (dual-engine)** — perspective diversity via different prompt frames + WebSearch tool usage. agy optional third axis when AVAILABLE. Addition-and-leap-oriented.
+Killer-feature **verdict + conditional implementation with feature flag**. Converges on THE ONE decisive differentiator via cross-engine triangulation, then **gates the verdict on defensibility (moat) + adversarial refutation** before any build. Default baseline: **Claude + Codex (dual-engine)** — perspective diversity via different prompt frames + WebSearch tool usage. agy optional third axis when AVAILABLE. Addition-and-leap-oriented.
 
 **Chain template:**
-`(Compete[claude+WebSearch] ‖ Flux[claude reframe] ‖ Plea[claude empathy] [+ Compete-agy / Flux-agy if AVAILABLE]) → Spark → Magi → AskUserQuestion[Y/N/Modify] → if Y: Sherpa → (Forge[codex] if UI) → Artisan/Builder[codex] → Radar[codex] → judge[multi-engine] → Guardian + flag`
+`(Compete[claude+WebSearch] ‖ Flux[codex reframe] ‖ Plea[claude empathy] [+ Compete-agy / Flux-agy if AVAILABLE]) → Spark[synthesize one] → {Compete[moat/time-to-copy] + refute×2-3[claude‖codex]} → Magi[Go/No-Go] → AskUserQuestion[Y/N/Modify] → if Y: Sherpa → (Forge[codex] if UI) → Artisan/Builder[codex] → Radar[codex] → judge[multi-engine] → Guardian + flag[KPI + ramp + kill]`
 
-Full cross-engine triangulation + verdict + flagged implementation → `reference/inline-recipes.md`.
+Full cross-engine triangulation + moat/refutation gate + verdict + flagged implementation (with differentiation KPI & kill criterion) → `reference/inline-recipes.md`.
 
 ---
 
