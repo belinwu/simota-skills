@@ -12,7 +12,7 @@
 - [Topology](#topology)
 - [Engine × Team Matrix](#engine--team-matrix)
 - [Phase Contracts](#phase-contracts)
-- [Sub-Orchestration via Arena](#sub-orchestration-via-rally)
+- [Sub-Orchestration via Rally](#sub-orchestration-via-rally)
 - [Cross-Engine Quorum Rules](#cross-engine-quorum-rules)
 - [AUTORUN Chain Template](#autorun-chain-template)
 - [Failure Escalation](#failure-escalation)
@@ -458,9 +458,7 @@ parallel:
 
 **Engine shift:** Radar/Voyager/Siege/Siege/Probe/Sentinel/Matrix consolidated on Codex (all execution-heavy). Attest/Ripple/Canon/Oath consolidated on agy (all benefit from 1M context for spec+impl simultaneous reasoning). Claude reduced to Echo+Palette (only judgment-driven UX agents). judge keeps its own internal tri-engine fan-out unchanged.
 
-**Design findings integration:** Echo's persona friction reports and Palette's interaction-quality issues join the cross-engine quorum as a fifth signal source alongside judge / codex_dynamic / agy_static / agy_review. A UX regression flagged by Echo is treated as LIKELY severity by default and feeds the Phase 5 improvement loop alongside code-side findings.
-
-**Design findings integration:** Echo's persona friction reports and Palette's interaction-quality issues join the cross-engine quorum as a fourth signal source. A UX regression flagged by Echo is treated as LIKELY severity by default and feeds the Phase 5 improvement loop alongside code-side findings.
+**Design findings integration:** Echo's persona friction reports and Palette's interaction-quality issues join the cross-engine quorum as an additional signal source alongside judge / codex_dynamic / agy_static / agy_review. A UX regression flagged by Echo is treated as LIKELY severity by default and feeds the Phase 5 improvement loop alongside code-side findings.
 
 **Quorum rules:**
 
@@ -592,11 +590,11 @@ Mode: AUTORUN_FULL with mandatory pre-launch confirmation
 
 ---
 
-## Sub-Orchestration via Arena
+## Sub-Orchestration via Rally
 
-Arena is the **single point of contact** for Codex and agy. Nexus never calls codex or agy directly.
+`rally` is the **single point of contact** for Codex and agy. Nexus never calls codex or agy directly.
 
-### Arena delegation patterns used by Summit
+### Rally delegation patterns used by Summit
 
 | Phase | Paradigm | Engines | Mode | Purpose |
 |-------|----------|---------|------|---------|
@@ -652,8 +650,8 @@ mode: AUTORUN_FULL
 required_confirmation: true   # ALWAYS — same gate as apex
 prerequisites:
   - claude_available: true
-  - codex_available:  true    # abort if false
-  - agy_available:    true    # abort if false (no dual-engine fallback)
+  - codex_available:  true    # abort if false (Codex is required)
+  - agy_available:    detect  # OPTIONAL — AVAILABLE → tri-engine; UNAVAILABLE/RUNTIME-BROKEN → dual-engine (Claude + Codex), NOT an abort
   - rally_skill:      true
   - cost_acknowledged: true
 
@@ -735,8 +733,9 @@ phase_chain:
 
 | Failure | Detection Phase | Mitigation | Escalation Threshold |
 |---------|----------------|-----------|--------------------|
-| agy CLI unreachable | Preflight | Abort with message "use apex instead" | Immediate |
-| codex CLI unreachable | Preflight | Abort with message "use apex (claude only) instead" | Immediate |
+| agy CLI unreachable | Preflight | **Switch to dual-engine mode (Claude + Codex); do NOT abort.** Record agy branches as `skipped (engine unavailable)`; Phase 1/4 quorum degrades to 2/2 (CONFIRMED only). Surface the mode in the confirmation prompt | Never (dual-engine is supported) |
+| codex CLI unreachable | Preflight | Abort with message "use apex (claude only) instead" (Codex is required) | Immediate |
+| agy fails mid-run (after preflight: quota / OAuth / executor / subagent timeout) | Any phase | Mark agy DEGRADED, absorb its workload into Claude/Codex per engine-strength routing, continue in dual-engine mode; log the transition | Never (graceful) |
 | Phase 1 disputed findings > 30% | Phase 1 synthesis | Pause, present disagreement matrix | Immediate |
 | Phase 4 CONFIRMED CRITICAL after max_loops | Phase 5 exit | Deliver with explicit "unresolved CRITICAL" caveat | Always |
 | Agent Tennis (same issue 3+ turns) | Phase 5 loop | Circuit breaker, deliver | Always |
@@ -744,7 +743,7 @@ phase_chain:
 | Engine returns invalid schema 3× | Per-phase | Treat engine as DEGRADED for remainder of run, continue with remaining 2 engines (Phase 1/4 quorum degrades to 2/2) | After 3rd schema violation |
 | Total wall time > 2× estimate | Per-phase | Pause, present time-vs-quality trade-off to user | Always |
 
-**Hard rule:** Summit never silently degrades to dual-engine. Either it runs as designed with 3 engines, or it aborts and recommends `apex`. Mid-run engine failure (after preflight) is treated as a recipe-level failure requiring user judgment.
+**Hard rule:** Summit requires **Codex** (abort if unreachable — it carries the load-bearing code-execution axis). **agy is optional**: its absence switches the recipe to dual-engine mode (Claude + Codex), never an abort — the degrade is *announced* (surfaced in the confirmation prompt and the Phase 6 report), not silent. Tri-engine quorum (Phase 1/4) tightens to 2/2-CONFIRMED in dual-engine mode. Only a mid-run **Codex** failure is a recipe-level failure requiring user judgment.
 
 ---
 
@@ -839,12 +838,12 @@ Does the task require strategic / release-critical quality maximization?
   └─ NO  → feature / bug / refactor / etc. (simpler recipes)
   └─ YES ↓
 
-Is agy available?
-  └─ NO  → apex (closest substitute) or simpler chain
-  └─ YES ↓
+Is Codex available?
+  └─ NO  → apex (Codex is required for summit) or simpler chain
+  └─ YES ↓ (agy is optional — present whether the run is tri-engine or dual-engine)
 
-Has user acknowledged 8-22× cost vs feature?
-  └─ NO  → present cost envelope, get confirmation
+Has user acknowledged 7-25× cost vs feature?
+  └─ NO  → present cost envelope (+ tri/dual-engine mode), get confirmation
   └─ YES → summit
 ```
 
