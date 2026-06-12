@@ -95,7 +95,14 @@ Do **not** invoke when:
 - Statistical power adequate for declared measurement method (MDE check)
 - B.tone advisory findings recorded as `unspecifiable_advisory` (non-blocking)
 
-**Output**: Ship-eligible artifact with full Market Proof setup + Brand Advisory record + Regulatory clearance.
+**Pre-Registration sub-gate (the integrity backbone — freeze the plan before the data exists):**
+
+A measurement-backed launch is only honest if the success bar is set **before** the outcome is known; otherwise the +14/+30/+90d gates can be gamed by post-hoc metric selection (HARKing / p-hacking). Before ship, lock an **immutable analysis plan**:
+- **Primary metric** (single, pre-declared — the incrementality outcome that decides scale/halt), MDE, decision thresholds (auto-scale / auto-halt cut-offs), analysis window, and the **decision rule itself** (what value triggers scale vs halt). Secondary metrics are explicitly labelled secondary and cannot promote to primary post-launch.
+- The plan is **frozen and hash-stamped** into the Contract before ship. Phase 3 evaluates against this frozen plan only.
+- **Control-validity check** — `experiment` verifies the incrementality counterfactual is sound BEFORE launch: holdout/geo-control assignment is valid, **SRM (sample-ratio-mismatch) clean**, and test/control contamination bounded. A broken control invalidates the incrementality claim no matter what lift is observed — block ship until the control is sound.
+
+**Output**: Ship-eligible artifact with full Market Proof setup + **frozen pre-registered analysis plan (hash-stamped)** + validated control + Brand Advisory record + Regulatory clearance.
 
 ### Phase 3 — Post-Launch (Measurement Loop + Auto-Halt + Learning)
 
@@ -117,10 +124,11 @@ Do **not** invoke when:
 7. **`tome`** — update Insight Ledger with validated findings (queue for Research Lead merge per G11)
 
 **Gate (G13 mandatory)**:
+- **Evaluate against the frozen pre-registered plan only.** The primary metric, MDE, and decision thresholds are read from the Phase 2 hash-stamped plan — they are NOT re-chosen now. Auto-scale/halt fires on the **pre-declared primary metric**, not whichever secondary metric happened to win. Any proposed change to metric/threshold/window post-launch is a **flagged deviation** requiring explicit Stop_Accountable + Research Lead sign-off (recorded with reason) — never a silent re-baseline.
 - Stop_Condition trigger fires → Stop_Accountable notified immediately
 - 24h no-response → auto-halt (default deny)
 - Brand Director has unilateral veto on Brand-related stops (Growth Lead cannot override)
-- Auto-scale eligibility requires: positive incrementality + Brand Lift not degraded + CAC < threshold + no cannibalization > X%
+- Auto-scale eligibility requires: positive incrementality **on the pre-registered primary metric with a valid control (SRM clean)** + Brand Lift not degraded + CAC < threshold + no cannibalization > X%
 
 **Output**: Per-checkpoint Learning record + Auto-scale decision (or Auto-halt + post-mortem) + Insight Ledger proposed-edit queue entry.
 
@@ -160,7 +168,8 @@ Phase 2 (Ship-Time, parallel):
   ‖ funnel + bazaar[channel-fit + LP coherence]
   ‖ vision + prose[B.tone advisory, non-blocking]
   ‖ clause + oath + cloak + vigil[G14 Regulatory Pre-Flight]
-  → Gate: regulatory toggle verified + statistical power adequate
+  ‖ experiment[pre-register: freeze primary metric + MDE + thresholds + decision rule, hash-stamp; control-validity / SRM check]
+  → Gate: regulatory toggle verified + statistical power adequate + analysis plan frozen + control valid (SRM clean)
   → if FAIL: block ship; route to remediation
 
 Phase 3 (Post-Launch, scheduled):
@@ -177,9 +186,11 @@ Phase 3 (Post-Launch, scheduled):
     ‖ harvest[Learning record]
     ‖ tome[Insight Ledger proposed-edit queue]
   Per-checkpoint Gate (G13):
+    Evaluate against the FROZEN pre-registered plan only (primary metric/thresholds not re-chosen)
     Stop_Condition trigger fires → notify Stop_Accountable
     24h no-response → mend[auto-halt]
-    Auto-scale: incrementality+ AND Brand Lift not degraded AND CAC<threshold AND no cannibalization
+    Auto-scale: incrementality+ on pre-registered primary (SRM-clean control) AND Brand Lift not degraded AND CAC<threshold AND no cannibalization
+    Post-launch metric/threshold change → flagged deviation, requires sign-off (no silent re-baseline)
 
 Phase 4 (Cross-Cutting Audits, background):
   Quarterly: G15 Constitution Health / G6 Goodhart / G14 Horizon Scan / G12 Distinctive Asset
@@ -200,6 +211,10 @@ Phase 4 (Cross-Cutting Audits, background):
 | Constitution Operational layer stale | Phase 1 B.pattern | Block merge; G15 forcing function; require Constitution refresh |
 | Distinctiveness Score < threshold (G12) | Phase 1 B.hard | Block merge; require creative iteration |
 | Statistical power inadequate for measurement | Phase 2 | Block ship; require N increase or method change per Decision Tree |
+| No frozen pre-registered analysis plan before ship | Phase 2 | Block ship; lock primary metric + MDE + thresholds + decision rule (hash-stamped) before launch |
+| Control invalid (SRM mismatch / contamination / broken holdout) | Phase 2 | Block ship; incrementality counterfactual unsound — fix assignment before launch |
+| Post-launch metric/threshold change without sign-off | Phase 3 | Reject silent re-baseline; flagged deviation requires Stop_Accountable + Research Lead sign-off |
+| Auto-scale fired on a secondary metric (not pre-registered primary) | Phase 3 | Block; HARKing/p-hacking guard — decision binds to the frozen primary metric only |
 | Regulatory jurisdiction not declared | Phase 2 | Block ship; G14 violation; require Legal sign-off |
 | Regulated industry + auto-scale ON | Phase 2 | Block ship; G14 enforcement; manual approval required |
 | Stop_Accountable unfilled in Contract | Phase 0 / Phase 2 | Block; G13 enforcement; require Contract owner assignment |
@@ -238,6 +253,8 @@ Phase 4 (Cross-Cutting Audits, background):
 | Phase 1 inline orchestration instead of delegating to acceptance | Delegate to acceptance recipe; avoid duplication |
 | Phase 0 evidence queue cleared by AI alone | G11 violation; Research Lead merge required |
 | Phase 2 auto-scale enabled without Decision Tree compliance | Block; require explicit method declaration |
+| Picking the winning metric after results are in (HARKing / p-hacking) | Pre-registration: primary metric + thresholds frozen + hash-stamped before ship; Phase 3 binds to the frozen plan |
+| Claiming incrementality on an invalid control (SRM / contaminated holdout) | Phase 2 control-validity check blocks ship until the counterfactual is sound |
 | Phase 3 Auto-halt blocked by Growth Lead override | G13 enforcement; Brand Director veto authority preserved |
 | Skipping Phase 4 cross-cutting audits | Long-term drift; mandatory schedule |
 | Treating Phase 3 as one-shot post-launch check | Phase 3 has 3 scheduled gates (+14/+30/+90); each is mandatory |
