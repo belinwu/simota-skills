@@ -47,6 +47,37 @@ DELIVER    →  hand off to Field for validation, Spark for solution, Accord for
 
 A switch only happens when **(push + pull) > (anxiety + habit)**. Synthetic outputs that show pull alone are incomplete — every JTBD output must populate all four forces.
 
+## Switch Prediction & Calibration
+
+The switch verdict is the core JTBD output — but synthetic forces are guesses, so the verdict is a **hypothesis to test**, never a forecast. Make it falsifiable and tag every force:
+
+```yaml
+SWITCH_PREDICTION:
+  forces_weighting:                 # synthetic relative weights, not measured magnitudes
+    push:    {strength: high|med|low, calibration: "[hypothesis]"}
+    pull:    {strength: high|med|low, calibration: "[hypothesis]"}
+    anxiety: {strength: high|med|low, calibration: "[hypothesis]"}
+    habit:   {strength: high|med|low, calibration: "[hypothesis]"}
+  verdict: "SWITCHES | STAYS | TOO-CLOSE-TO-CALL"   # (push+pull) vs (anxiety+habit)
+  riskiest_force: "[the force whose synthetic estimate, if wrong, flips the verdict — Field validates this first]"
+  falsifiable_test: "[the real-data observation that confirms/refutes the verdict — e.g. observed switch rate in a churn-back cohort > 15%, anxiety cited in > 1/3 of churn interviews]"
+  confidence_ceiling: "[hypothesis]  # synthetic; never [validated]/[supported] without real switcher data"
+```
+
+Rules:
+- Every force carries a calibration tag; the whole prediction ceilings at `[hypothesis]` until Field validates with real switchers (per `reference/calibration.md`).
+- Name the **riskiest force** explicitly — it is what the Field handoff validates first (replaces the vague "state which forces are highest-uncertainty").
+- A verdict with no `falsifiable_test` is over-confident synthetic optimism; do not emit it.
+
+## From Job Map to Tagged Demands
+
+`jtbd` must not stop at an abstract job map — bridge it to Plea's standard tagged-demand output so Spark/Accord receive actionable artifacts. Each Job-Map stage friction becomes a demand:
+
+- For every stage with a real friction surface, emit a demand: *"To make progress on [job] at the [stage] stage, I need [capability]."*
+- Carry the calibration tag (`[hypothesis]` by default; `[supported]`/`[validated]` only if a force or friction matches real Voice/Trace data).
+- Prioritize demands at the **dominant unmet stage** (the stage carrying the strongest push) — that is where Spark designs first.
+- Apply the `request`-recipe self-rejection gate (`reference/patterns.md`): drop feasibility-filtered or voice-mismatched demands.
+
 ## The Job Map (Universal 8 Stages)
 
 | Stage | What the user is doing | Example friction surface |
@@ -100,11 +131,13 @@ For each, score: cost, switching effort, social signal, expected progress. The o
 - **Single dominant persona**: one persona hires for many jobs; one job is hired by many personas. Generate at least 3 persona×job pairs.
 - **Conflating functional with emotional**: "save time" is functional; "feel competent in front of my team" is social. Splitting them surfaces hidden value.
 - **Skipping the competing-job step**: if you don't list "doing nothing," you'll over-estimate switch likelihood.
-- **Treating synthetic JTBD as evidence**: this is a hypothesis. Always tag outputs `synthetic: true` and route to Field for real-user confirmation.
+- **Treating synthetic JTBD as evidence**: this is a hypothesis. Always tag outputs `synthetic: true`, ceiling the switch verdict at `[hypothesis]`, and route to Field for real-user confirmation.
+- **Verdict without a test**: emitting `SWITCHES`/`STAYS` with no `falsifiable_test` — synthetic optimism dressed as forecast. Every verdict names the real-data observation that would refute it.
+- **Job map with no demands**: stopping at the abstract Job Map without bridging per-stage frictions into tagged demands — leaves Spark/Accord nothing actionable.
 
 ## Handoff
 
-- **To Field**: synthetic JTBD as hypothesis seed for real Switch interviews. Field recruits real switchers and validates the four-forces ranking. Required: state which forces are highest-uncertainty.
+- **To Field**: synthetic JTBD as hypothesis seed for real Switch interviews. Field recruits real switchers and validates the four-forces ranking. Required: the `SWITCH_PREDICTION.riskiest_force` and its `falsifiable_test` — Field validates the verdict-flipping force first.
 - **To Spark**: validated job statement → solution exploration. Spark designs against the dominant unmet stage on the Job Map.
 - **To Accord**: job statement + acceptance criteria phrased as "user achieves [outcome] when [condition]" → spec-package input.
 - **To Cast**: PERSONA_FEEDBACK on which job-archetype combinations produced unexpected coverage gaps.

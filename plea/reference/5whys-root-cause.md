@@ -63,6 +63,16 @@ Each link must be **because**, not **and then**.
 
 If you cannot say "because" between two links and have it make sense, the link is wrong.
 
+## Synthetic-Chain Calibration
+
+A synthetic why-chain fabricates each link by inference, and **confidence decays with depth** — level-1 ("why want dark mode → works at night") is near-grounded; level-5 is the model extrapolating, far from any real signal. One wrong link invalidates everything below it. So a chain is not uniformly trustworthy, and the root is a hypothesis, not a finding.
+
+- **Per-link confidence**: tag each link `high` / `med` / `low`. Confidence must be **monotonically non-increasing** with depth (a deeper link cannot be more certain than a shallower one).
+- **Speculation cliff**: mark the level where the chain leaves grounded territory (the first `low`-confidence link). Everything below the cliff is conjecture — label it.
+- **Weakest link**: name the single link most likely to be wrong. Because it invalidates all descendants, it is what Field validates **first** (the `5whys` analog of jtbd's `riskiest_force`).
+- **Root falsifiable test**: name the real-user observation that would confirm or refute the root (e.g. "≥ 1/3 of churn interviews cite the root need in their own words", "the root keyword appears in > 15% of support tickets"). A root with no test is an unfalsifiable story.
+- **Root calibration ceiling**: `[hypothesis]` until Field/Voice confirms with real-user language; never `[validated]`/`[supported]` from the synthetic chain alone (`reference/calibration.md`).
+
 ## Fishbone Integration (Ishikawa Diagram)
 
 When the chain branches at the first or second why, structure the result as an Ishikawa diagram:
@@ -90,16 +100,22 @@ WHY_CHAIN:
         question: "Why does the persona want this?"
         answer: "[In user voice]"
         causal_check: "Confirms 'because' link to level_0"
+        confidence: high|med|low      # must be monotonically non-increasing with depth
     - why_2:
         question: "Why does that matter?"
         answer: "[In user voice]"
-    - why_3: { ... }
-    - why_4: { ... }
-    - why_5: { ... }
+        confidence: high|med|low
+    - why_3: { ..., confidence: ... }
+    - why_4: { ..., confidence: ... }
+    - why_5: { ..., confidence: ... }
   lateral_branches:
     - "[Alternative cause at level 2]"
     - "[Alternative cause at level 3]"
+  speculation_cliff: "[level of the first low-confidence link — everything below is conjecture]"
+  weakest_link: "[the single link most likely wrong; invalidates its descendants; Field validates this first]"
   root_unmet_need: "[Rewritten request at root level]"
+  root_falsifiable_test: "[real-user observation that confirms/refutes the root]"
+  root_calibration: "[hypothesis]  # synthetic; never [validated]/[supported] without real-user data"
   out_of_scope_root: "[If root crosses out of product domain, note it here]"
 ```
 
@@ -112,11 +128,13 @@ WHY_CHAIN:
 - **Crossing into life-domain and trying to fix it**: if the root is "I want to feel valued at my job," your product can't fix that — note it as out-of-scope and stop.
 - **Tautological loops**: "wants speed because needs speed" — fail the causal check.
 - **Skipping the lateral pass**: vertical-only chains miss 60-70% of root causes. Always branch at least once.
-- **Treating the root as proven**: the chain is a synthetic hypothesis. Tag `synthetic: true` and hand off to Field / Voice for confirmation.
+- **Treating the root as proven**: the chain is a synthetic hypothesis. Tag `synthetic: true`, ceiling the root at `[hypothesis]`, and hand off to Field / Voice for confirmation.
+- **Uniform confidence**: tagging a level-5 inference as solid as level-1. Confidence decays with depth — mark the speculation cliff and the weakest link, or the chain reads as more certain than it is.
+- **Root with no test**: a restated root nobody can confirm or refute. Every root carries a `root_falsifiable_test`.
 
 ## Handoff
 
-- **To Field**: synthetic root-need as hypothesis for real-user follow-up interviews. Field tests whether real users articulate the same root.
+- **To Field**: synthetic root-need as hypothesis for real-user follow-up interviews. Field tests whether real users articulate the same root — validate the `weakest_link` first (it invalidates everything below it) using the `root_falsifiable_test`.
 - **To Voice**: cross-check root against existing review/support text — search for keywords from the root statement; convergence raises confidence.
 - **To Spark**: hand off the *restated root unmet need*, not the original surface request. Spark designs against the root, which usually surfaces more diverse solution candidates.
 - **To Accord**: root-need becomes a top-level requirement; surface symptoms become acceptance criteria sub-bullets.

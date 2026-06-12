@@ -119,6 +119,13 @@ After per-cluster scoring, also identify demands that surfaced across multiple p
 
 **Critical rule for Plea (does NOT exist in Judge):** `DIVERGENT-VOICE` demands are not automatically lower-quality than `UNIVERSAL-DEMAND` demands. The "silent majority" demand or the unspoken assumption is often surfaced by exactly one engine, because the other two engines smoothed over the same persona's quirks. Preserve all `DIVERGENT-VOICE` clusters through SYNTHESIZE.
 
+#### Negative concurrence (the multi-only subtraction signal):
+
+Presence-concurrence (above) ranks demands that *appeared*. **Absence-concurrence** is a signal only multi can produce: when independent engines, channeling the same persona at the same feature surface, **all fail to surface a compelling demand**, that silence is evidence — not a gap to fill.
+
+- `NO-DEMAND-CONSENSUS`: all AVAILABLE engines produced **zero** `Frustration`/`Resignation`-valence demands for a feature area the scope expected to be painful. Strong **don't-build / already-adequate / non-need** signal — the curb-cut equivalent of subtraction. Surface as a don't-build candidate, never silently drop.
+- Caveat: absence can also mean all engines share the same blind spot (correlated WEIRD/mode-collapse bias). Distinguish "engines agree it's fine" from "engines all can't imagine this persona" — if the persona's `last_frustration`/`unspoken_assumption` was rich but no demand emerged, suspect shared bias and flag for Field, don't conclude non-need.
+
 ### 8. CALIBRATE — verify CANDIDATE/DIVERGENT demands (Plea main context, never delegated)
 
 For every `CANDIDATE-DEMAND / DIVERGENT-VOICE` cluster, the Plea main context must:
@@ -131,9 +138,12 @@ For every `CANDIDATE-DEMAND / DIVERGENT-VOICE` cluster, the Plea main context mu
    - `[supported]` — partial evidence (one source agrees, others silent)
    - `[hypothesis]` — no real-data conflict, no real-data support
    - `[synthetic-only]` — no real-data sources available
-5. **Mark each as** `VERIFIED-DIVERGENT` (keep with confidence tag), `REJECTED-{reason}` (drop), or `NEEDS-INFO` (escalate — ask the user).
+5. **Feasibility-filter check** — confirm no demand was dropped because it "seemed hard to build." Users don't price implementation; feasibility-filtering is forbidden (count must be 0 in the rejection ledger). Aligns with the single-engine self-rejection gate (`reference/patterns.md`).
+6. **Mark each as** `VERIFIED-DIVERGENT` (keep with confidence tag), `REJECTED-{reason}` (drop), or `NEEDS-INFO` (escalate — ask the user).
 
 For `UNIVERSAL-DEMAND` and `LIKELY-DEMAND` clusters, apply only the persona-voice authenticity check and the real-data calibration tag. Three engines rarely channel the same persona inauthentically in the same way.
+
+**Validate-first priority (riskiest-first family):** after calibration, name the **load-bearing demand** — the demand whose validation status, if flipped, most changes the roadmap (typically a high-urgency `CROSS-PERSONA-UNIVERSAL` still tagged `[hypothesis]`/`[synthetic-only]`). Field validates this first. Mirrors `jtbd` `riskiest_force` / `5whys` `weakest_link` / `opportunity` load-bearing opportunity.
 
 ### 9. SYNTHESIZE — Demand Report structure
 
@@ -146,7 +156,8 @@ Synthesis steps:
 3. **Persona-specific demands**: list `PERSONA-SPECIFIC` demands grouped by persona, with a one-line note on why only that persona notices.
 4. **Engine-channeling notes**: a brief section noting which engine channeled which persona most distinctively, surfaced from the engines' optional `engine_notes` field. Useful for next-session persona prep.
 5. **Assumption challenges**: aggregate from all three engines' `blind_spots_surfaced` fields. Deduplicate; flag the strongest 3-5 as `Questions for the Team`.
-6. **Rejection ledger** (condensed): count and categories of rejected demands (voice-mismatch / criteria-vague / persona-fabricated) — preserves transparency without noise.
+6. **Don't-build candidates** (multi-only): list `NO-DEMAND-CONSENSUS` areas — feature surfaces where all engines were silent. Mark each as **don't-build / already-adequate** or **shared-bias-suspect** (per the negative-concurrence caveat). This is the subtraction signal single-engine cannot produce.
+7. **Rejection ledger** (condensed): count and categories of rejected demands (voice-mismatch / criteria-vague / persona-fabricated / **feasibility-filtered — must be 0**) — preserves transparency without noise.
 
 #### Engine-attribution rule
 

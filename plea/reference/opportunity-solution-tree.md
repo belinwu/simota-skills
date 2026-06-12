@@ -35,6 +35,12 @@ EXPERIMENT →  for each solution, design the smallest test that would reduce
 PRUNE      →  rank opportunities by impact × evidence × strategic fit
            →  prune low-evidence + low-impact branches; retain a few high-uncertainty
            →  high-impact branches as exploration bets.
+           →  SYNTHETIC-TREE CAVEAT: every node is self-generated, so the evidence axis is
+           →  near-zero by construction — do NOT cut a high-impact branch for "low evidence"
+           →  (circular). The evidence axis must split "no real evidence yet → validate" from
+           →  "implausible AI artifact ([synthetic-only]) → cut". Prune only the latter.
+           →  Name the LOAD-BEARING opportunity: highest impact × highest synthetic-uncertainty —
+           →  if it's wrong, the most of the tree collapses. Field validates this node FIRST.
 
 CADENCE    →  schedule the tree as a living artifact — weekly review, weekly experiment
            →  treat opportunities as discovered (not invented); add as research arrives.
@@ -92,6 +98,9 @@ For each opportunity, generate at least 2 solution candidates *before* picking o
 OPPORTUNITY_NODE:
   text: "[User-voice unmet need]"
   evidence: { real: [refs], synthetic: [refs] }
+  calibration: "[hypothesis]"   # [synthetic-only] if it reads as an AI artifact; [supported]/[validated]
+                                # only with a cited real/Voice/Field match (reference/calibration.md).
+                                # Only [validated]/[supported] nodes are growth-acceptance Insight-Ledger-citable.
   parent_outcome: "[Outcome ID]"
   solutions:
     - id: S1
@@ -139,12 +148,14 @@ The tree is a living artifact. A static OST is a roadmap by another name and def
 - **Single solution per opportunity**: indicates anchoring; force at least 2 candidates.
 - **No kill rule on experiments**: without decision rules, every branch lives forever — defeats pruning.
 - **Tree as one-time artifact**: built once, never revisited. OST only works as a continuous habit.
-- **Mixing real and synthetic evidence without tags**: synthetic opportunities that look real cause over-confident prioritization. Always tag `synthetic: true` on Plea-generated nodes.
+- **Mixing real and synthetic evidence without tags**: synthetic opportunities that look real cause over-confident prioritization. Always tag `synthetic: true` and a per-node `calibration` on Plea-generated nodes.
 - **Skipping the prune step**: a 50-node tree without pruning is a wishlist, not a discovery artifact.
+- **Circular prune on a synthetic tree**: cutting a high-impact branch because it has "low evidence" — but YOU generated every node, so all evidence is synthetic. Cut only `[synthetic-only]` implausible nodes; high-impact `[hypothesis]` nodes go to Field to validate, not the bin.
+- **No load-bearing node named**: shipping the tree without flagging which opportunity, if wrong, collapses the most branches — Field then validates in the wrong order.
 
 ## Handoff
 
-- **To Field**: synthetic tree as scaffolding. Field runs weekly interviews and replaces synthetic opportunity nodes with real-user-evidenced ones. Tag swap status in tree.
+- **To Field**: synthetic tree as scaffolding. Field runs weekly interviews and replaces synthetic opportunity nodes with real-user-evidenced ones, **starting with the load-bearing opportunity** (highest impact × uncertainty). Tag swap status and promote `calibration` (`[hypothesis]` → `[supported]`/`[validated]`) as real evidence arrives.
 - **To Spark**: chosen solution branch → feature spec. Plea hands the solution + winning experiment results; Spark elaborates scope.
 - **To Experiment**: experiment hypothesis + riskiest assumption + decision rule → test execution. Experiment owns instrumentation and analysis.
 - **To Rank**: opportunities + impact × evidence × strategic-fit scores → prioritization output.

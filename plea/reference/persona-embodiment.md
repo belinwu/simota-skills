@@ -76,17 +76,63 @@ Measure real value by asking "Who would suffer if this feature disappeared?" If 
 
 ---
 
+## Single-Persona Depth (`roleplay` Recipe)
+
+The breadth recipes (`request`, `need`) span many personas shallowly. `roleplay` does the opposite: **one persona, deeply** — a sustained first-person embodiment, not a demand list. Depth is the deliverable, so the breadth checks above (≥3 personas, span 2 axes) do **not** apply; the depth method below replaces them.
+
+### Depth rubric (shallow → deep)
+
+| Dimension | Shallow | Deep (target) |
+|-----------|---------|---------------|
+| Tactic stacking | one tactic applied once | **≥ 3 of the 5 tactics applied to the same persona** (e.g. Worst Day + Silent Majority + Reverse Thinking + 5-Year-Old) |
+| Temporal span | a single moment | a full arc — Day-in-the-Life or the journey from first-use to the friction (Pattern 3) |
+| Specificity | "the dashboard is confusing" | a named scene with time, place, device, what they were holding, what they said out loud |
+| Emotional resolution | one stated emotion | an emotional **trajectory** (e.g. hopeful → confused → resigned → workaround) |
+
+### Character-coherence check (the primary `roleplay` failure mode)
+
+Sustained single-persona embodiment drifts: over a long roleplay the voice slips back to generic/PM register. Hold the line:
+
+- The persona's `unspoken_assumption`, vocabulary register, and `last_frustration` stay **consistent** start to end — no contradicting earlier statements for narrative convenience.
+- No mid-roleplay jump to a different persona's perspective (that's a `request`/`need` job, not `roleplay`).
+- Zero PM-voice leakage ("the user would benefit from…"). Break-character = restart the scene, don't paper over it.
+
+### Narrative-arc output (for the Scribe / Saga handoff)
+
+`roleplay` hands off to Scribe (user stories) and Saga (narrative). Shape the embodiment into a **story-ready arc**, not raw demands:
+
+```yaml
+ROLEPLAY_ARC:
+  persona: "[name + PERSONA_CHANNEL ref]"
+  setup: "[their world before the friction — what they were trying to accomplish]"
+  inciting_friction: "[the moment the product failed them — concrete scene]"
+  escalation: "[how it compounded — tie to Frustration Escalation, patterns.md Pattern 6]"
+  turning_point: "[workaround adopted, or the decision to churn]"
+  demands_surfaced: "[the demands this arc implies — each with calibration tag]"
+  emotional_trajectory: "[hopeful → … → resolution]"
+```
+
+### Representativeness caveat (stricter than breadth recipes)
+
+A single, vividly-imagined persona is the **highest projection-bias risk** in Plea — depth makes a wrong persona *more* convincing, not more correct. Always:
+
+- Tag the whole roleplay `[hypothesis]` ceiling and `synthetic: true`; deep ≠ representative.
+- State explicitly: "this is **one** persona's lived experience, not the market." Recommend a `request`/`multi` breadth pass or Field validation before generalizing any surfaced demand.
+
+---
+
 ## Quality Checks
 
 Before handing off demands generated under any of these tactics:
 
 - [ ] Every persona has a filled `PERSONA_CHANNEL` template — no empty `last_frustration` or `unspoken_assumption` fields
-- [ ] Personas span at least 2 axes from the Diversity Matrix
+- [ ] **Multi-persona recipes** (`request`/`need`): personas span at least 2 axes from the Diversity Matrix · **`roleplay`**: the single persona meets the Depth rubric (≥3 tactics, full arc, character-coherent)
 - [ ] Each demand quotes the user voice verbatim — no paraphrasing into PM language
 - [ ] If Cast was unavailable, all proto-personas are tagged `confidence ≤ 0.50` and `synthetic: true`
 - [ ] At least one demand survives the "Worst Day" probe
 - [ ] At least one demand passes the "Reverse Thinking" kill-rule
 - [ ] No persona was steered toward an opinion that smooths out a contradiction with another persona
+- [ ] **`roleplay` only**: zero character breaks / PM-voice leakage; representativeness caveat stated; output shaped as a `ROLEPLAY_ARC`
 
 ---
 

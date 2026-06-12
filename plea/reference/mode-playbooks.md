@@ -40,10 +40,19 @@ What is the user's goal?
 
 **Output benchmark**: 8-15 challenges with specific counterarguments. Each challenge references the specific plan/assumption being countered.
 
+**Discipline (anti synthetic-FUD):** a synthetic Devil's Advocate invents objections as easily as a real user voices them — without rigor, CHALLENGE produces confident noise. Run every challenge through:
+
+1. **Steelman** — restate the team's assumption in its strongest, most reasonable form. If you can't, you don't understand it well enough to counter it. Attacking a strawman is the #1 CHALLENGE failure mode.
+2. **Counter** — voice the user-perspective objection (first person, grounded in a persona).
+3. **Falsifiable test** — name the concrete observation that would confirm or refute the challenge (funnel metric, A/B result, support-ticket rate, interview finding). **No test ⇒ drop the challenge.** This converts an argument into a resolvable hypothesis the team can settle.
+4. **Verdict** — `SURVIVES` (assumption holds), `WEAKENED` (holds with caveats), or `KILLED-pending-test` (likely wrong, run the test). The test settles it, not Plea.
+
 **Quality signals**:
-- Challenges are specific, not generic
-- Each challenge includes a concrete "what if" scenario
-- At least 1 challenge targets a deeply held team assumption
+- Each challenge steelmans the assumption before countering it
+- Every challenge carries a falsifiable test; zero "untestable" challenges ship
+- Each challenge closes with a verdict + the test that resolves it
+- Challenges are specific, not generic; at least 1 targets a deeply held team assumption
+- Calibration ceiling is `[hypothesis]` — challenges are testable claims, never presented as user fact
 
 ## DEEP Mode
 

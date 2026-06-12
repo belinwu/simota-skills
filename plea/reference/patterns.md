@@ -7,7 +7,7 @@
 
 ## Pattern 1: Persona Spectrum
 
-**When to use:** Generating broad demands (EXPLORE mode)
+**When to use:** Generating broad demands (EXPLORE mode — the `request` default Recipe)
 
 Select 3-7 personas evenly from diversity matrix axes, intentionally avoiding overlap.
 
@@ -20,6 +20,35 @@ PERSONA_SPECTRUM:
   anti_pattern:
     - Don't let all personas be "ideal users"
     - Don't let technical skill skew in one direction
+```
+
+### Default calibration for `request` (uncalibrated EXPLORE)
+
+The `request` Recipe usually runs without real Voice/Trace/Field data. Tag every emitted demand even so — downstream agents (Spark, Rank, Accord) and the `growth-acceptance` Insight Ledger need the confidence signal, and `[hypothesis]`/`[synthetic-only]` demands are **not** Ledger-citable evidence (`_common/GROWTH_BRAND_PROOF.md` G11).
+
+```yaml
+REQUEST_DEFAULT_CALIBRATION:
+  no_real_data_consulted:
+    plausible_demand: "[hypothesis]"      # realistic; flag for Field/Voice validation
+    possible_ai_artifact: "[synthetic-only]"  # over-sanitized / WEIRD / jargon-flavored; review for removal
+  real_data_consulted:                    # only when Voice/Trace/Field input is present
+    direct_match: "[validated]"
+    implied_match: "[supported]"
+  rule: never emit an untagged demand; never default to [validated]/[supported] without a cited match
+```
+
+### Self-rejection ledger (all Recipes)
+
+Before emitting, run each candidate demand through the gate and record drops by category. This is the single-engine equivalent of the `multi` Recipe's rejection ledger.
+
+```yaml
+SELF_REJECTION_GATE:
+  drop_if:
+    voice-mismatch: reads as PM/dev framing, not first-person user
+    criteria-vague: no testable acceptance condition a user could confirm
+    persona-fabricated: empty/ungrounded last_frustration or unspoken_assumption
+    feasibility-filtered: dropped because it "seemed hard" — FORBIDDEN; count must be 0
+  emit: "| category | dropped_count | example |" table in the report
 ```
 
 ---
@@ -127,3 +156,40 @@ FRUSTRATION_ESCALATION:
     - How would they feel if heard at this stage?
     - What happens if this stage is passed?
 ```
+
+---
+
+## Pattern 7: Unmet-Need Elicitation (`need` Recipe, DEEP mode)
+
+**When to use:** The `need` Recipe — surfacing latent needs the user **cannot articulate**. An unmet need is, by definition, never voiced directly; Plea must infer it from observable *proxies* of friction.
+
+### Latent-need taxonomy (where unmet needs hide)
+
+| Proxy signal | What it reveals | Probe question (channel the persona) |
+|--------------|-----------------|--------------------------------------|
+| **Workaround / compensating behavior** | a missing capability (user built a manual hack — spreadsheet, copy-paste, second tool) | "What did you do *instead*?" |
+| **Abandonment / drop-off** | friction at a specific step (user starts a task and quits) | "Where did you give up, and what stopped you?" |
+| **Non-consumption / avoidance** | a barrier — fear, complexity, distrust (user never enters an area) | "What did you never even try? Why not?" |
+| **Over-service / feature-fatigue** | a need for simplicity/defaults (user uses 10%, feels overwhelmed) | "What do you ignore entirely?" |
+| **Tolerated pain / resignation** | normalized friction — the curse of low expectations (user stopped complaining) | "What do you just put up with?" |
+| **Adjacent-tool leakage** | an unmet boundary need (part of the job done in another app) | "Where do you leave this product to finish the job?" |
+
+### Elicitation method
+
+1. For each persona, walk **Day-in-the-Life** (Pattern 3); at each touchpoint run the six probe questions above.
+2. Capture the **proxy**, then translate it into the **underlying unmet need** — report the need, never the workaround itself (the spreadsheet is not the demand; the missing capability is).
+3. Cross-persona: a latent need surfacing for ≥ 2 personas is a **curb-cut candidate** (minority friction shared silently by many).
+4. Pair each surfaced need with the curse-of-knowledge table (SKILL Assumption Challenge) to name the team blind spot it exposes.
+
+### Calibration posture (stricter than `request`)
+
+Latent needs are unvoiced, so they cannot be `[validated]`/`[supported]` from user *speech* — only from **behavioral evidence**. Ceiling at `[hypothesis]` until Trace (observed workaround/drop-off) or Field (contextual inquiry) confirms the proxy exists. Never tag a latent need `[validated]` without behavioral data. Default handoff is **Field/Trace for validation first**, then Spark/Accord.
+
+### Disambiguation vs sibling DEEP Recipes
+
+| Recipe | Lane | Escalate from `need` when |
+|--------|------|---------------------------|
+| `need` | breadth-first latent-need discovery across personas (this pattern) | — |
+| `5whys` | depth-first root cause of **one** surfaced need | a single need needs its root unmet driver |
+| `jtbd` | the progress/job + switch forces for **one** job | the need is really "what job is being hired?" |
+| `opportunity` | structure needs into an Outcome→Opportunity→Solution tree | you have many needs and must prioritize toward an outcome metric |
