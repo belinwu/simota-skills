@@ -244,7 +244,7 @@ user_acknowledged: true | false
 
 **Mode behavior:**
 - `greenfield` — Phase 1 builds source/audience from scratch. Frame and Tome run only if the user provides reference materials (codebase, market sources).
-- `refresh` — Phase 1 mandatorily runs Frame (multimodal extraction from `existing_assets` of role `primary_deck` or `brand_sample`) and/or scribe-equivalent extraction for `primary_doc`. Phase 2 Narrative team is instructed to preserve the existing story spine unless Phase 4 verification flags a CRITICAL issue with it. Improvement loops favor surgical edits over rewrites.
+- `refresh` — Phase 1 mandatorily runs Frame (multimodal extraction from `existing_assets` of role `primary_deck` or `brand_sample`) and/or scribe-equivalent extraction for `primary_doc`. Phase 2 Narrative team is instructed to preserve the existing story spine unless Phase 4 verification flags a CRITICAL issue with it. Improvement loops favor surgical edits over rewrites. **Refresh-grounding guard:** any **new** claim introduced while refreshing must be grounded with the same rigor as greenfield (Phase 4 claim-grounding applies to additions, not just the original) — polishing must not smuggle in ungrounded claims under the cover of an "improvement"; and any original claim that is removed or materially changed is logged in the execution report so the edit is auditable.
 
 **Gate:** If `risk_tier == release-critical` (external press, regulatory, customer-facing keynote) → require explicit user confirmation before proceeding.
 
@@ -498,6 +498,18 @@ parallel:
     mission: slide framework actually compiles and previews; doc target formats actually render (DOCX/PPTX/PDF open without errors)
     output: render_log.json
 
+  - branch: cross_format_consistency     # only when output_format == both
+    owner: nexus (internal check, not a spawned specialist)
+    mission: |
+      The recipe's core premise is "same source, two stages" — so the doc and the slide deck must agree.
+      Cross-check the two artifacts AGAINST EACH OTHER (not just each against the research brief):
+        1. Shared facts / numbers / claims that appear in both must MATCH (a "40% faster" in the doc must not be "30%" on a slide).
+        2. Every `narrative_lock.cross_references` entry resolves — the named doc section and slide index both exist and cover the same beat.
+        3. No contradiction between the two artifacts (doc says X is recommended, slide says avoid X).
+        4. Every beat marked for both treatments in narrative_lock is actually present in both (no beat silently dropped from one side).
+      A divergence is CRITICAL for output_format == both — a unified package that contradicts itself is worse than either artifact alone.
+    output: cross_format_audit.json
+
   - branch: multi_engine_review
     engine: judge (built-in multi-engine fan-out)
     mission: overall quality review — prose quality, narrative coherence, slide impact
@@ -519,6 +531,7 @@ parallel:
 - `compliance_report.json`: zero `forbidden_phrases` matches; WCAG-AA contrast ≥ 4.5:1 for body text on slides
 - `persona_friction.json`: no "tune-out point" reported within first 3 slides or first 200 words of doc
 - `render_log.json`: zero compilation errors; preview generates without crash
+- `cross_format_audit.json` (when `output_format == both`): zero number/claim mismatches between doc and slide; all `cross_references` resolve; zero dropped both-treatment beats. A mismatch is CRITICAL — the package must not ship self-contradicting.
 
 **Output:** `verification_report.md` with engine-attributed findings and quorum verdict.
 
@@ -627,6 +640,7 @@ Mode: AUTORUN_FULL
 
 ### Verification
 - Claim grounding:      N un-cited claims (0 in external-facing)
+- Cross-format consistency: doc ↔ slide N mismatches / M broken cross-refs (0 to ship `both`)
 - Brand compliance:     pass / fail (forbidden phrases: N)
 - 6×6 / WPM budget:     pass / fail
 - WCAG-AA contrast:     pass / fail
@@ -765,6 +779,7 @@ phase_chain:
   - phase: 4_verification
     parallel:
       - { owner: nexus_internal, scan: claim_grounding_token_cross_reference }
+      - { owner: nexus_internal, scan: cross_format_consistency, if: output_format == both }
       - { engine: agy | claude,  agent: attest, if: artifact_is_spec_verified_against_normative_doc }
       - { engine: claude | agy,  agent: canon }
       - { engine: claude,        agent: echo }
@@ -801,6 +816,8 @@ phase_chain:
 | agy unreachable | Preflight | Switch to dual-engine; imagery skipped with placeholder TODO | Continue |
 | `gaps_to_address.critical > 0` | Phase 1 | Pause, present to user — typical: "claim has no source" | Immediate |
 | narrative_lock not signed off after 2 attempts | Phase 2 | Escalate to user — usually means goal is too broad | Immediate |
+| Doc ↔ slide divergence (number/claim mismatch, broken cross-ref, dropped beat) | Phase 4 | Force Phase 5 loop to reconcile both artifacts; never ship a self-contradicting package | Always (output_format == both) |
+| Ungrounded claim introduced during `mode: refresh` | Phase 4 | Treat as a new greenfield claim — ground it or mark `[UNVERIFIED]`; do not exempt it because the run is a "refresh" | Always |
 | render fails | Phase 4 | Force Phase 5 loop with stage + morph re-run | Always |
 | Brand `forbidden_phrases` match in external-facing | Phase 4 | Force Phase 5 loop with prose rewrite | Always |
 | Persona reports tune-out in first 3 slides | Phase 4 | Force Phase 5 loop with stage + prose rewrite | Always |
