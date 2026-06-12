@@ -10,7 +10,7 @@ Extends the inline Routing Quick Start in `SKILL.md`. Canonical matrix: `referen
 | `FEATURE` | Lens?[reuse] → Sherpa[spec+AC] → Forge? → Builder → Radar[+verify gate] → Guardian | Lens reuse-scan on existing codebases (skip greenfield). Forge only when approach unproven (spike, not shipped). `+Muse`/`+Palette` for UI (skip on backend/CLI), `+Artisan` for frontend production. Phase contract ↓ |
 | `SECURITY` | Sentinel[triage] → Probe?[confirm-exploit] → Builder[root-cause] → Probe/Radar[verify-closed] → Vigil? → Guardian | Confirm-exploit before & verify-closed after the fix. `+Breach` red-team, `+Specter` concurrency, `+Shift` dep-CVE upgrade, `+Crypt` crypto. Phase contract ↓ |
 | `REFACTOR` | Radar?[safety-net] → Zen → Radar[verify-equivalence] → Guardian | Green-before / same-suite-same-result-after. Safety-net skip for tool-assisted pure rename/extract. `+Sherpa` multi-file, `+Atlas` architecture, `+Grove` structure. Phase contract ↓ |
-| `OPTIMIZE` | Bolt (code-side) / Tuner (DB queries) → Radar | `+Schema` for DB index/migration |
+| `OPTIMIZE` | Bolt/Tuner[measure→target→optimize] → Radar[verify-speedup] → Guardian | Measure-first / prove-with-a-number / no-regression. `+Schema` DB index, `+Siege` load-test, `+Beacon` prod SLO. Phase contract ↓ |
 | `DESIGN_SYSTEM_DOCS` | Muse → Vitrine + Canvas → Quill | `+Vision` for direction, `+Artisan` for live examples |
 | `DESIGN_WORKFLOW` | Atelier (orchestrates: Vision → Muse/Frame → Forge → Artisan → Vitrine → Canvas) | Full design→code loop with design-system persistence. When request spans direction + tokens + prototype + implementation + catalog |
 | `MOBILE_NATIVE` | **Native** → Radar → Vitrine → Launch | iOS Swift/SwiftUI or Android Kotlin/Compose. Pure-native only (RN/Flutter/KMP/CMP → Forge). Add-ons + full row → `reference/routing-matrix.md` MOBILE_NATIVE |
@@ -69,6 +69,21 @@ Refactoring's invariant is **no external behavior change** — and the only proo
 - **SHIP (Guardian)** — **behavior-neutral** PR/commit, reviewable as a pure refactor, kept separate from any behavior-changing work.
 
 **Anti-patterns prevented**: (1) refactoring untested code with no behavior proof (SAFETY-NET green-first), (2) "refactor" that changes external behavior (SCOPE-GUARD), (3) silent behavior drift hidden inside a refactor (VERIFY-EQUIVALENCE same-suite-same-result), (4) refactor + behavior change mixed into one unreviewable commit (SHIP behavior-neutral).
+
+## OPTIMIZE Phase Contract
+
+Performance work has one law — **measure, don't guess** — and the default `Bolt/Tuner → Radar` chain skips the measurement entirely. Order:
+
+- **MEASURE-FIRST (Bolt / Tuner profile)** — profile to find the **actual hotspot** and capture a **quantified baseline** BEFORE changing anything. Bolt profiles code-side (render / CPU / allocation), Tuner runs `EXPLAIN ANALYZE` on queries. Optimizing without a profile optimizes the wrong thing — the #1 perf anti-pattern. **No baseline number → no optimize.**
+- **TARGET-GATE** — set a **quantified target** (e.g. p95 < 200ms, render < 16ms, query < 50ms) and a stop condition. Without a target, optimization is unbounded — micro-tuning past the point of user-perceptible value. Reject "make it faster" with no number.
+- **OPTIMIZE (Bolt / Tuner)** — apply the fix **at the measured hotspot**: Bolt → re-render reduction / memoization / lazy-load / caching / async; Tuner → query plan / index. `+Schema` when an index or migration is recommended.
+- **VERIFY-SPEEDUP + NO-REGRESSION (Radar + gate)** — re-run the **same benchmark**: the metric actually moved toward target (**prove the speedup with a number, never a claim**), behavior is unchanged (correctness suite green — an optimization that alters output is a bug), and **no other metric regressed** (a latency win that blows up memory or breaks the cold path is not a win).
+- **ITERATE (bounded)** — if the target is unmet and the last pass still yielded meaningful gain, **re-profile** (the hotspot moves after each fix) and optimize the new top hotspot; stop at target-met or diminishing returns. Hand off to `kaizen` for multi-axis continuous improvement.
+- **SHIP (Guardian)** — PR with **before/after numbers** embedded (baseline → result vs target) so the win is auditable.
+
+**Add-ons**: `+Schema` (DB index/migration), `+Siege` (load-test the speedup under realistic traffic), `+Beacon` (SLO/observability to confirm the target in production), `+Flux` (first-principles reframe when stuck).
+
+**Anti-patterns prevented**: (1) optimizing by guess / wrong hotspot (MEASURE-FIRST profile), (2) unbounded micro-optimization (TARGET-GATE), (3) claimed-but-unmeasured speedup (VERIFY prove-with-number), (4) perf win that silently changes behavior (VERIFY correctness suite), (5) perf win that regresses another metric (VERIFY no-regression), (6) hotspot moved but kept optimizing the old one (ITERATE re-profile).
 
 ## Sherpa Skip Conditions
 
