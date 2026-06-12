@@ -159,9 +159,11 @@ class MainActivity : ComponentActivity() {
 
 ### iOS — `@Observable` + per-feature ViewModel
 
+> **Concurrency convention (Swift 6.3 / Xcode 26 default isolation):** with Default MainActor isolation on, the `@MainActor` below is **implicit** — keep it only for clarity or for targets not yet on default isolation. Do **not** blanket-annotate every type `@MainActor`; instead mark off-main work `@concurrent` (heavy decode/IO) and pure helpers `nonisolated`, and conform cross-actor types to `Sendable`. Full isolation table → `modern-stack.md` § Swift 6.2 Approachable Concurrency.
+
 ```swift
 @Observable
-@MainActor
+@MainActor   // implicit under Xcode 26 default isolation; shown for clarity
 final class CartViewModel {
     private(set) var items: [CartItem] = []
     private(set) var isLoading = false
@@ -210,10 +212,12 @@ Cross-cutting state (auth, theme, network) goes through `@Environment` or a DI c
 
 ### Android — `StateFlow<UiState>` + ViewModel
 
+> **Stability convention (2026, Strong Skipping default):** the old "always wrap collections in `ImmutableList`" rule is **no longer the default**. Strong Skipping compares unstable params by reference (`===`) and skips, so passing a plain `List<T>` straight from the data source is fine. Reach for `ImmutableList`/`persistentListOf` only when (a) Compose Compiler Reports show a *measured* recomposition problem AND (b) the producer can hand back the same instance when nothing changed. The example below uses `ImmutableList` to show the explicit-stability path; `List<CartItem>` is the simpler default. Full rationale → `modern-stack.md` § Stable Types & Strong Skipping Mode.
+
 ```kotlin
 @Immutable
 data class CartUiState(
-    val items: ImmutableList<CartItem> = persistentListOf(),
+    val items: ImmutableList<CartItem> = persistentListOf(),   // explicit-stability path; plain List is the 2026 default
     val isLoading: Boolean = false,
     val error: String? = null,
 )
@@ -466,7 +470,7 @@ val showButton by remember {
 
 Performance tips:
 - Always pass `key = { it.id }` to `LazyColumn` `items`.
-- Use `@Immutable` annotation or `kotlinx.collections.immutable` for stable types.
+- Annotate data classes holding unstable members with `@Immutable`. Do **not** reflexively convert collections to `ImmutableList` — under Strong Skipping, pass `List<T>` by reference and only convert when Compose Compiler Reports show a measured problem (`modern-stack.md` § Strong Skipping).
 - For images, use Coil 3 `AsyncImage` (Compose-optimized).
 - Baseline Profile / Startup Profile cuts startup time by 40-50%.
 
@@ -537,6 +541,36 @@ fun NotificationPermissionRequester(onResult: (Boolean) -> Unit) {
 | E2E | Maestro | Maestro / Espresso |
 
 Detail is owned by the handoff to `Radar` / `Voyager`.
+
+---
+
+## SwiftUI VERIFY Gate (`swiftui` Recipe)
+
+Before handing a SwiftUI feature to `Radar`/`Guardian`, confirm each — the recipe-specific check the SKILL's "strict data-race safety" contract requires:
+
+- [ ] **Builds under Swift 6 mode / `-strict-concurrency=complete`** with zero data-race warnings (new Xcode 26 projects default to this; legacy targets opt in per `modern-stack.md` § Approachable Concurrency).
+- [ ] **No main-thread blocking** — heavy decode/IO is `@concurrent` or behind an `actor`/`async` repository; the `@MainActor` ViewModel only mutates UI state.
+- [ ] **Cross-actor types are `Sendable`** — model/DTO types crossing the actor boundary conform; no `@unchecked Sendable` without a documented invariant.
+- [ ] **No retain cycles** — coordinator/closure captures use `[weak self]` (see `NetworkMonitor`); `_printChanges()` and other debug-only calls removed.
+- [ ] **Large lists use `List`** (cell recycling), not `LazyVStack`, at 1,000+ items; `AsyncImage` replaced with a caching loader (Kingfisher/Nuke).
+- [ ] **Liquid Glass is chrome-only** — `.glassEffect()` on NavigationBar/TabBar/Toolbar/Sheet/Popover, never content (SKILL Liquid Glass scope); iOS 17/18 fallback path verified.
+- [ ] **`#Preview` present** for each new View, and it compiles (preview crashes are a real regression).
+- [ ] **SwiftData/Core Data uses a day-one `VersionedSchema`** so the first migration is not a breaking reset.
+
+---
+
+## Compose VERIFY Gate (`compose` Recipe)
+
+Before handing a Compose feature to `Radar`/`Guardian`, confirm each:
+
+- [ ] **`collectAsStateWithLifecycle()`** for every `StateFlow` collection (not `collectAsState()`) — stops collection across Lifecycle changes.
+- [ ] **`key = { it.id }`** on every `LazyColumn`/`LazyRow`/`LazyVerticalGrid` `items`.
+- [ ] **Stability is measured, not assumed** — Strong Skipping is on; collections pass as `List<T>` by reference unless a Compose Compiler Report flagged a real recomposition; no reflexive `ImmutableList` wrapping (`modern-stack.md` § Strong Skipping).
+- [ ] **No deprecated M3 components** — `BottomAppBar` → `FloatingToolbar`, indeterminate `CircularProgressIndicator` → `LoadingIndicator` (M3 Expressive, BOM 2026.05).
+- [ ] **Edge-to-edge + predictive back wired** — `enableEdgeToEdge()` at `MainActivity` and `PredictiveBackHandler`/`OnBackPressedDispatcher`; both are enforced at `targetSdk 36` (`modern-stack.md` § Edge-to-Edge / § Predictive Back).
+- [ ] **16KB-page-size compliant** — `useLegacyPackaging = false`, every NDK/native dep rebuilt (Google Play rejects non-compliant submissions; AGP 8.5.1+/NDK r28+).
+- [ ] **Type-safe Navigation** — `@Serializable` destinations + `toRoute()` (Navigation 2.8+), no string routes.
+- [ ] **Baseline Profile generated** (40-50% startup win) for any release build; no unstable lambdas in `Lazy*` scopes (stabilize via `remember`).
 
 ---
 
