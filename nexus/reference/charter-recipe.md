@@ -141,7 +141,7 @@ The Charter MUST be **self-driving**: a reader (human, `enact`, or a fresh Nexus
 
 **Team-construction design (not execution).** Phase 3 finalizes §5 (roster: per work package, owner skill + model tier + engine + spawn config) and §6 (orchestration plan: chain order, parallel branches + file ownership, checkpoints, **per-package engine assignment**). It does **not** verify spawn prereqs or instantiate agents — that is `enact` Phase 1.
 
-**Exit gate:** Charter passes the self-containment check — roster, work breakdown, AC, conventions, orchestration plan, and verification gates are all present and mutually consistent; every work package maps to exactly one owner skill that exists in the ecosystem, and every package carries an engine assignment. Then DELIVER the Charter and hand off to `enact` (recommend the `/nexus enact <out path>` command in `NEXUS_COMPLETE`).
+**Exit gate:** Charter passes the self-containment check — roster, work breakdown, AC, conventions, orchestration plan, and verification gates are all present and mutually consistent; every work package maps to exactly one owner skill that exists in the ecosystem, and every package carries an engine assignment; and §10 checklists (pre-flight, per-package DoD, progress tracker, final delivery) are generated from §3+§4+§7 with one DoD block and one tracker row per §4 package. Then DELIVER the Charter and hand off to `enact` (recommend the `/nexus enact <out path>` command in `NEXUS_COMPLETE`).
 
 ## Engine Assignment (multi-engine orchestration)
 
@@ -185,6 +185,39 @@ The Charter (`docs/CHARTER.md`) contains these sections; the companion `CHARTER.
 §9 Execution Log             (empty at authoring; during execution `enact` keeps this as
                              a pointer + summary and streams the timeline to an append-only
                              run-log file, default `docs/CHARTER.run.log.md`)
+§10 Checklists & Trackers    pre-flight checklist (run prerequisites); per-package
+                             Definition-of-Done checklist (AC met + tests + lint/build/
+                             typecheck + review + docs, derived from §3+§4); progress
+                             tracker (one checkbox per §4 package); final delivery
+                             checklist (§7 gates + ship readiness + rollback ready)
+```
+
+§10 makes the Charter actionable and self-tracking: the **pre-flight** and **DoD** checklists give `enact` (and a human) an explicit, testable gate at each boundary instead of prose judgment, and the **progress tracker** is the at-a-glance status surface (checkboxes `enact` ticks at each `PKG_DONE`, complementing the append-only run log). Author each checklist item as a concrete, verifiable assertion (command to run, file to exist, gate to pass) — not a vague "looks done".
+
+§10 template (GitHub-flavored checkboxes so they render and tick in-place):
+
+```markdown
+### Pre-flight
+- [ ] Charter §1-§8 present and self-consistent
+- [ ] Every §4 package maps to a constructable §5 owner skill
+- [ ] Engine prereqs met (Codex `max_depth ≥ 2`) or `fallback_engine` set
+- [ ] Working tree clean; branch per §3 policy
+
+### Per-package DoD (one block per §4 package, instantiated from §3 commands)
+- [ ] PKG-<id>: acceptance criteria (§4) met
+- [ ] PKG-<id>: tests added/updated and green (`<§3 test cmd>`)
+- [ ] PKG-<id>: lint + typecheck + build pass (`<§3 cmds>`)
+- [ ] PKG-<id>: reviewed (judge) / docs updated if public surface changed
+
+### Progress tracker (one row per §4 package)
+- [ ] PKG-001 <title> — owner <skill> — status: pending
+- [ ] PKG-002 <title> — owner <skill> — status: pending
+
+### Final delivery
+- [ ] All §7 gates pass (or failures reported honestly)
+- [ ] No SKIPPED package is release-critical (else flagged in DELIVER)
+- [ ] Run log RUN_END written; Charter §9 pointer current
+- [ ] Rollback plan (§8) ready; launch artifacts (if in scope) prepared
 ```
 
 §5 + §6 make the team a pure function of the document. Each §5 entry is a ready-to-use spawn spec aligned to the Agent Spawn Template (SKILL.md) — role → skill SKILL.md path, model tier, engine, acceptance criteria, output envelope — so `enact` can construct the team without re-deriving anything.

@@ -46,6 +46,7 @@ Enact requires a Charter conforming to the schema in `reference/charter-recipe.m
 | §7 Verification Plan | Phase 3 | per-package + final gates |
 | §8 Escalation & Rollback | all phases | failure tiers, circuit breaker, rollback boundaries |
 | §9 Execution Log | Phase 2-3 | run-log **pointer** + final summary; the detailed timeline lives in the append-only run-log file (see **Run Log**), from whose tail `resume` restarts |
+| §10 Checklists & Trackers | all phases | pre-flight gate (Phase 1), per-package DoD (terminal-state criterion, Phase 2), progress tracker (ticked at `PKG_DONE`), final delivery checklist (Phase 3) |
 
 The machine-readable companion (`CHARTER.roster.yaml`) is preferred for §5-§6 when present. If the Charter is missing a required section or a roster entry names a non-existent skill, enact stops at Phase 1 and reports the gap rather than improvising (the missing design belongs in `charter`, not here).
 
@@ -91,6 +92,7 @@ Instantiate the team strictly from Charter §5. This is "build the dev team from
 | Bind | For each roster entry, resolve role → skill SKILL.md path, model tier, engine (per Orchestrator Detection), and spawn config |
 | Verify prereqs | Confirm the active hub's spawn tool + per-CLI prereqs (`reference/execution-layers.md`); for Codex packages check `multi_agent = true` + `[agents] max_depth ≥ 2`, for agy check the TTY/real-pty path (`_common/CLI_COMPATIBILITY.md §9`). If a §5 engine is unreachable, apply that package's `fallback_engine` (default `claude-code`) and log the substitution + its cost/throughput trade-off; hard-fail only when no fallback is defined |
 | Sub-orchestrator setup | Where §5 nominates Vision/Orbit/Rally, prepare its sub-hub contract (≤7 specialists each) |
+| Pre-flight checklist | Run the Charter §10 pre-flight checklist (Charter complete, owners constructable, engine prereqs/fallbacks, clean tree/branch); tick each item and log `TEAM_BUILT` |
 | Dry-run check | Validate that every §4 work package has a constructable owner; any unconstructable entry escalates before execution begins |
 
 **Exit gate:** every work package has a verified, spawnable owner. Unresolvable roster entries do **not** get improvised — enact reports the gap and recommends re-authoring via `charter` (§5). `dry-run` mode stops here and delivers the constructability report.
@@ -165,7 +167,8 @@ Execute Charter §4 via the §6 Orchestration Plan. Standard Nexus EXECUTE → A
 - **Guardrails** L1-L4 + checkpoint-resume on 4+ step chains; max-hop limit enforced; destructive/L4/out-of-scope actions pause per §3/§8 (safety red line). The circuit breaker after 3 consecutive package failures does **not** abort the run — it marks that package `SKIPPED(blocked)` and moves on (run-to-completion).
 - **Run-to-completion recovery:** a failing package walks the recovery ladder (retry → `fallback_engine` → Scout RCA + Builder fix → alternate owner) before being skipped; the run never pauses to ask on recoverable failures.
 - **Aggregate** branch outputs hub-spoke; validate schema + semantic correctness at each boundary.
-- **Append** one run-log line per event (`PKG_START` / `PKG_RECOVER` / `PKG_DONE` / `SAFETY_STOP` …) the moment it occurs, and mirror a compact pointer into Charter §9, so an interrupted run auto-resumes from the run-log tail (see **Run Log**).
+- **Definition of Done.** A package is `SUCCESS` only when its Charter §10 per-package DoD checklist fully passes (AC met + tests green + lint/build/typecheck + review); partial pass → `PARTIAL`, unrecoverable → `SKIPPED`. DoD is the objective terminal-state criterion, not prose judgment.
+- **Append** one run-log line per event (`PKG_START` / `PKG_RECOVER` / `PKG_DONE` / `SAFETY_STOP` …) the moment it occurs; at `PKG_DONE` also tick that package's row in the §10 progress tracker. Mirror a compact pointer into Charter §9, so an interrupted run auto-resumes from the run-log tail (see **Run Log**).
 
 **Exit gate:** **every** work package is in a terminal state — `SUCCESS` / `PARTIAL` / `SKIPPED(blocked, reason)`; none left pending or merely `BLOCKED`. Outputs aggregated; skipped packages carry unblock conditions in §9.
 
@@ -178,7 +181,7 @@ Execute Charter §4 via the §6 Orchestration Plan. Standard Nexus EXECUTE → A
 | `guardian` | Commit policy, branch strategy, PR preparation | Yes (if code changed) |
 | `launch` | Release/rollback plan | Conditional: release in scope |
 
-Run §7 gates (tests/build/security/AC), appending a `VERIFY` line per gate and a final `RUN_END` line to the run log. Update the Charter (§9 summary/pointer + any §4 AC status) so the delivered document reflects what was actually done — the living Charter. `DELIVER` returns `NEXUS_COMPLETE` with the Charter path, run-log path, per-package status, verification results, and follow-ups.
+Run §7 gates (tests/build/security/AC), appending a `VERIFY` line per gate and a final `RUN_END` line to the run log. Then work the Charter §10 **final delivery checklist** (all gates pass, no release-critical SKIPPED, run-log RUN_END written, rollback ready) — each unticked item is surfaced in DELIVER, not silently passed. Update the Charter (§9 summary/pointer + §4 AC status + §10 tracker/checklist ticks) so the delivered document reflects what was actually done — the living Charter. `DELIVER` returns `NEXUS_COMPLETE` with the Charter path, run-log path, per-package status, the completed §10 checklists, verification results, and follow-ups.
 
 **Exit gate:** §7 verification passes (or failures surfaced honestly with output, per global quality rules); Charter persisted and current.
 
@@ -198,11 +201,11 @@ Run §7 gates (tests/build/security/AC), appending a `VERIFY` line per gate and 
 Nexus AUTORUN enact docs/CHARTER.md
   ── read Charter ─────────────────────────────────────
   → parse docs/CHARTER.md (+ CHARTER.roster.yaml if present)
-  → validate required sections (§3-§8); missing/invalid → stop + report gap
+  → validate required sections (§3-§8, §10); missing/invalid → stop + report gap
   → open run log docs/CHARTER.run.log.md (append "## Run <n>" + RUN_START)
   ── Phase 1 Team Construction ────────────────────────
   → for each §5 roster entry: bind(role→skill→spawn) + verify prereqs
-  → sub-orchestrator setup (Vision/Orbit/Rally)? → dry-run check
+  → run §10 pre-flight checklist (tick all) → sub-orch setup? → dry-run check
      (enact dry-run → STOP + deliver constructability report)
   ── ★ Confirm Gate ───────────────────────────────────
   → AUTORUN_FULL: announce construction summary → proceed immediately (no wait)
@@ -211,7 +214,9 @@ Nexus AUTORUN enact docs/CHARTER.md
        spawn(owner_skill, contract=package.AC, model=§5.tier, engine=§5.engine)
        ‖ parallel branches with §6 file ownership
        build-loop packages → orbit(sub-orchestrator)
+       terminal = §10 per-package DoD checklist result (SUCCESS|PARTIAL|SKIPPED)
        append run-log: PKG_START → PKG_RECOVER* → PKG_DONE (immediately)
+         → tick §10 progress-tracker row at PKG_DONE
        on recoverable failure: retry→fallback_engine→Scout+Builder→alt owner
          → still failing: mark SKIPPED(blocked, reason), CONTINUE (no abort)
        on safety red line (L4/destructive/out-of-scope per §8): pause + confirm
@@ -220,9 +225,10 @@ Nexus AUTORUN enact docs/CHARTER.md
   → aggregate hub-spoke
   ── Phase 3 Verify & Deliver ─────────────────────────
   → radar? + judge? → §7 gates (tests/build/sec/AC); append VERIFY lines
+  → work §10 final delivery checklist (unticked items surfaced in DELIVER)
   → guardian(commit/PR)? → launch(release)?
-  → append RUN_END; update Charter (§9 pointer + AC status)
-  → NEXUS_COMPLETE(charter_path, run_log_path, statuses)
+  → append RUN_END; update Charter (§9 pointer + AC status + §10 ticks)
+  → NEXUS_COMPLETE(charter_path, run_log_path, checklists, statuses)
 ```
 
 ## Failure Escalation
