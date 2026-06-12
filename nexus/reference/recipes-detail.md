@@ -6,12 +6,12 @@ Extended descriptions for verbose Recipe rows. The Recipes table in `SKILL.md` c
 
 ## kaizen
 
-Existing-feature continuous improvement covering perf / UX / code-quality / feature-extension. Differs from `refactor` (internal-only), `optimize` (perf-only), and `feature` (new addition). Scale: 4-8 agents.
+Existing-feature continuous improvement covering perf / UX / code-quality / feature-extension. **PDCA loop, not single-pass**: improves against a quantified target and stops on target-met or diminishing-returns. Differs from `refactor` (internal-only), `optimize` (perf-only), and `feature` (new addition). Scale: 4-8 agents (× cycles, default cap 3).
 
 **Chain template:**
-`(Lens + Pulse?/Echo?/Voice?/Trace?) → Spark → Magi → (Bolt/Tuner ‖ Palette/Prose/Flow ‖ Zen/Sweep ‖ Artisan/Builder)[axis] → Radar → Pulse?/Echo?[re-measure] → Guardian`
+`(Lens + Pulse?/Echo?/Voice?/Trace?)[baseline] → Spark → Magi[axes + target + stop] → ⟲{ (Bolt/Tuner ‖ Palette/Prose/Flow ‖ Zen/Sweep ‖ Artisan/Builder)[axis] → Radar[+cross-axis guard] → Pulse?/Echo?[re-measure vs target] }⟲ → Void[stop-confirm] → Guardian`
 
-Full phase contract (DIAGNOSE/PROPOSE/IMPROVE/VERIFY/SHIP) → `reference/inline-recipes.md`.
+The `⟲{…}⟲` block loops until target-met OR diminishing-returns OR iteration cap. Full phase contract (DIAGNOSE+BASELINE / PROPOSE+TARGET / IMPROVE / VERIFY+LOOP / SHIP) → `reference/inline-recipes.md`.
 
 ---
 
