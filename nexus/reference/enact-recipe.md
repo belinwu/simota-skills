@@ -79,7 +79,7 @@ Instantiate the team strictly from Charter §5. This is "build the dev team from
 | Step | Action |
 |------|--------|
 | Bind | For each roster entry, resolve role → skill SKILL.md path, model tier, engine (per Orchestrator Detection), and spawn config |
-| Verify prereqs | Confirm the active hub's spawn tool + per-CLI prereqs (`reference/execution-layers.md`); for Codex/agy clusters, check `_common/CLI_COMPATIBILITY.md §9` |
+| Verify prereqs | Confirm the active hub's spawn tool + per-CLI prereqs (`reference/execution-layers.md`); for Codex packages check `multi_agent = true` + `[agents] max_depth ≥ 2`, for agy check the TTY/real-pty path (`_common/CLI_COMPATIBILITY.md §9`). If a §5 engine is unreachable, apply that package's `fallback_engine` (default `claude-code`) and log the substitution + its cost/throughput trade-off; hard-fail only when no fallback is defined |
 | Sub-orchestrator setup | Where §5 nominates Vision/Orbit/Rally, prepare its sub-hub contract (≤7 specialists each) |
 | Dry-run check | Validate that every §4 work package has a constructable owner; any unconstructable entry escalates before execution begins |
 
@@ -166,7 +166,7 @@ Nexus AUTORUN enact docs/CHARTER.md
 |---------|-------------|------------|
 | Charter missing/invalid section | enact parse | Stop; report which section; recommend `charter` to re-author |
 | §5 roster names a non-existent skill | enact bind | Stop at Phase 1; report the gap; do not improvise an owner |
-| Phase 1 roster entry unconstructable (spawn prereq unmet) | Nexus | Stop; report blocker (per `reference/execution-layers.md`); recommend §5 fix or prereq setup |
+| Phase 1 engine prereq unmet (e.g. Codex `max_depth < 2`) | Nexus | Apply package `fallback_engine` (log substitution + trade-off); stop only if no fallback defined, then recommend §5 fix or prereq setup |
 | ★ Confirm rejected | user | Abort; Charter unchanged |
 | Phase 2 package repeat failure | judge/radar | Scout investigation → back to the package owner; circuit breaker after 3 (per §8) |
 | Build loop stuck / over budget | orbit | Triage handoff; user confirm before continuation |

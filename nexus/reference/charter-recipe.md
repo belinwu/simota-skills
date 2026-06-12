@@ -12,7 +12,9 @@
 - Phase 0: Framing
 - Phase 1: Comprehensive Repository Analysis
 - Phase 2: Objective & Work Breakdown
-- Phase 3: Charter Authoring- Charter Document Schema
+- Phase 3: Charter Authoring
+- Engine Assignment (multi-engine orchestration)
+- Charter Document Schema
 - Conditional Inclusion
 - AUTORUN Chain Template
 - Failure Escalation
@@ -61,6 +63,7 @@ Route to `apex` when the unit of work is a single feature and you want one-shot 
 | `/nexus charter <objective>` | **Objective-supplied mode**. Analyze repo, author the Charter scoped to the supplied objective, deliver. |
 | `/nexus charter scope=<lite\|standard\|full>` | Analysis + Charter depth. Default `standard`. |
 | `/nexus charter out=<path>` | Charter output path. Default `docs/CHARTER.md` (durable, committable). |
+| `/nexus charter engines=<auto\|claude+codex\|claude\|all>` | Engine policy the §5/§6 design targets. Default `claude+codex` (multi-engine). See **Engine Assignment**. |
 
 Charter always stops after authoring. To run the result: `/nexus enact <out path>`.
 
@@ -131,13 +134,31 @@ Turn analysis (+ objective) into a prioritized, decomposed, acceptance-bounded p
 **Exit gate:** every work package has (1) an atomic step list, (2) measurable AC, (3) dependency/sequence position, (4) — provisionally — a recommended owner skill (finalized as the §5 roster in Phase 3). Autonomous mode additionally carries the selected scope + rejected alternatives.
 
 ## Phase 3: Charter Authoring
+
 Synthesize Phases 1-2 into the **Charter document** — the self-contained operating manual, including the team-construction design. Authored by `scribe` with `accord` supplying traceability; `void` optionally trims scope (full mode).
 
 The Charter MUST be **self-driving**: a reader (human, `enact`, or a fresh Nexus session) can construct the team and execute every work package from the document alone, without re-running analysis. Write it to `out` (default `docs/CHARTER.md`) and a machine-readable companion (`docs/CHARTER.roster.yaml`) holding the roster + orchestration plan for `enact` re-entry.
 
-**Team-construction design (not execution).** Phase 3 finalizes §5 (roster: per work package, owner skill + model tier + engine + spawn config) and §6 (orchestration plan: chain order, parallel branches + file ownership, checkpoints). It does **not** verify spawn prereqs or instantiate agents — that is `enact` Phase 1.
+**Team-construction design (not execution).** Phase 3 finalizes §5 (roster: per work package, owner skill + model tier + engine + spawn config) and §6 (orchestration plan: chain order, parallel branches + file ownership, checkpoints, **per-package engine assignment**). It does **not** verify spawn prereqs or instantiate agents — that is `enact` Phase 1.
 
-**Exit gate:** Charter passes the self-containment check — roster, work breakdown, AC, conventions, orchestration plan, and verification gates are all present and mutually consistent; every work package maps to exactly one owner skill that exists in the ecosystem. Then DELIVER the Charter and hand off to `enact` (recommend the `/nexus enact <out path>` command in `NEXUS_COMPLETE`).
+**Exit gate:** Charter passes the self-containment check — roster, work breakdown, AC, conventions, orchestration plan, and verification gates are all present and mutually consistent; every work package maps to exactly one owner skill that exists in the ecosystem, and every package carries an engine assignment. Then DELIVER the Charter and hand off to `enact` (recommend the `/nexus enact <out path>` command in `NEXUS_COMPLETE`).
+
+## Engine Assignment (multi-engine orchestration)
+
+The Charter is **multi-engine by default** (`engines=claude+codex`). Phase 3 assigns each §5 work package a runner engine in §6 so `enact` spawns it on the right CLI. This applies the Plan-and-Execute pattern across engines (SKILL.md Core Contract): capable models plan/design, cheaper or coding-tuned engines execute.
+
+| Work-package class | Default engine | Why |
+|--------------------|----------------|-----|
+| Analysis, architecture, spec, design, review, decision | **Claude Code** (Agent tool) | Planning/judgment quality; native to the hub |
+| Build loops + high-volume parallel coding (multi-iteration implementation, test authoring, codemods) | **Codex CLI** (`spawn_agent` → `wait_agent`) | Fresh context per iteration avoids context rot; tuned for autonomous coding cycles; explicit `spawn_agent`/`close_agent` lifecycle makes parallel file-ownership/branch isolation cheap — same rationale as Apex Phase 6 |
+| Optional third axis (cross-engine triangulation, extra parallel capacity) | **agy** (`/agent` / `agy -p`) when AVAILABLE | Perspective diversity; only when `engines=all` and prereqs hold |
+
+**Authoring rules:**
+- Tag every §5 roster entry with `engine:` and a `model`/`effort` per `reference/hub-authoring.md` § Model Selection (Claude tiers ↔ Codex `gpt-5.4`/`gpt-5.5` ↔ agy `/model`).
+- Where §5 nominates **Orbit** for a build loop, pin its sub-hub engine to **Codex CLI** (Orbit drives `spawn_agent` per iteration), mirroring Apex.
+- Record per-engine **prerequisites** in §6 so `enact` Phase 1 can verify them: Codex needs `multi_agent = true` + `[agents] max_depth ≥ 2` (`reference/execution-layers.md`, `_common/CLI_COMPATIBILITY.md §9`); agy needs a TTY/real-pty headless path.
+- Specify a **fallback** per Codex/agy package (`fallback_engine: claude-code`) so `enact` degrades gracefully when an engine is unreachable instead of hard-failing — and note the cost/throughput trade-off the fallback implies.
+- `engines=claude` forces single-engine (no Codex) when the environment cannot reach Codex; `engines=all` adds agy as a third axis; `engines=auto` lets Phase 3 pick per detected availability, defaulting to `claude+codex`.
 
 ## Charter Document Schema
 
@@ -150,11 +171,14 @@ The Charter (`docs/CHARTER.md`) contains these sections; the companion `CHARTER.
                              standards, branch policy, L4/destructive-action rules     (from Phase 0/1)
 §4 Work Breakdown            epics → atomic steps, dependencies, sequencing, AC per
                              package, traceability IDs                                  (from Phase 2)
-§5 Team Roster               per work package: owner skill + model tier + engine +
+§5 Team Roster               per work package: owner skill + model tier +
+                             engine (claude-code|codex-cli|agy) + fallback_engine +
                              spawn config + context envelope; sub-orchestrator
                              nominations (Vision/Orbit/Rally) where a cluster needs one
 §6 Orchestration Plan        chain order, parallel branches + file ownership,
-                             checkpoints, max-hop limits, aggregation strategy
+                             checkpoints, max-hop limits, aggregation strategy,
+                             per-package engine assignment + per-engine prerequisites
+                             (multi-engine: Claude Code plan/design, Codex CLI build loops)
 §7 Verification Plan         per-package + final gates (tests/build/security/AC checks)
 §8 Escalation & Rollback     failure tiers, circuit-breaker, rollback boundaries,
                              human-confirm triggers
@@ -194,6 +218,10 @@ Nexus AUTORUN charter
   ── Phase 3 Charter Authoring (incl. team design) ────
   → scribe(+accord trace, void? full)
        → finalize §5 roster + §6 orchestration plan
+       → assign engine per package: Claude Code (plan/design/review)
+         ‖ Codex CLI (build loops + high-volume parallel coding;
+           Orbit sub-hub pinned to Codex) ‖ agy? (engines=all)
+       → record per-engine prereqs + fallback_engine in §6
        → write docs/CHARTER.md + CHARTER.roster.yaml
   → [self-containment check]
   ── DELIVER ──────────────────────────────────────────
