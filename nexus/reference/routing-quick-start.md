@@ -8,7 +8,7 @@ Extends the inline Routing Quick Start in `SKILL.md`. Canonical matrix: `referen
 |-----------|---------------|----------|
 | `BUG` | Scout[RCA] → Sherpa? → Radar[failing repro] → Builder[root-cause] → Radar[verify] → Guardian | `+Sentinel` for security, `+Trail` when a past commit introduced it, `+Ripple` for wide blast radius. Sherpa skip when files ≤ 2 or single-component fix. Phase contract ↓ |
 | `FEATURE` | Lens?[reuse] → Sherpa[spec+AC] → Forge? → Builder → Radar[+verify gate] → Guardian | Lens reuse-scan on existing codebases (skip greenfield). Forge only when approach unproven (spike, not shipped). `+Muse`/`+Palette` for UI (skip on backend/CLI), `+Artisan` for frontend production. Phase contract ↓ |
-| `SECURITY` | Sentinel → Builder → Radar | `+Probe` for dynamic testing, `+Specter` for concurrency risk |
+| `SECURITY` | Sentinel[triage] → Probe?[confirm-exploit] → Builder[root-cause] → Probe/Radar[verify-closed] → Vigil? → Guardian | Confirm-exploit before & verify-closed after the fix. `+Breach` red-team, `+Specter` concurrency, `+Shift` dep-CVE upgrade, `+Crypt` crypto. Phase contract ↓ |
 | `REFACTOR` | Zen → Radar? | `+Sherpa` for multi-file refactors, `+Atlas` for architecture, `+Grove` for structure. Radar skip for pure rename/extract |
 | `OPTIMIZE` | Bolt (code-side) / Tuner (DB queries) → Radar | `+Schema` for DB index/migration |
 | `DESIGN_SYSTEM_DOCS` | Muse → Vitrine + Canvas → Quill | `+Vision` for direction, `+Artisan` for live examples |
@@ -42,6 +42,21 @@ Bug-fixing has a best-practice order the default chain must honor — **reproduc
 - **SHIP (Guardian)** — PR carrying the repro test + root-cause explanation, so the fix is auditable and the regression is permanently guarded.
 
 **Anti-patterns prevented**: (1) regression test written after the fix that never actually failed (REPRODUCE-FIRST red→green), (2) symptom patch leaving the cause live (FIX root-cause discipline), (3) fix that breaks something else (VERIFY suite + blast-radius), (4) "fix" for a non-bug (RCA defect-confirmation gate), (5) fix lands with no PR/regression guard (SHIP — previously absent from the chain).
+
+## SECURITY Phase Contract
+
+A security fix is only real when the exploit is **confirmed closed** — static detection alone is faith-based. Order:
+
+- **TRIAGE (Sentinel + severity)** — classify the finding: severity (CVSS), exploitability, and scope (**own code** vs **dependency CVE** vs **config/secret**). Severity sets urgency; scope sets the route — a dependency CVE routes to `Shift` (upgrade path), not a code patch. **Confirm it is a real vulnerability, not a SAST false positive**, before mobilizing.
+- **CONFIRM-EXPLOIT (Probe / Breach, conditional)** — for dynamically-reachable vulns, **prove it is actually exploitable** (DAST / red-team) before fixing: don't burn effort on a false positive, and capture the working exploit as the verification oracle (the security analogue of bug's failing repro test). Skip for self-evident static issues (hardcoded secret, obvious injection sink).
+- **FIX (Builder)** — fix the **root cause at the right layer** (parameterize the query, validate/encode at the boundary, rotate-and-vault the secret) — not a surface filter the next payload bypasses. Repo rule: defense at the boundary, don't silence.
+- **VERIFY-CLOSED (Probe / Radar + gate)** — **re-run the exploit/DAST: the vuln no longer reproduces.** Radar encodes the attack as a regression test; the existing suite stays green. For secrets: confirm rotation AND removal from git history (a fix that leaves the secret in history is not closed).
+- **DETECT (Vigil, conditional)** — add a detection rule (Sigma / Detection-as-Code) so reintroduction or in-the-wild exploitation is caught. Recommended for high-severity or recurring vuln classes.
+- **SHIP (Guardian)** — **security-aware PR**: do NOT disclose exploit details in a public commit before the patch is deployed; link to the advisory/CVE; coordinate disclosure timing.
+
+**Add-ons**: `+Specter` (concurrency/race), `+Crypt` (cryptographic design fix), `+Shift` (dependency CVE → upgrade), `+Cloak`/`+Oath` (privacy/compliance dimension), `+Sentinel` re-scan after fix.
+
+**Anti-patterns prevented**: (1) "fixing" a SAST false positive (TRIAGE + CONFIRM-EXPLOIT), (2) band-aid filter the next payload bypasses (FIX root-cause/right-layer), (3) faith-based fix never validated against the actual exploit (VERIFY-CLOSED re-run), (4) same vuln class silently reintroduced (DETECT rule), (5) premature exploit disclosure in a public commit (SHIP security-aware PR), (6) secret "removed" but still in git history (VERIFY-CLOSED history check).
 
 ## Sherpa Skip Conditions
 
