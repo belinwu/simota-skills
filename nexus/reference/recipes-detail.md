@@ -26,6 +26,28 @@ Read: `reference/apex-recipe.md`, `reference/apex-walkthrough.md`.
 
 ---
 
+## charter
+
+**Repo-wide analysis → self-driving Charter, team design included — stops at the document.** Document-first planning recipe; the execution half is `enact`. Where `apex` discovers a *feature* and ships it in one shot, `charter` reads the *whole repository*, distills a durable Charter artifact (`docs/CHARTER.md` + `CHARTER.roster.yaml`) that designs the team (§5 roster + §6 orchestration plan) without building or running it. The team becomes a pure function of the document, so `enact` (or a future session) reconstructs the identical team. Distinct from `apex` (feature-centric, one-shot), `goal` (loop config only), `package` (docs only). Modes: autonomous (no-args) / objective-supplied / `scope=` / `out=`. 5-15 agents (analysis + authoring only). No execution → no Confirm Gate.
+
+**Chain template:**
+`Phase 0 Framing → 1 Comprehensive Analysis (lens ‖ atlas ‖ grove? ‖ trail? ‖ sentinel?/canon?/sweep?/pulse?) → 2 Objective+WBS (spark+rank? → sherpa → accord + magi?/omen?/ripple?) → 3 Charter Authoring incl. team design (scribe +accord trace, void? → finalize §5 roster + §6 plan → write docs/CHARTER.md + roster.yaml) → DELIVER (recommend /nexus enact)`
+
+Read: `reference/charter-recipe.md`.
+
+---
+
+## enact
+
+**Execute a Charter end-to-end.** The execution half of the `charter → enact` pair: reads an existing Charter, **constructs the team from §5 roster** (bind role→skill→spawn + verify prereqs), **orchestrates §4 work breakdown** via the §6 plan (spawn per package; Orbit sub-loop for build iterations; checkpoints + guardrails; hub-spoke aggregate), then verifies §7 and ships. Updates §9 Execution Log so the Charter stays the living source of truth; `resume` restarts from the last checkpoint. No analysis/planning — the Charter is the complete contract; a missing/invalid section stops at Phase 1 rather than improvising. Modes: `enact <path>` (default `docs/CHARTER.md`) / `dry-run` (construct + verify only) / `resume`. 6-30+ agents. **Confirm before team build** (★ Gate at Phase 1 exit).
+
+**Chain template:**
+`read Charter (validate §3-§8) → Phase 1 Team Construction (bind role→skill→spawn, verify prereqs, sub-orch setup, dry-run check) → ★ Confirm → Phase 2 End-to-End Orchestration (spawn per §4 package in §6 order; orbit sub-loop; parallel + file ownership; append §9) → Phase 3 Verify+Deliver (radar?/judge? → §7 gates → guardian?/launch? → update Charter §9)`
+
+Read: `reference/enact-recipe.md`.
+
+---
+
 ## essential
 
 Must-have feature **verdict + conditional implementation**. Converges on THE ONE feature without which the product cannot exist. Subtraction-oriented (MVP, core feature, scope reduction).

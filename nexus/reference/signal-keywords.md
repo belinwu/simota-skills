@@ -24,6 +24,8 @@
 | `design system docs`, `token docs`, `component catalog` | `DESIGN_SYSTEM_DOCS` (see Routing Quick Start) |
 | `brainstorm`, `bounce ideas`, `riff`, `ideate`, `sounding board` | (Riff direct — single-agent) |
 | `apex`, `auto-impl`, `full implementation`, `discovery to launch`, `end-to-end feature`, `ultimate` | `apex` |
+| `charter`, `instruction document`, `team charter`, `team operating manual`, `runbook for a team`, `analyze repo and design a team`, `self-driving team charter`, `team design spec`, `comprehensive repo analysis to a plan` | `charter` |
+| `enact`, `run the charter`, `execute the charter`, `execute the instruction document`, `build team from charter and run`, `orchestrate the charter`, `run docs/CHARTER.md` | `enact` |
 | `goal`, `/goal setup`, `goal recipe`, `long-running goal`, `autonomous loop setup` | `goal` |
 | `essential`, `must-have`, `MVP definition`, `core feature`, `minimum viable`, `cut scope`, `bare minimum` | `essential` |
 | `killer`, `killer feature`, `differentiator`, `WOW experience`, `decisive feature`, `competitive edge` | `killer` |
