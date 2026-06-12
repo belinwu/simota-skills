@@ -182,7 +182,9 @@ The Charter (`docs/CHARTER.md`) contains these sections; the companion `CHARTER.
 §7 Verification Plan         per-package + final gates (tests/build/security/AC checks)
 §8 Escalation & Rollback     failure tiers, circuit-breaker, rollback boundaries,
                              human-confirm triggers
-§9 Execution Log             (empty at authoring; appended by `enact` during execution)
+§9 Execution Log             (empty at authoring; during execution `enact` keeps this as
+                             a pointer + summary and streams the timeline to an append-only
+                             run-log file, default `docs/CHARTER.run.log.md`)
 ```
 
 §5 + §6 make the team a pure function of the document. Each §5 entry is a ready-to-use spawn spec aligned to the Agent Spawn Template (SKILL.md) — role → skill SKILL.md path, model tier, engine, acceptance criteria, output envelope — so `enact` can construct the team without re-deriving anything.

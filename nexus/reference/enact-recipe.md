@@ -11,6 +11,7 @@
 - Phase 1: Team Construction
 - ★ Confirm Gate
 - Run-to-Completion Contract (enforced)
+- Run Log (append-only)
 - Phase 2: End-to-End Orchestration
 - Phase 3: Verify & Deliver
 - Conditional Inclusion
@@ -26,7 +27,7 @@ Enact turns a Charter into shipped work. It does **no analysis and no planning**
 
 1. **Constructs the team** strictly from Charter §5 (roster) — resolving each role→skill→spawn config and verifying spawn prereqs. The team is a pure function of the document, so re-running enact on the same Charter rebuilds the identical team.
 2. **Orchestrates** Charter §4 (work breakdown) via the §6 plan — spawning each work package's owner, running build loops via Orbit, enforcing guardrails, and aggregating hub-spoke.
-3. **Verifies & delivers** against §7 (verification plan), then updates the Charter's §9 Execution Log so the document reflects what was actually done — the living Charter.
+3. **Verifies & delivers** against §7 (verification plan). Throughout, the orchestrator **appends every progress event to a dedicated append-only run-log file** (see **Run Log**) and keeps Charter §9 as a summary + pointer into it — so the run is auditable and resumable even if interrupted mid-stream.
 
 Because authoring is already paid for, enact is opt-in and explicit: it spawns the full execution team and writes code, so it announces before building (the ★ Confirm Gate).
 
@@ -44,7 +45,7 @@ Enact requires a Charter conforming to the schema in `reference/charter-recipe.m
 | §6 Orchestration Plan | Phase 2 | chain order, parallel branches + file ownership, checkpoints |
 | §7 Verification Plan | Phase 3 | per-package + final gates |
 | §8 Escalation & Rollback | all phases | failure tiers, circuit breaker, rollback boundaries |
-| §9 Execution Log | Phase 2-3 | append progress; resume from last checkpoint |
+| §9 Execution Log | Phase 2-3 | run-log **pointer** + final summary; the detailed timeline lives in the append-only run-log file (see **Run Log**), from whose tail `resume` restarts |
 
 The machine-readable companion (`CHARTER.roster.yaml`) is preferred for §5-§6 when present. If the Charter is missing a required section or a roster entry names a non-existent skill, enact stops at Phase 1 and reports the gap rather than improvising (the missing design belongs in `charter`, not here).
 
@@ -55,7 +56,8 @@ The machine-readable companion (`CHARTER.roster.yaml`) is preferred for §5-§6 
 | `/nexus enact` (no args) | Read `docs/CHARTER.md` (default), construct + **run to completion**. |
 | `/nexus enact <path>` | Read the Charter at `<path>`, construct + **run to completion**. |
 | `/nexus enact dry-run` | Phase 1 only — construct + verify the team, report constructability, **do not execute**. |
-| `/nexus enact resume` | Resume from the last §9 Execution Log checkpoint (skips completed packages). Run-to-completion still applies. |
+| `/nexus enact resume` | Resume from the **run-log tail** (last terminal package); skips completed packages. Run-to-completion still applies. |
+| `/nexus enact log=<path>` | Override the run-log file path. Default: derived from the Charter path (`docs/CHARTER.md` → `docs/CHARTER.run.log.md`). |
 
 Run-to-completion is the **default and enforced** behavior under `AUTORUN_FULL`. To re-introduce intermediate stops, drop to a confirming mode: `## NEXUS_GUIDED` (confirm at phase boundaries) or `## NEXUS_INTERACTIVE` (confirm every step). These are the only opt-outs; there is no per-package "pause and ask" inside `AUTORUN_FULL`.
 
@@ -69,9 +71,10 @@ docs/CHARTER.md │ §5 → bind        │     │ 👤    │  │ per §4 wor
 + roster.yaml ─▶│  role→skill→spawn│ ──▶ │ build │─▶│  spawn assigned owner       │ ─▶│ radar?/judge?│
                 │ verify prereqs   │     │ team? │  │  ‖ parallel + file ownership│   │ guardian?    │
                 │ sub-orch setup   │     │ cost  │  │  build loops → orbit (sub)  │   │ launch?      │
-                │ dry-run check    │     └───────┘  │  checkpoints + guardrails   │   │ → update §9  │
-                └──────────────────┘                │  hub-spoke aggregate → §9   │   │ → DELIVER    │
-                                                    └────────────────────────────┘   └──────────────┘
+                │ dry-run check    │     └───────┘  │  checkpoints + guardrails   │   │ → RUN_END    │
+                └──────────────────┘                │  aggregate; append run log  │   │ → DELIVER    │
+                                                    └──────────────┬─────────────┘   └──────────────┘
+                          append-only run log: docs/CHARTER.run.log.md  (Charter §9 = pointer + summary)
                           ◀──────── Failure escalation (per Charter §8) ───────────────────┘
 ```
 
@@ -114,7 +117,7 @@ Under `AUTORUN_FULL`, enact is bound to finish what it starts. It removes every 
 - **Recoverable failures auto-recover and continue.** Per package: retry (max 3) → `fallback_engine` (per §5) → recovery-chain injection (Scout RCA → Builder fix) → alternate owner skill. The run does not pause to ask.
 - **A package that still cannot complete is marked `SKIPPED(blocked)` with reason, logged to §9, and the run continues with the remaining packages.** One unsatisfiable package never aborts the whole run.
 - **Cost does not pause the run.** Enact proceeds to the Charter §8 budget ceiling automatically; only a genuine ceiling breach escalates, per §8 policy.
-- **Interruptions auto-resume.** On context limit / crash / harness restart, enact resumes from the last §9 checkpoint (as if `resume`) without asking. The run is "done" only at DELIVER.
+- **Interruptions auto-resume.** On context limit / crash / harness restart, enact resumes from the run-log tail (as if `resume`) without asking. The run is "done" only at DELIVER.
 
 **Completion guarantee:** Phase 2 loops until **every** §4 work package is in a terminal state — `SUCCESS`, `PARTIAL`, or `SKIPPED(blocked, reason)`. `BLOCKED` is never a resting state: the recovery ladder above must be exhausted first. DELIVER reports the full per-package status set.
 
@@ -123,6 +126,35 @@ Under `AUTORUN_FULL`, enact is bound to finish what it starts. It removes every 
 - **No valid Charter** (missing/invalid section, roster names a non-existent skill): a precondition failure, not a mid-run stop — enact reports and exits before execution.
 
 **Honesty red line:** Run-to-completion ≠ faking green. §7 verification failures are reported truthfully with output; the run completes and DELIVERs with FAILED/PARTIAL statuses rather than masking, retrying forever, or bypassing checks (global quality rule). "Finish to the end" means reach a true terminal verdict, not a fabricated success.
+
+## Run Log (append-only)
+
+The orchestrator maintains a single **append-only run-log file** and writes one line per progress event as the run unfolds. It is the crash-resilient audit trail and the source of truth for `resume` — never the orchestrator's in-context memory, which a long run outgrows.
+
+**File:** default `<charter_dir>/<charter_stem>.run.log.md` (e.g. `docs/CHARTER.md` → `docs/CHARTER.run.log.md`); override with `log=<path>`. Durable and committable alongside the Charter. Each enact run appends a `## Run <n> — <charter_path> — started <ts>` header, then its events; prior runs' lines are never rewritten.
+
+**Append rules:**
+- **Append-only.** Only ever add lines at the end; never edit or delete existing lines. A partial log after a crash is still valid.
+- **One line per event**, written *immediately* as the event occurs (not batched at the end) so an interruption loses at most the in-flight line.
+- **Line format:** `- [<ISO-8601 ts>] <EVENT> pkg=<id> status=<…> — <one-line note>` (events with no package omit `pkg=`).
+- **Flush at every boundary**, then mirror a compact pointer into Charter §9 (`last_event`, `run_log: <path>#<anchor>`) so §9 stays small and the timeline stays in the log file.
+
+**Logged events (minimum):**
+
+| Event | When | Key fields |
+|-------|------|-----------|
+| `RUN_START` | enact launches | charter path, mode, package count, log path |
+| `TEAM_BUILT` | Phase 1 exit | roster size, engines, fallbacks applied |
+| `CONFIRM` | ★ Gate | announce-and-proceed / approved / rejected |
+| `PKG_START` | a package begins | pkg id, owner skill, engine |
+| `PKG_RECOVER` | recovery-ladder step fires | pkg id, step (retry/fallback/scout/alt-owner) |
+| `PKG_DONE` | a package reaches terminal | pkg id, status (SUCCESS/PARTIAL/SKIPPED+reason) |
+| `SAFETY_STOP` | §8 red line hit | trigger, awaiting-confirm / resolved |
+| `VERIFY` | §7 gate result | gate, pass/fail + output ref |
+| `RESUME` | run restarts | resumed-from event, packages skipped |
+| `RUN_END` | DELIVER | overall status, per-package tally |
+
+**Resume:** on restart, read the run-log tail, treat the last `PKG_DONE` as the checkpoint, emit `RESUME`, and continue with packages not yet terminal. No re-confirmation, no re-running completed packages.
 
 ## Phase 2: End-to-End Orchestration
 
@@ -133,7 +165,7 @@ Execute Charter §4 via the §6 Orchestration Plan. Standard Nexus EXECUTE → A
 - **Guardrails** L1-L4 + checkpoint-resume on 4+ step chains; max-hop limit enforced; destructive/L4/out-of-scope actions pause per §3/§8 (safety red line). The circuit breaker after 3 consecutive package failures does **not** abort the run — it marks that package `SKIPPED(blocked)` and moves on (run-to-completion).
 - **Run-to-completion recovery:** a failing package walks the recovery ladder (retry → `fallback_engine` → Scout RCA + Builder fix → alternate owner) before being skipped; the run never pauses to ask on recoverable failures.
 - **Aggregate** branch outputs hub-spoke; validate schema + semantic correctness at each boundary.
-- **Append** progress to Charter §9 (Execution Log) at each package boundary so the document stays the source of truth and an interrupted run auto-resumes from the last logged checkpoint.
+- **Append** one run-log line per event (`PKG_START` / `PKG_RECOVER` / `PKG_DONE` / `SAFETY_STOP` …) the moment it occurs, and mirror a compact pointer into Charter §9, so an interrupted run auto-resumes from the run-log tail (see **Run Log**).
 
 **Exit gate:** **every** work package is in a terminal state — `SUCCESS` / `PARTIAL` / `SKIPPED(blocked, reason)`; none left pending or merely `BLOCKED`. Outputs aggregated; skipped packages carry unblock conditions in §9.
 
@@ -146,7 +178,7 @@ Execute Charter §4 via the §6 Orchestration Plan. Standard Nexus EXECUTE → A
 | `guardian` | Commit policy, branch strategy, PR preparation | Yes (if code changed) |
 | `launch` | Release/rollback plan | Conditional: release in scope |
 
-Run §7 gates (tests/build/security/AC). Update the Charter (§9 + any §4 AC status) so the delivered document reflects what was actually done — the living Charter. `DELIVER` returns `NEXUS_COMPLETE` with the Charter path, per-package status, verification results, and follow-ups.
+Run §7 gates (tests/build/security/AC), appending a `VERIFY` line per gate and a final `RUN_END` line to the run log. Update the Charter (§9 summary/pointer + any §4 AC status) so the delivered document reflects what was actually done — the living Charter. `DELIVER` returns `NEXUS_COMPLETE` with the Charter path, run-log path, per-package status, verification results, and follow-ups.
 
 **Exit gate:** §7 verification passes (or failures surfaced honestly with output, per global quality rules); Charter persisted and current.
 
@@ -155,7 +187,7 @@ Run §7 gates (tests/build/security/AC). Update the Charter (§9 + any §4 AC st
 | Condition | Add | Skip |
 |-----------|-----|------|
 | `dry-run` | — | ★ Confirm, Phase 2, Phase 3 |
-| `resume` | — | already-completed §9 packages |
+| `resume` | — | packages already terminal in the run-log tail |
 | No code changes (docs/plan-only Charter) | — | radar, judge, guardian, launch |
 | Work cluster needs hierarchy (per §5) | Vision/Orbit/Rally sub-orchestrator | — |
 | Release in scope (per §7/§8) | launch | — |
@@ -167,6 +199,7 @@ Nexus AUTORUN enact docs/CHARTER.md
   ── read Charter ─────────────────────────────────────
   → parse docs/CHARTER.md (+ CHARTER.roster.yaml if present)
   → validate required sections (§3-§8); missing/invalid → stop + report gap
+  → open run log docs/CHARTER.run.log.md (append "## Run <n>" + RUN_START)
   ── Phase 1 Team Construction ────────────────────────
   → for each §5 roster entry: bind(role→skill→spawn) + verify prereqs
   → sub-orchestrator setup (Vision/Orbit/Rally)? → dry-run check
@@ -178,16 +211,18 @@ Nexus AUTORUN enact docs/CHARTER.md
        spawn(owner_skill, contract=package.AC, model=§5.tier, engine=§5.engine)
        ‖ parallel branches with §6 file ownership
        build-loop packages → orbit(sub-orchestrator)
+       append run-log: PKG_START → PKG_RECOVER* → PKG_DONE (immediately)
        on recoverable failure: retry→fallback_engine→Scout+Builder→alt owner
          → still failing: mark SKIPPED(blocked, reason), CONTINUE (no abort)
        on safety red line (L4/destructive/out-of-scope per §8): pause + confirm
-       on interruption: auto-resume from §9 checkpoint
-       append §9 Execution Log per package boundary
+       on interruption: auto-resume from run-log tail
+       mirror §9 pointer per package boundary
   → aggregate hub-spoke
   ── Phase 3 Verify & Deliver ─────────────────────────
-  → radar? + judge? → §7 gates (tests/build/sec/AC)
+  → radar? + judge? → §7 gates (tests/build/sec/AC); append VERIFY lines
   → guardian(commit/PR)? → launch(release)?
-  → update Charter (§9 + AC status) → NEXUS_COMPLETE(charter_path, statuses)
+  → append RUN_END; update Charter (§9 pointer + AC status)
+  → NEXUS_COMPLETE(charter_path, run_log_path, statuses)
 ```
 
 ## Failure Escalation
@@ -219,4 +254,4 @@ Enact is the expensive half of the pair; the ★ Confirm Gate, 5+-agent chain co
 
 ## Visualization
 
-Topology ASCII above. Enact consumes `docs/CHARTER.md` (+ `CHARTER.roster.yaml`) and writes back §9; the Charter remains the single source of truth across runs.
+Topology ASCII above. Enact consumes `docs/CHARTER.md` (+ `CHARTER.roster.yaml`), streams every progress event to the append-only run log `docs/CHARTER.run.log.md`, and writes back the Charter §9 pointer/summary; the Charter stays the single source of truth and the run log is the auditable, resumable timeline.
