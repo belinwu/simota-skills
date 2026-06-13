@@ -17,8 +17,11 @@ Select at least 3 personas per session, drawing from these axes so coverage avoi
 | Emotional state | Hopeful newcomer / Frustrated continuing user / About to churn / Returning after pause |
 | Purpose | Personal use / Team management / Evaluating for purchase / Regulatory compliance |
 | Locale / Culture | First-language match / Second-language user / Region with different mental model |
+| Disposition / Change stance | Conservative majority / Pragmatist / Early-adopter visionary / **Entrepreneur** / **Revolutionary** / **Maverick (heretic)** |
 
-When Cast personas are available at `.agents/personas/registry.yaml`, prefer those — they carry validated diversity. When Cast is absent, generate proto-personas under `_common/AI_PERSONA_RISKS.md` guardrails and cap confidence at 0.50.
+The **Disposition** axis is the antidote to a demand report full of incremental gripes (see the conservatism guard in `SKILL.md` Core Contract). The mainstream axes above bias toward friction-relief; the change-stance archetypes below are the natural source of **aspirational `ASPIRE`-mode demands** and **bold `H2`/`H3` feature seeds** for Spark. Define them by *behavior and worldview*, never by demographics (the demographic-stand-in anti-pattern applies doubly here). Detailed behavioral anchors + Jung-archetype mapping → **Challenger Archetypes** below.
+
+When Cast personas are available at `.agents/personas/registry.yaml`, prefer those — they carry validated diversity; the change-stance archetypes map onto Cast's Jung **Outlaw / Magician / Creator / Hero** brand archetypes (`cast/reference/archetype-mapping.md`). When Cast is absent, generate proto-personas under `_common/AI_PERSONA_RISKS.md` guardrails and cap confidence at 0.50.
 
 ---
 
@@ -41,6 +44,26 @@ Each field is mandatory. An empty `last_frustration` or `unspoken_assumption` is
 
 ---
 
+## Challenger Archetypes (Disposition axis)
+
+The mainstream Diversity-Matrix axes voice **friction-relief** demands ("fix what hurts"). Challenger archetypes voice **transformation** demands ("change what's possible"). They are the persona-level source of the bold, aspirational, anti-conservative demands the `ASPIRE` mode and Spark's `H2`/`H3` Horizon ladder need. Channel them by worldview and behavior — never by demographic or job title.
+
+| Archetype | Worldview | What they demand (and the others miss) | Voice tell | Jung map (Cast) |
+|-----------|-----------|----------------------------------------|-----------|-----------------|
+| **Entrepreneur** | The product is leverage — a force multiplier for value they're trying to create. Tolerates rough edges if it unlocks capability. | Demands framed as opportunity and leverage: "let me 10x this / automate it / build on top of it / monetize it." Capability over polish. | "If it could just *do X for me*, I'd build a whole workflow around it." | Creator / Magician / Hero |
+| **Revolutionary** | The *whole approach* is wrong, not the button. Impatient with incrementalism; wants the category redrawn. | Systemic, category-redefining demands the friction-relief personas never reach because they accept the current frame. | "You're optimizing the wrong thing — nobody should have to do this at all." | Outlaw / Magician |
+| **Maverick / Heretic** | Rejects the "correct" / intended way to use the product. Power-uses against the grain. | Escape hatches, scripting, un-sanctioned flexibility, API access — demands the happy-path design actively suppresses. | "I know I'm not *supposed* to use it like this, but here's what I actually do…" | Outlaw / Explorer |
+| **Early-adopter visionary** | Lives a release or two in the future; treats what's coming as already overdue. | What's "obviously next" — the demand that looks premature now and obvious in hindsight. | "Everyone will expect this within a year; why don't you have it yet?" | Explorer / Magician |
+
+### Guardrails (mandatory)
+
+- **Addition, not replacement.** Challenger archetypes are layered on top of the mandatory beginner + power-user + edge-case set (Core Contract) — never instead of them. A demand report that is *all* visionaries over-rotates the other way and loses the silent majority.
+- **Higher projection-bias risk.** These archetypes amplify the model's own "disruptive/visionary" priors (a distinct `_common/AI_PERSONA_RISKS.md` failure mode). Their demands ceiling at `[hypothesis]` + `synthetic: true` like any synthetic voice, and they are *especially* prone to producing visionary-but-unwanted features — route to Field for real-switcher validation before generalizing.
+- **Bold ≠ unmoored.** Even a Revolutionary's demand needs a concrete `last_frustration` and a real scene; "burn it all down" with no grounded friction is FUD, not a demand. The self-rejection gate (`SKILL.md`) still applies.
+- **Don't feasibility-filter their ambition.** A challenger demand that "sounds unrealistic" must be surfaced, not silently tamed — that is forbidden feasibility-filtering. Calibration governs confidence; it never governs ambition.
+
+---
+
 ## Request Generation Modes
 
 Each Recipe defaults to one Mode (see the Recipes table in `SKILL.md`). The Modes below describe how a persona generates demand — what kind of friction they channel, how broad or narrow their voice is. `COMPETE` and `EDGE` are Mode Modifiers that can overlay any Recipe.
@@ -57,7 +80,7 @@ Each Recipe defaults to one Mode (see the Recipes table in `SKILL.md`). The Mode
 
 ## Embodiment Tactics
 
-Five tactics that move demand generation from abstract to lived. Apply at least one per persona in the `roleplay` Recipe; use them as quality probes in other Recipes.
+Six tactics that move demand generation from abstract to lived. Apply at least one per persona in the `roleplay` Recipe; use them as quality probes in other Recipes.
 
 ### "5-Year-Old Test"
 Can you explain this feature to a 5-year-old? If not, users won't understand either. Use as a curse-of-knowledge probe: any demand that requires industry vocabulary to express is a demand the user could not have voiced.
@@ -73,6 +96,9 @@ Focus on users who don't speak up but quietly churn. They generate no support ti
 
 ### "Reverse Thinking"
 Measure real value by asking "Who would suffer if this feature disappeared?" If no persona can name a concrete harm, the demand is weaker than it sounds. Use as a kill-rule probe in the `opportunity` Recipe.
+
+### "Magic Wand"
+The Best-Day inverse of Worst Day: "if this product could do *anything* for you, what would make you tell everyone about it?" Removes the implicit feasibility filter so the persona voices the aspirational want, not the resigned compromise. The primary source of `ASPIRE`-mode demands and the natural tactic for the **Challenger Archetypes** above — apply it whenever a session risks returning only incremental gripes.
 
 ---
 
@@ -131,6 +157,7 @@ Before handing off demands generated under any of these tactics:
 - [ ] If Cast was unavailable, all proto-personas are tagged `confidence ≤ 0.50` and `synthetic: true`
 - [ ] At least one demand survives the "Worst Day" probe
 - [ ] At least one demand passes the "Reverse Thinking" kill-rule
+- [ ] **`ASPIRE` / bold sessions**: ≥1 Challenger Archetype channeled *in addition to* (never instead of) the mandatory beginner + power-user + edge-case set; its demand is grounded in a concrete `last_frustration`, ceilings at `[hypothesis]`, and is not feasibility-filtered
 - [ ] No persona was steered toward an opinion that smooths out a contradiction with another persona
 - [ ] **`roleplay` only**: zero character breaks / PM-voice leakage; representativeness caveat stated; output shaped as a `ROLEPLAY_ARC`
 
@@ -144,3 +171,5 @@ Before handing off demands generated under any of these tactics:
 - **Smoothed contradictions**: When two personas disagree, preserve both voices. The contradiction is the signal.
 - **Loudest-voice projection**: Channeling the loudest user (e.g., the engineer who files detailed tickets) and labeling them "the user." Use Silent Majority tactic to counter.
 - **PM voice leakage**: "The user would benefit from a streamlined onboarding flow" is not a user voice — it is a PM voice. Translate to first-person friction before continuing.
+- **All-visionary over-rotation**: a demand report channeling only Entrepreneurs / Revolutionaries / Mavericks. The Challenger Archetypes are an *addition* for bold demands, not a replacement — drop the silent majority and you trade one bias (incrementalism) for another (disruption-for-its-own-sake).
+- **Ungrounded revolutionary**: "tear the whole thing down" with no concrete `last_frustration` or scene. Bold ≠ unmoored — a challenger demand still needs a real friction anchor or it is FUD.
