@@ -38,6 +38,21 @@ These map to Orbit guardrails already in the SKILL: external termination enforce
 
 Confidence on this section: medium (critique synthesized largely from secondary sources, e.g. AlphaSignal 2026-06-08). Treat as directional, not absolute. The stronger claim "loops only pay off when all four of {weekly repetition, automated verification, slack token budget, senior-engineer tooling} hold" was weakly refuted in verification (1-2) — necessary-condition framing is too strict.
 
+## Canonical loop shapes (verified 2026-06-15)
+
+Two well-documented loops anchor the design space — one official, one community:
+
+- **evaluator-optimizer** (Anthropic, *Building Effective Agents* + cookbook): a generator LLM produces, a *separate* evaluator LLM returns PASS or feedback inside the loop; **PASS is the only exit** (`while True: if evaluation == "PASS": return result` — no max-iteration cap by itself), and feedback folds into the next generation's context. This is the maker/checker split as a control loop.
+- **Ralph** (Geoffrey Huntley / HumanLayer origin; `snarktank/ralph` reference impl): a bash `while` loop re-piping a static prompt into a fresh agent instance. The load-bearing ideas, all verified:
+  - **Fresh context per iteration** — state lives *outside* the conversation: git history + `progress.txt` + `prd.json`, not in-context memory.
+  - **Per-iteration cycle is observe → decide → act → verify**: pick the highest-priority `passes:false` story → implement *one* → run typecheck/tests → commit only if green → update `prd.json` / append `progress.txt`.
+  - **Loop-until-done via completeness sentinel**: when all stories are `passes:true`, the agent emits `<promise>COMPLETE</promise>` and the loop `grep`s for it to exit. (The original Huntley one-liner had *no* auto-exit — operator stopped it by hand; later variants added Stop-hook / max-iterations / sentinel exits.)
+  - **The loop only functions with a real verification gate** (typecheck/tests/green CI). No checker → broken code compounds across iterations. Each story must fit in one context window.
+
+**Drift / "overbaking"** is the signature failure of running too long: bizarre emergent scope creep (the canonical anecdote: a loop adding unrequested post-quantum crypto). Mitigation that practitioners converge on — **bound the loop**: tight spec, iteration/time limit, acceptance tests, and for desired-state loops, **run ONCE on an overnight cron merging small increments** rather than unbounded continuous runs. (Practitioner consensus, not benchmarked.)
+
+> Refuted in verification — do not repeat: `/loop` "expires after 3 days" (it's **7 days**); Ralph being "cost-efficient at ~$10-12/hr indefinitely"; "frequent context resets/compaction are *essential* to loop reliability" (fresh-context-per-iteration is one valid design, not a universal requirement).
+
 ## How this informs Orbit decisions
 
 - At `INTAKE`/`CONTRACT`: if the goal matches a "skip a loop" case above, say so and recommend a direct prompt instead of generating a runner. A loop with no automated verification command should fail `ON_GOAL_CONTRACT_WEAK`.

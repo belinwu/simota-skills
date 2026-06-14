@@ -56,14 +56,23 @@ Use these as evidence when proposing local chain patterns of the same shape (e.g
 
 ## 5. Dynamic Workflows (Claude Code-native, research preview 2026)
 
-**What it is.** A Claude Code feature where Claude "dynamically writes orchestration scripts that run tens to hundreds of parallel subagents in a single session, checking its work before anything reaches you." It is the native, in-session delivery of Multiagent Orchestration (§1) + Outcomes-style verification + automatic checkpointing, combined into one mechanism. "Progress is saved as the run goes, so a job that's interrupted picks up where it left off instead of starting over." High-stakes runs add **adversarial review** (agents attempt to refute findings before delivery).
+**What it is.** A Claude Code feature (research preview, requires **Claude Code v2.1.154+**, shipped 2026-05/06) where Claude **writes a JavaScript orchestration script on demand** that spawns and coordinates subagents at scale, checking its work before anything reaches you. It is the native, in-session delivery of Multiagent Orchestration (§1) + Outcomes-style verification + automatic checkpointing, combined into one mechanism. "Progress is saved as the run goes, so a job that's interrupted picks up where it left off instead of starting over." High-stakes runs add **adversarial review** (agents attempt to refute findings before delivery).
+
+**Documented runtime limits (verified 2026-06-15, `code.claude.com/docs/en/workflows`):**
+- **Up to 16 *concurrent* agents** (fewer on machines with limited CPU cores) — bounds local resource use.
+- **1,000 agents *total* per run** — prevents runaway loops.
+- Scale is "dozens to hundreds of agents per run" — this is the **total** agent count, **NOT** the concurrency degree (which is capped at 16). Do not read the blog's "tens to hundreds of parallel subagents" as 100-way simultaneous parallelism.
+- The script holds the loop, branching, and **intermediate results in script variables**, so Claude's context holds only the final answer → native context-bloat avoidance.
 
 | Property | Dynamic Workflows | Nexus equivalent |
 |----------|-------------------|------------------|
-| Fan-out scale | tens–hundreds of parallel subagents | L2 Parallel Spawn / Rally (L3) — typically 2–8 branches before hierarchical decomposition (Core Rule #9) |
+| Fan-out scale | ≤16 concurrent, ≤1,000 total per run (dozens–hundreds typical) | L2 Parallel Spawn / Rally (L3) — typically 2–8 branches before hierarchical decomposition (Core Rule #9) |
 | Verification | independent verification + adversarial review before integration | Evaluator-Loop / `acceptance` Code+Design adversaries |
-| Resume | native checkpoint-resume across interruptions | Checkpoint-resume for 4+ step chains (Safety Contract) |
+| Resume | native checkpoint-resume, **same Claude Code session only** (exit → next session starts fresh; completed agents return cached results) | Checkpoint-resume for 4+ step chains (Safety Contract) |
+| Cost control | explicit token budget via natural language ("use 10k tokens" sets the cap) | OE / token-efficiency tracking (Core Contract) |
 | Orchestration logic | Claude writes the orchestration script on the fly | Recipe + routing-matrix (pre-designed chains) |
+
+**Six documented design patterns** (`claude.com/blog/a-harness-for-every-task-...`): `classify-and-act` / `fan-out-and-synthesize` (synthesize is a **barrier** — waits for all fan-out agents, then merges) / `adversarial verification` (a separate agent refutes each output against a rubric) / `generate-and-filter` / `tournament` (N agents attack one task via different methods) / `loop-until-done` (spawn until a stop condition — no new findings / no more errors). **Default to pipeline (no barrier between stages); a barrier (`fan-out-and-synthesize`) is justified only when results must be merged before downstream work** — unnecessary barriers waste the fast branches' wall-clock.
 
 **Why isolation + adversarial review (the failure modes DW exists to fix).** A single agent working a complex task in one context window degrades in three specific ways — these are the canonical justification for spawning isolated subagents (Core Rule #3) and for the adversarial-verification stage, not just a performance optimization:
 1. **Agentic laziness** — the agent declares the task complete after partial progress (e.g. addressing 35 of 50 items in a security review). Mitigation: one isolated subagent per item with a narrow, checkable goal, so "done" is verified per-item, not self-asserted over the whole set.
@@ -75,13 +84,17 @@ Use these as evidence when proposing local chain patterns of the same shape (e.g
 1. Ask directly: "Create a dynamic workflow".
 2. Enable the **`ultracode`** setting (effort menu) — sets effort to `xhigh` and lets Claude auto-decide when to deploy a workflow. Auto mode is recommended. `ultracode` ≈ AUTORUN_FULL + Opus 4.8 P6 (`xhigh` baseline).
 
-**Availability.** Research preview across Claude Code CLI, Desktop, VS Code extension, and the Claude API (incl. Amazon Bedrock, Vertex AI, Microsoft Foundry).
+**Availability.** Research preview on Claude Code (CLI confirmed). Broader-surface claims — Desktop / VS Code extension, the Claude API, and partner platforms (Amazon Bedrock, Vertex AI, Microsoft Foundry) — rest on a **single secondary source (InfoQ)** and failed adversarial verification (vote 1-2); treat as unconfirmed until an Anthropic primary doc states the exact plan/surface coverage. Verify before quoting availability.
 
 **Selection rule — native Dynamic Workflows vs Nexus manual orchestration:**
 - Prefer **native Dynamic Workflows** as the *execution substrate* for large homogeneous fan-outs on Claude Code: codebase-wide bug hunts / security audits, large migrations or framework modernization spanning thousands of files, and critical work needing independent verification. Native DW scales fan-out and checkpointing further than Nexus can manually spawn.
 - Keep **Nexus** as the *routing/recipe layer*: task classification, minimum-viable-chain design, cross-domain specialist selection (Recipes), and hub-spoke guardrails. Nexus's value is *which* specialists and *what shape*, not raw parallel throughput.
 - Composition: a Nexus Recipe step whose work is a large parallel sweep (e.g. `acceptance` Code Oracles, `apex` Loop) may **delegate execution to a native dynamic workflow** when available, rather than Nexus issuing dozens of individual `Agent(...)` calls. Surface this in `NEXUS_COMPLETE` when the workload matches a DW use case.
 - When DW is unavailable (Codex CLI / agy, or older Claude Code), fall back to L2/L3 spawn + Core Rule #9 hierarchical decomposition.
+
+**Cost & boundary (verified, `anthropic.com/engineering/multi-agent-research-system`).** Multi-agent fan-out costs **~15× the tokens of a single chat** (single agent ≈4×); token usage alone explains ~80% of performance variance. So DW pays off only when task value justifies the spend, and **multi-agent is a poor fit for tasks needing shared context or heavy inter-agent dependencies — which includes most coding tasks**. Reserve DW for breadth-first work with independently-distillable results (research, audits, sweeps); for tightly-coupled coding, prefer a single agent or a small sequential chain. Tiered-model selection (strong lead + cheaper workers — Anthropic's Opus-4-lead + Sonnet-4-workers beat single-agent Opus 4 by 90.2% on their internal research eval) is the Plan-and-Execute pattern Nexus already applies.
+
+**Effectiveness & API caveats.** The failure-mode-mitigation and "more reliable than a single pass" claims are Anthropic vendor-blog framing, not independently benchmarked. The exact orchestration primitive signatures (`agent()` / `parallel()` / `pipeline()` / `phase()`) circulating in community write-ups are **not confirmed by an Anthropic primary doc** (the official blog says only "a few special functions") — do not cite specific signatures as official.
 
 **Anti-pattern vocabulary (extends §3):** "run hundreds of agents in parallel and self-check until it converges" → call this **Dynamic Workflows**, not "big parallel chain".
 

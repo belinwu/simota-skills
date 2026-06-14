@@ -2,7 +2,7 @@
 
 How the **loop engineering** pattern maps onto concrete orchestration primitives in each hub engine. Nexus stays the routing/recipe layer; this file is the reference for *which primitive implements which loop part* when designing a `/goal`-style or apex/summit loop. For the concept, lineage, and applicability limits see `orbit/reference/loop-engineering.md`.
 
-> Snapshot date: 2026-06-11. Versions move within weeks — verify against primary docs (`code.claude.com/docs`, `developers.openai.com/codex`) before quoting a version number.
+> Snapshot date: 2026-06-15. Versions move within weeks — verify against primary docs (`code.claude.com/docs`, `developers.openai.com/codex`) before quoting a version number.
 
 ## The pattern → primitive map
 
@@ -10,11 +10,28 @@ A loop = scheduled execution + isolated workspaces + maker/checker separation + 
 
 | Loop part | Claude Code | Codex |
 |-----------|-------------|-------|
-| Heartbeat (recurring) | `/loop` (cron syntax, v2.1.72+, e.g. `0 9 * * 1-5`); hooks; GitHub Actions for laptop-closed runs | Automations tab (project + prompt + cadence + local/worktree target); Triage inbox for findings |
-| Stop-when-done (in-session) | `/goal` (v2.1.139+): runs until a written condition holds; **a separate fast model — default Haiku — checks completion each turn**, so the maker isn't the grader | `/goal`: same primitive — works across turns until a verifiable stop condition, with pause/resume/clear |
+| Heartbeat (recurring) | `/loop` — **three modes by input** (see § `/loop` modes; interval mode v2.1.72+, self-pace v2.1.92-101); hooks; GitHub Actions / Desktop Scheduled tasks for laptop-closed runs | Automations tab (project + prompt + cadence + local/worktree target); Triage inbox for findings |
+| Stop-when-done (in-session) | `/goal` (v2.1.139+): runs until a written condition holds; **a separate fast model — default Haiku — checks completion each turn from what's surfaced in the conversation only (it runs no commands, reads no files)**, so the maker isn't the grader. Bound runaway with a `or stop after N turns` clause in the condition | `/goal`: same primitive — works across turns until a verifiable stop condition, with pause/resume/clear |
 | Workspace isolation | `git worktree`; `--worktree`/`-w` → `.claude/worktrees/<value>/` on branch `worktree-<value>` (v2.1.50); `isolation: worktree` in subagent frontmatter (temp worktree auto-removed if subagent finishes with no changes) | Built-in worktree support; multiple threads hit one repo without collision |
 | Maker/checker separation | subagents (`.claude/agents/`, markdown) + agent teams; worktrees isolate *file edits*, subagents/teams coordinate *the work* | subagents spawned in parallel (≤8), results merged into one response; built-in `default`/`worker`/`explorer`; custom agents require `name`/`description`/`developer_instructions` (model + sandbox_mode inherited from parent); on-demand spawn only |
 | Persistent memory | markdown / Linear / state files on disk — "the agent forgets, the repo doesn't" | same: state file outside the conversation as the loop's spine |
+
+## `/loop` modes & safety bounds (Claude Code, verified 2026-06-15)
+
+`/loop [interval] <prompt>` — the **leading token** is parsed as the interval iff it matches `^\d+[smhd]$` (e.g. `5m`, `2h`); the rest is the prompt. Input shape selects one of three modes (primary: `code.claude.com/docs/en/scheduled-tasks`):
+
+| Input | Mode | Behavior |
+|-------|------|----------|
+| `interval` + prompt (`/loop 5m /babysit-prs`) | **fixed cron** | runs the prompt every interval. `5m → */5 * * * *`. Min granularity 1 min — sub-minute (`30s`) is ceil'd to `ceil(N/60)m` |
+| **prompt only** (`/loop <prompt>`, no interval) | **self-paced (dynamic)** | Claude picks each next delay (1 min – 1 hr) from observed state — short while a build/PR is active, long when idle. **Self-terminates** (schedules no next wake-up) once the task is provably complete; can reach for the `Monitor` tool to skip polling entirely. *Platform exception: Bedrock/Vertex/Foundry fall back to a fixed 10-min schedule when the interval is omitted* |
+| interval-only / nothing | **maintenance** | runs the built-in maintenance prompt, or `loop.md` (`.claude/loop.md` > `~/.claude/loop.md`; ignored when a prompt is given, falls back to built-in if absent) |
+
+**Runaway bounds (load-bearing safety):**
+- All `/loop` tasks are **session-scoped** — starting a new conversation stops them.
+- Recurring tasks **auto-expire 7 days after creation**: fire one final time, then self-delete. (Common write-ups claiming "3 days" are **wrong** — verified-refuted; 7 days is correct.)
+- Fixed-interval loops run until stopped or 7 days elapse. **Esc** cancels a *waiting* `/loop` iteration — but **not** a `CronCreate` task made by asking Claude directly.
+
+For OS-reboot-persistent recurrence use Desktop Scheduled tasks (Hourly/Daily/Weekdays/Weekly) or Routines, not terminal `/loop` (3-way Cloud / Desktop / `/loop` taxonomy). `/goal` (next-turn, model-checked stop) vs `/loop` (time-elapsed tick, stop-op or Claude's completion call) vs **Stop hook** (your own script decides) are the three official "keep a session running" mechanisms — the docs distinguish them explicitly.
 
 ## Engine framing (official)
 
