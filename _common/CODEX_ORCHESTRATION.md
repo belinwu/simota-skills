@@ -16,7 +16,7 @@ Engine-selection rule for orchestrators:
 
 ## Why This Exists
 
-The Nexus stack historically assumed Claude Code is the hub: the canonical spawn template is `Agent(...)`, model selection is `sonnet/opus/haiku`, parallelism is `run_in_background`, and the authoring protocol is Opus-4.8-specific (effort levels, P4 parallel triggers). None of those map cleanly to a Codex CLI hub, which spawns via `spawn_agent`/`wait_agent`, selects `gpt-5.5` / `gpt-5.4` / `gpt-5.4-mini` (see C3), has **no background-spawn primitive**, and gates fan-out via `agents.max_depth` rather than a soft "max 3" convention.
+The Nexus stack historically assumed Claude Code is the hub: the canonical spawn template is `Agent(...)`, model selection is `sonnet/opus/haiku`, parallelism is `run_in_background`, and the authoring protocol is Opus-4.8-specific (effort levels, P4 parallel triggers). None of those map cleanly to a Codex CLI hub, which spawns via `spawn_agent`/`wait_agent`, runs the latest model `gpt-5.5` throughout (see C3.0), has **no background-spawn primitive**, and gates fan-out via `agents.max_depth` rather than a soft "max 3" convention.
 
 When Codex drives the hub, apply the eight principles below instead of the Opus principles. They are grounded only in verified repository facts (`_common/CLI_COMPATIBILITY.md`, `nexus/SKILL.md` Execution Layers); items with no confirmed source are marked **未確認** and must not be speculatively completed.
 
@@ -44,13 +44,13 @@ Codex has **no background-spawn primitive**. Parallelism = issue N `spawn_agent`
 
 ### C3. Reasoning-Effort Routing
 
-Apply Plan-and-Execute across Codex models: a high-reasoning model plans, a cheaper default model executes (Core Contract cost principle).
+> **C3.0 — Latest-model mandate for Codex (user policy, overrides the Plan-and-Execute tiering).** Codex always uses the **latest model — currently `gpt-5.5`** for **every step and every spawned subagent** (orbit build loops, `spawn_agent` fan-out, charter §5 roster, recipe plan/execute steps). There is **no cheaper Codex execute/fast tier**. "Latest" is the contract — when a newer Codex model supersedes `gpt-5.5`, update this single line and everything follows. Vary only reasoning depth via `model_reasoning_effort`; never downgrade the model on cost grounds.
 
-**Apply by (model lineup verified 2026-06 against developers.openai.com/codex/models — `gpt-5.1`/`gpt-5.1-codex-max` and `gpt-5.2`/`gpt-5.3-codex` are legacy/deprecated):**
-- Planning / high-complexity design steps → `gpt-5.5` (recommended frontier coding model, Apr 2026).
-- Standard implementation / execution steps → `gpt-5.4` (flagship professional); lightweight steps → `gpt-5.4-mini` (fast).
-- `gpt-5.3-codex-spark` is a ChatGPT-Pro research preview — do not hard-code it into recipes.
-- Reasoning effort is additionally tunable via the **`model_reasoning_effort`** config key (`config.toml` or `-c model_reasoning_effort="..."`), values `minimal | low | medium | high | xhigh` (default `medium`; `xhigh` model-dependent). [Verified — config-reference; resolves the former 未確認 marker.] Combine both axes: model choice sets the capability tier, `model_reasoning_effort` tunes depth within it.
+Plan-and-Execute's cost principle (Core Contract) is realized for Codex through `model_reasoning_effort`, not through a cheaper model tier — the model stays `gpt-5.5` throughout.
+
+**Apply by (latest model verified 2026-06 against developers.openai.com/codex/models):**
+- All steps (planning, design, standard implementation, lightweight) → `gpt-5.5` (latest model, C3.0). Differentiate by `model_reasoning_effort`: higher effort for planning/high-complexity, lower for routine.
+- Reasoning effort is tunable via the **`model_reasoning_effort`** config key (`config.toml` or `-c model_reasoning_effort="..."`), values `minimal | low | medium | high | xhigh` (default `medium`; `xhigh` model-dependent). [Verified — config-reference; resolves the former 未確認 marker.] The model stays `gpt-5.5`; `model_reasoning_effort` tunes depth within it.
 
 ### C4. Loose-Prompt Spawning
 
@@ -117,7 +117,7 @@ When validating a skill's Codex-orchestrator path, use the eight checks below (A
 
 - R-C1 Spawn-depth prereqs verified before fan-out; concrete internal fall-back reason
 - R-C2 Parallel branches use N `spawn_agent` → `wait_agent` join (no assumed background execution)
-- R-C3 Effort routed by model choice (`gpt-5.5` plan / `gpt-5.4`-family execute) plus `model_reasoning_effort` (`minimal|low|medium|high|xhigh`); no invented level names beyond these
+- R-C3 All Codex steps and spawned subagents run on the latest model (`gpt-5.5`, C3.0); depth tuned via `model_reasoning_effort` (`minimal|low|medium|high|xhigh`), not by model downgrade; no cheaper Codex tier and no invented level names beyond these.
 - R-C4 Loose-prompt spawn (Role/Target/Output); no methodology padding
 - R-C5 Lazy-visibility handling (attempt call when prereqs hold)
 - R-C6 Checkpoint-resume via `send_input`/`resume_agent`/`close_agent` for 4+ step chains

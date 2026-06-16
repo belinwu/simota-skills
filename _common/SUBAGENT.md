@@ -66,14 +66,14 @@ Task received
 | High | `opus` | Complex reasoning, architecture decisions |
 | — | `inherit` (default) | Use parent session's model |
 
-Full model IDs (`claude-opus-4-6`, `claude-sonnet-4-6`, etc.) are also supported.
+Full model IDs (`claude-opus-4-8`, `claude-sonnet-4-6`, etc.) are also supported.
 
 ### Key Frontmatter Fields (Custom Subagents)
 
 | Field | Description |
 |-------|-------------|
 | `maxTurns` | Maximum agentic turns (runaway prevention, cost control) |
-| `effort` | Reasoning effort: `low`/`medium`/`high`/`xhigh`/`max` (Opus 4.6+; `xhigh` is the Opus 4.8 default, respected strictly) |
+| `effort` | Reasoning effort: `low`/`medium`/`high`/`xhigh`/`max` (`xhigh` is the Opus 4.8 default, respected strictly) |
 | `isolation` | `worktree` for git worktree isolation (prevents file conflicts during parallel work) |
 | `memory` | Persistent memory: `user`/`project`/`local` (cross-session learning) |
 | `skills` | Skill content to inject at startup (pre-injection of SKILL.md) |

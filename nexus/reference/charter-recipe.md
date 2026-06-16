@@ -154,7 +154,7 @@ The Charter is **multi-engine by default** (`engines=claude+codex`). Phase 3 ass
 | Optional third axis (cross-engine triangulation, extra parallel capacity) | **agy** (`/agent` / `agy -p`) when AVAILABLE | Perspective diversity; only when `engines=all` and prereqs hold |
 
 **Authoring rules:**
-- Tag every §5 roster entry with `engine:` and a `model`/`effort`. **Codex packages pin `model: gpt-5.5`** (charter does not split Codex into a cheaper execute tier — every Codex spawn uses `gpt-5.5`); Claude tiers and agy `/model` per `reference/hub-authoring.md` § Model Selection.
+- Tag every §5 roster entry with `engine:` and a `model`/`effort`. **Codex packages pin `model: gpt-5.5`** — the latest Codex model; charter never splits Codex into a cheaper execute tier, every Codex spawn uses the latest model (latest-model mandate `_common/CODEX_ORCHESTRATION.md` C3.0; tune depth via `effort`/`model_reasoning_effort`, not by downgrading). Claude tiers and agy `/model` per `reference/hub-authoring.md` § Model Selection.
 - Where §5 nominates **Orbit** for a build loop, pin its sub-hub engine to **Codex CLI** (Orbit drives `spawn_agent` per iteration), mirroring Apex.
 - Record per-engine **prerequisites** in §6 so `enact` Phase 1 can verify them: Codex needs `multi_agent = true` + `[agents] max_depth ≥ 2` (`reference/execution-layers.md`, `_common/CLI_COMPATIBILITY.md §9`); agy needs a TTY/real-pty headless path.
 - Specify a **fallback** per Codex/agy package (`fallback_engine: claude-code`) so `enact` degrades gracefully when an engine is unreachable instead of hard-failing — and note the cost/throughput trade-off the fallback implies.

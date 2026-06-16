@@ -98,16 +98,18 @@ Direct model names are CLI-specific. Authoring tip: write SKILL.md with role nam
 
 | Role | Claude Code | Codex CLI | agy |
 |------|-------------|-----------|-----|
-| Default / balanced | `sonnet` (claude-sonnet-4-6) | `gpt-5.4` (flagship professional) | Gemini 3.5 Flash (High/Medium) |
-| High-reasoning / precision | `opus` (claude-opus-4-8) | `gpt-5.5` (recommended frontier coding, Apr 2026) | Gemini 3.1 Pro (High/Low), Claude Sonnet 4.6 (Thinking), Claude Opus 4.6 (Thinking) |
-| Fast / cheap | `haiku` (claude-haiku-4-5) | `gpt-5.4-mini` (fast) | Gemini 3.5 Flash (Medium), GPT-OSS 120B (Medium) |
+| Default / balanced | `sonnet` (claude-sonnet-4-6) | `gpt-5.5` † | Gemini 3.5 Flash (High/Medium) |
+| High-reasoning / precision | `opus` (claude-opus-4-8) | `gpt-5.5` (recommended frontier coding, Apr 2026) | Gemini 3.1 Pro (High/Low), Claude Sonnet 4.6 (Thinking) |
+| Fast / cheap | `haiku` (claude-haiku-4-5) | `gpt-5.5` † | Gemini 3.5 Flash (Medium), GPT-OSS 120B (Medium) |
+
+> **† Codex latest-model mandate (user policy):** Codex always uses the **latest model — currently `gpt-5.5`** for every step and every spawned subagent, regardless of tier. There is no cheaper Codex execute/fast tier. Tune reasoning depth via `model_reasoning_effort` (not by switching models). SoT: `_common/CODEX_ORCHESTRATION.md` (C3.0).
 | Switching command | per-Agent `model:` parameter | per-`spawn_agent` (未確認) | `/model` inside TUI |
 
-> agy explicitly lists Claude Sonnet 4.6 / Opus 4.6 (Thinking) and GPT-OSS 120B in `/model`. Source: Medium "Getting Started" + tutorial series (2026-05).
+> agy explicitly lists Claude Sonnet 4.6 (Thinking) and GPT-OSS 120B in `/model`. Source: Medium "Getting Started" + tutorial series (2026-05).
 
-> **Codex model lineup (verified 2026-06, developers.openai.com/codex/models)**: `gpt-5.5` (recommended) / `gpt-5.4` / `gpt-5.4-mini` / `gpt-5.3-codex-spark` (research preview, ChatGPT Pro). **Legacy/deprecated: `gpt-5.1`, `gpt-5.1-codex-max`, `gpt-5.2`, `gpt-5.3-codex`** — update any skill that hard-codes them. Claude Code effort levels: `low → medium → high → xhigh → max`; default `high` on Opus 4.8 / Sonnet 4.6 (`xhigh` was the 4.7 default); `/effort ultracode` = `xhigh` + auto workflow orchestration (session-scoped).
+> **Codex model (verified 2026-06, developers.openai.com/codex/models)**: `gpt-5.5` (recommended, latest). Claude Code effort levels: `low → medium → high → xhigh → max`; default `high` on Opus 4.8 / Sonnet 4.6; `/effort ultracode` = `xhigh` + auto workflow orchestration (session-scoped).
 
-> **Codex-as-orchestrator effort routing**: when Codex CLI drives the hub, apply Plan-and-Execute by **model choice** — planning / high-complexity steps → `gpt-5.5`, execution steps → `gpt-5.4` / `gpt-5.4-mini` — plus the **`model_reasoning_effort`** config key (`config.toml` or `-c model_reasoning_effort="..."`), values `minimal | low | medium | high | xhigh`, default `medium`. [Verified 2026-06 — config-reference; resolves the former 未確認 marker.] Full Codex-hub authoring protocol: `_common/CODEX_ORCHESTRATION.md` (C3).
+> **Codex-as-orchestrator effort routing**: when Codex CLI drives the hub, **every step and every spawned subagent runs on `gpt-5.5`** (latest-model mandate, C3.0) — there is no cheaper execute tier. Vary only reasoning depth via the **`model_reasoning_effort`** config key (`config.toml` or `-c model_reasoning_effort="..."`), values `minimal | low | medium | high | xhigh`, default `medium`. [Verified 2026-06 — config-reference; resolves the former 未確認 marker.] Full Codex-hub authoring protocol: `_common/CODEX_ORCHESTRATION.md` (C3).
 
 ---
 

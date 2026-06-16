@@ -16,7 +16,7 @@ Primary: `~/.codex/config.toml`
 
 | Key | Type | Default | Description | Recommendation |
 |-----|------|---------|-------------|----------------|
-| `model` | string | `"o4-mini"` | Model identifier | Use latest stable (currently `gpt-5.4`) |
+| `model` | string | `"gpt-5.5"` | Model identifier | Use latest stable (currently `gpt-5.5`) |
 | `provider` | string | `"openai"` | API provider | Match to model availability |
 | `model_reasoning_effort` | string | `"medium"` | Reasoning depth: `none`, `minimal`, `low`, `medium`, `high`, `xhigh` | `medium` for general use |
 | `model_reasoning_summary` | string | `"auto"` | Reasoning summary: `auto`, `concise`, `detailed`, `none` | `concise` for transparency without verbosity |
