@@ -51,6 +51,7 @@
 | `pre-mortem`, `premortem`, `FMEA`, `failure modes`, `RPN`, `AP`, `failure scenario enumeration`, `what could go wrong` | `PREMORTEM` (Omen → Ripple) |
 | `manual QA`, `TestRail`, `Xray`, `Zephyr`, `Qase`, `BVA`, `equivalence class`, `decision table`, `exploratory charter`, `manual test procedure` | `MANUAL_QA` (Drill) |
 | `test pyramid`, `trophy`, `honeycomb`, `coverage heatmap`, `flake dashboard`, `Wilson lower-bound`, `mutation overlay`, `test shape` | `TEST_INTELLIGENCE` (Vista) |
+| `feature inventory`, `unimplemented features`, `what's built`, `what's left`, `roadmap status`, `WBS`, `work breakdown`, `delivery status`, `project status`, `is X shipped`, `plan vs code`, `docs-vs-code drift` | `PROJECT_STATUS` (PDM). Don't confuse with PROJECT (Titan lifecycle), PRIORITIZE (Rank), SPEC_VERIFY (Attest), INVESTIGATE (Lens) |
 | `AppleScript`, `osascript`, `JXA`, `JavaScript for Automation`, `Apple Events`, `macOS automation`, `Mac desktop automation`, `app control`, `tell application`, `UI scripting`, `System Events`, `sdef`, `scripting dictionary` | `MACOS_AUTOMATION` (Wield). Note: Automator *workflow* authoring is out of scope; only the "Run AppleScript" action within Automator falls under Wield |
 
 ---
