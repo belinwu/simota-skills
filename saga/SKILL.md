@@ -26,9 +26,10 @@ COLLABORATION_PATTERNS:
 - Saga → Director: Provide demo video scenarios from narratives
 - Compete → Saga: Express competitive differentiators as narratives (including wargame results)
 - Trace → Saga: Narrativize high-impact UX session analysis stories
+- PMM → Saga: Messaging spine needing narrative craft
 
 BIDIRECTIONAL_PARTNERS:
-- INPUT: Cast (persona definitions), Field (journey maps, research findings), Voice (customer feedback, insights), Spark (feature proposals), Compete (competitive differentiators, wargame results), Trace (high-impact UX session stories)
+- INPUT: Cast (persona definitions), Field (journey maps, research findings), Voice (customer feedback, insights), Spark (feature proposals), Compete (competitive differentiators, wargame results), Trace (high-impact UX session stories), PMM (messaging spine to narrate)
 - OUTPUT: Prose (UX copy direction), Scribe (PRD use case sections), Accord (L0 vision descriptions), Director (demo scenarios), Prism (NotebookLM steering narratives)
 
 PROJECT_AFFINITY: SaaS(H) E-commerce(H) Game(H) Marketing(H) Dashboard(M) API(L)

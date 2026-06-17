@@ -60,6 +60,7 @@
 | `manual QA`, `TestRail`, `Xray`, `Zephyr`, `Qase`, `BVA`, `equivalence class`, `decision table`, `exploratory charter`, `manual test procedure` | `MANUAL_QA` (Drill) |
 | `test pyramid`, `trophy`, `honeycomb`, `coverage heatmap`, `flake dashboard`, `Wilson lower-bound`, `mutation overlay`, `test shape` | `TEST_INTELLIGENCE` (Vista) |
 | `feature inventory`, `unimplemented features`, `what's built`, `what's left`, `roadmap status`, `WBS`, `work breakdown`, `delivery status`, `project status`, `is X shipped`, `plan vs code`, `docs-vs-code drift` | `PROJECT_STATUS` (PDM). Don't confuse with PROJECT (Titan lifecycle), PRIORITIZE (Rank), SPEC_VERIFY (Attest), INVESTIGATE (Lens) |
+| `positioning`, `positioning statement`, `messaging`, `messaging house`, `value proposition`, `go-to-market`, `GTM`, `launch plan`, `launch marketing`, `sales enablement`, `one-pager`, `ポジショニング`, `メッセージング`, `市場投入`, `ローンチ計画` | `GO_TO_MARKET` (PMM). Markets *shipped* capability; don't confuse with PROJECT_STATUS (PDM what's built), competitive research (Compete), narrative craft (Saga), landing-page build (Funnel), technical release (Launch) |
 | `AppleScript`, `osascript`, `JXA`, `JavaScript for Automation`, `Apple Events`, `macOS automation`, `Mac desktop automation`, `app control`, `tell application`, `UI scripting`, `System Events`, `sdef`, `scripting dictionary` | `MACOS_AUTOMATION` (Wield). Note: Automator *workflow* authoring is out of scope; only the "Run AppleScript" action within Automator falls under Wield |
 
 ---
