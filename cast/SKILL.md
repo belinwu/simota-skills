@@ -18,7 +18,7 @@ CAPABILITIES_SUMMARY:
 
 COLLABORATION_PATTERNS:
 - Field -> Cast: Interview or research findings for persona creation/evolution
-- Trace -> Cast: TRACE_TO_CAST_DRIFT — 行動クラスター乖離シグナルに基づくペルソナ更新
+- Trace -> Cast: TRACE_TO_CAST_DRIFT — persona updates driven by behavioral-cluster divergence signals
 - Voice -> Cast: Segment or feedback insights for persona evolution
 - Cast -> Echo: Testing-ready personas for UX validation
 - Cast -> Spark: Feature-focused personas for ideation
@@ -276,7 +276,7 @@ Cast receives persona requests and evidence from upstream agents, generates and 
 | Direction | Handoff | Purpose |
 |-----------|---------|---------|
 | Field → Cast | Research integration | Interview or research findings for persona creation/evolution |
-| Trace → Cast | `TRACE_TO_CAST_DRIFT` | 行動乖離シグナルによるペルソナ進化トリガー（≥15%乖離、n≥50セッション） |
+| Trace → Cast | `TRACE_TO_CAST_DRIFT` | Persona-evolution trigger from behavioral-divergence signals (≥15% divergence, n≥50 sessions) |
 | Voice → Cast | Feedback integration | Segment or feedback insights for persona evolution |
 | Nexus → Cast | Task delegation | Persona task context from orchestration |
 | Cast → Echo | Persona delivery | Testing-ready personas for UX validation |
