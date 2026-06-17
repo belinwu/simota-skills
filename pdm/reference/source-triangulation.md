@@ -8,6 +8,7 @@
 - Plan-Side Sources
 - Code-Side Signals
 - Triangulation Strategy
+- Multi-Repo / Multi-Service Scope
 - When a Side Is Missing
 - Source Confidence
 
@@ -64,6 +65,23 @@ Prefer a `LENS_TO_PDM_HANDOFF` for deep comprehension; PDM's own survey is for l
 ```
 
 The reverse pass (step 3) is what surfaces `Undocumented` features and is easy to skip — do not.
+
+---
+
+## Multi-Repo / Multi-Service Scope
+
+When a feature spans more than one repo or service (monorepo packages, micro-services, web + BFF + worker), one repo's view is half a status. The Ask First boundary fires when the boundary is unclear — confirm scope first, then reconcile per the rules below.
+
+**Confirm before reconciling:** which repos/services are in scope, and whether the question is per-service or end-to-end (a feature can be `Done` in the API yet `Not-Started` in the UI).
+
+| Situation | Strategy |
+|-----------|----------|
+| Monorepo, multiple packages | Use the package/dir as the `area`; the plan side is usually shared (one issue tracker). Reconcile each package, roll up per feature across packages. |
+| Multi-service, one feature crosses services | Reconcile the feature **per service**, then derive an end-to-end status: it is `Done` only when every required service is `Done`; otherwise `In-Progress` with the lagging service named. |
+| Separate repos, separate trackers | Locate each repo's plan side independently; never assume one repo's roadmap covers another. Flag cross-repo gaps as drift. |
+| Scope boundary unclear | Ask First — do not silently pick one repo and present it as the whole. |
+
+End-to-end rollup rule: a cross-service feature's status is the **weakest** of its per-service statuses, and its confidence the **lowest** of its parts. Name which service holds it back so the gap is actionable.
 
 ---
 

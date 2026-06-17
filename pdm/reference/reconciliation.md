@@ -11,6 +11,7 @@
 - Drift Detection
 - Confidence Scoring
 - Absence Discipline
+- Rollup Math & Aggregate Confidence
 - Reconciliation Output
 
 ---
@@ -106,6 +107,31 @@ Inherited from Lens. Declaring `Not-Started` is a positive claim about absence a
 > "Not-Started — searched `src/payments/**`, route table, and `gh issue` for 'refund'; no entry point, module, or test found. Coverage: 3 search passes. Confidence: Medium (could exist under different terminology)."
 
 Absence of evidence ≠ evidence of absence. If coverage is shallow (<2 passes or single search term), broaden before declaring, or mark confidence Low.
+
+---
+
+## Rollup Math & Aggregate Confidence
+
+Any delivery percentage PDM emits (Status Matrix header, dashboard, roadmap) is a *positive claim* and must be derived by a stated rule — never an eyeballed number. Inherit "evidence or silence": show the math or omit the figure.
+
+**Delivery %** — count-based by default, In-Progress weighted at 0.5:
+
+```
+delivery% = (Done + 0.5 × In-Progress) / (Done + In-Progress + Not-Started)
+```
+
+Rules:
+- `Undocumented` is **excluded** from the denominator (it was never planned scope) — report it as a separate count, not part of "% planned delivered".
+- State the method and weight inline: e.g. `60% (18 Done + 5 In-Progress×0.5 of 30 planned; Undocumented excluded)`.
+- If features are not comparable in size, say so and prefer counts over a single % — do not fabricate weighting PDM cannot observe (effort sizing is Rank's domain).
+- Never average percentages of percentages; compute once over the flat feature list.
+
+**Aggregate confidence** — a rollup is only as trustworthy as its weakest evidence. Attach an overall confidence alongside the %:
+- **High** — ≥80% of counted rows are High confidence.
+- **Medium** — majority Medium, or any Not-Started resting on shallow (<2-pass) coverage.
+- **Low** — majority Low/intent-only, or the plan side was inferred (no machine-readable source).
+
+A high delivery % built on Low-confidence rows is itself a finding — surface it ("60% Done, but aggregate confidence Low: most 'Done' rows are static-only"). Never present a confident-looking number over uncertain evidence.
 
 ---
 

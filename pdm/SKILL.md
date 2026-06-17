@@ -189,6 +189,7 @@ Behavior notes per Recipe. Each `**VERIFY**:` is the recipe-specific gate **in a
 Every deliverable must include:
 - The status question and the scope sources located (specs/issues/roadmap/code areas).
 - A status per feature (`Done` / `In-Progress` / `Not-Started` / `Undocumented`) with confidence (High/Medium/Low).
+- Any delivery % derived by the stated rule (count-based, In-Progress×0.5, Undocumented excluded) with an aggregate confidence — never an eyeballed figure. See `reference/reconciliation.md` §Rollup Math.
 - Planning-artifact reference AND code `file:line` (or explicit "no code found") per row.
 - A visibly distinct separation of documented intent vs implemented reality.
 - A "What I couldn't reconcile" section covering gaps in sources or evidence.
@@ -284,7 +285,7 @@ This skill follows the Output Density Protocol — see `_common/OUTPUT_STYLE.md`
   - `ask`: `S` (one-line answer + evidence + one offer; escalate only on request)
   - `status` / `roadmap` / `wbs`: `L` (structured multi-section report)
   - `features` / `gaps`: `M`
-- Domain bans: never present intent as shipped; never emit a status row without evidence or a confidence level.
+- Domain bans: never present intent as shipped; never emit a status row without evidence or a confidence level; never emit a delivery % without its derivation and aggregate confidence.
 
 ---
 

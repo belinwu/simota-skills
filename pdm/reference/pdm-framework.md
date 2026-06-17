@@ -90,7 +90,7 @@ Assemble higher-level views from reconciled data. **Organize only — do not sco
 
 - **Roadmap**: group features by milestone/release; present order as-found in artifacts. Priority scoring is deferred to Rank (offer `PDM_TO_RANK_HANDOFF`).
 - **WBS**: build a scope tree (Project → Epic → Feature) from existing epics/specs/issues. This is a static *view*; live execution decomposition into atomic steps is deferred to Sherpa (offer `PDM_TO_SHERPA_HANDOFF`).
-- **Dashboard**: overall delivery %, per-area breakdown, status counts.
+- **Dashboard**: overall delivery %, per-area breakdown, status counts. Compute the % by the stated rule and attach aggregate confidence — never an eyeballed number → `reference/reconciliation.md` §Rollup Math & Aggregate Confidence.
 
 ---
 
