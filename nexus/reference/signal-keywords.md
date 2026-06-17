@@ -48,6 +48,14 @@
 | `audio analysis`, `LUFS`, `True Peak`, `BPM detect`, `key detect`, `mastering QC`, `EBU R128`, `librosa`, `pyloudnorm` | `AUDIO_ANALYSIS` (Sonar) |
 | `ToS`, `Terms of Service`, `Privacy Policy`, `Tokushoho`, `Specified Commercial Transactions Act`, `terms review`, `policy gap` | `LEGAL_REVIEW` (Clause → Scribe) |
 | `ICE`, `RICE`, `WSJF`, `MoSCoW`, `Kano`, `Cost of Delay`, `priority`, `prioritize`, `ranking` | `PRIORITIZE` (Rank → Magi) |
+| `attribution`, `multi-touch attribution`, `MTA`, `Shapley value`, `Markov attribution`, `data-driven attribution`, `DDA`, `touchpoint credit` | `ATTRIBUTION_MODELING` (Pulse). Don't confuse with MMM / incrementality (Experiment) |
+| `value proposition canvas`, `VPC`, `jobs pains gains`, `pain relievers`, `gain creators`, `problem-solution fit` | `VALUE_PROP_CANVAS` (Spark) |
+| `business model canvas`, `BMC`, `lean canvas`, `business model design`, `9 building blocks` | `BUSINESS_MODEL_CANVAS` (Helm) |
+| `PQL`, `product-qualified lead`, `PQA`, `product-qualified account`, `PLG conversion signal` | `PQL_MODELING` (Pulse) |
+| `Fogg behavior model`, `B=MAP`, `behavior design`, `tiny habits`, `motivation ability prompt` | `BEHAVIOR_DESIGN` (Bond — `habit-formation.md`) |
+| `pillar-cluster`, `topic cluster`, `content architecture`, `keyword cannibalization`, `internal linking strategy` | `CONTENT_ARCHITECTURE` (Growth) |
+| `Bullseye`, `19 traction channels`, `channel selection`, `See-Think-Do-Care`, `RACE planning`, `lifecycle marketing plan` | `CHANNEL_LIFECYCLE` (Growth) |
+| `CBBE`, `brand equity`, `Keller pyramid`, `brand salience`, `brand resonance`, `brand strength` | `BRAND_EQUITY` (Compete — `brand-equity.md`) |
 | `pre-mortem`, `premortem`, `FMEA`, `failure modes`, `RPN`, `AP`, `failure scenario enumeration`, `what could go wrong` | `PREMORTEM` (Omen → Ripple) |
 | `manual QA`, `TestRail`, `Xray`, `Zephyr`, `Qase`, `BVA`, `equivalence class`, `decision table`, `exploratory charter`, `manual test procedure` | `MANUAL_QA` (Drill) |
 | `test pyramid`, `trophy`, `honeycomb`, `coverage heatmap`, `flake dashboard`, `Wilson lower-bound`, `mutation overlay`, `test shape` | `TEST_INTELLIGENCE` (Vista) |

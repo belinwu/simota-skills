@@ -11,6 +11,10 @@ With third-party cookies still present in Chrome (Google's **2025-04-22** cancel
 
 Do not present funnel conversion rates without disclosing the consent-denial blind spot for EEA/UK traffic (see `privacy-consent.md` for the 2025-07-21 Consent Mode v2 enforcement context).
 
+For **per-path credit assignment** (which touchpoint gets credit) — rules-based vs
+algorithmic multi-touch attribution (Shapley, Markov removal-effect, GA4 DDA) and how
+they differ from MMM (aggregate) and incrementality (causal) — see `attribution-modeling.md`.
+
 ## Funnel Definition Template
 
 ```markdown

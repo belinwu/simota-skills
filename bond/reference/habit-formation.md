@@ -1,7 +1,38 @@
 # Bond Habit Formation Design
 
-Purpose: Hook Model design, streak rules, and habit-loop safeguards.
-Contents: Hook Model template, reward taxonomy, investment choices, streak logic.
+Purpose: Hook Model design, behavior-design foundation, streak rules, and habit-loop safeguards.
+Contents: Fogg Behavior Model (foundation), Hook Model template, reward taxonomy, investment choices, streak logic.
+
+## Fogg Behavior Model (B=MAP) — the foundation under the Hook
+
+The Hook Model's **Action** step rests on BJ Fogg's behavior model: a behavior occurs only
+when **Motivation**, **Ability**, and a **Prompt** converge at the same moment.
+
+```
+B = M · A · P     (behavior happens iff all three are present together)
+```
+
+| Factor | Meaning | Design lever |
+|--------|---------|--------------|
+| `Motivation` | desire to act (pleasure/pain, hope/fear, acceptance/rejection) | usually expensive to raise — do not rely on it |
+| `Ability` | how easy the action is (time, money, effort, routine fit) | **cheapest lever — make the behavior smaller/easier first** |
+| `Prompt` | the cue to act now (= the Hook's Trigger) | only fires behavior when M and A are already sufficient |
+
+**Action line:** plot a behavior on the Motivation (y) × Ability (x) plane. A prompt above
+the curve → behavior fires; below → it fails. Three prompt types: `spark` (raises motivation),
+`facilitator` (raises ability), `signal` (when M and A are both already high — a pure reminder).
+
+Design rules that flow into the Hook:
+- **Increase Ability before Motivation.** Shrink the target behavior until it fits the user's
+  lowest-motivation moment. This is why the Hook's `Action` block specifies the *smallest*
+  useful action.
+- **Match prompt type to the M×A state.** A `signal` prompt sent to a low-ability user is the
+  #1 cause of dead notifications — diagnose before adding triggers.
+- **Behavior fizzles below the action line** — if a habit isn't forming, the failure is M, A, or
+  prompt-timing, not "not enough reminders." Map which factor is missing before iterating.
+
+The Hook Model below operationalizes B=MAP into a repeating loop (Trigger=Prompt, Action=B,
+Variable Reward + Investment = motivation/ability reinforcement for the *next* cycle).
 
 ## Hook Model Template
 

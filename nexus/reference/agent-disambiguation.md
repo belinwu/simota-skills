@@ -305,6 +305,39 @@ When multiple agents appear to fit a task, use these decision rules for correct 
 
 ---
 
+### Helm vs Spark vs Plea (JTBD — Jobs-To-Be-Done)
+
+Three skills hold full JTBD content, each applying it through a different lens — this is
+intentional multi-lens coverage, not duplication. Route by *what the JTBD output feeds*.
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Define the competitive set by job", "market/category strategy via JTBD", "disruption" | **Helm** | Strategic lens — job as the unit of competition (`jobs-to-be-done.md`) |
+| "Target a feature to a persona's job", "feature brief", "proposal hypothesis" | **Spark** | Product lens — persona + JTBD → feature proposal (`persona-jtbd.md`) |
+| "Switch interview", "forces of progress for demand", "why users would switch" | **Plea** | Demand lens — synthetic switch interviews (`jtbd-switch-interview.md`) |
+
+**Rule of thumb**: strategy/competitive-set → Helm; feature targeting → Spark; demand/switch
+interview → Plea. Value Proposition Canvas (jobs/pains/gains zoom-in) lives in **Spark**
+(`value-proposition-canvas.md`) and pulls its jobs block from `persona-jtbd.md`.
+
+---
+
+### Helm vs Compete vs Spark (Market Sizing — TAM/SAM/SOM)
+
+Three skills size markets, each for a different decision. Route by *the decision the number
+informs*, not the acronym.
+
+| Signal | Route to | Rationale |
+|--------|----------|-----------|
+| "Strategic market headroom", "entry scoring", "portfolio sizing" | **Helm** | Strategy lens — market-entry / scenario interpretation (`market-sizing-strategy.md`) |
+| "Market size vs competitors", "competitive TAM", "share capture" | **Compete** | Competitive lens — sizing within a competitor landscape (`market-sizing.md`) |
+| "How much can this feature earn", "opportunity upper bound" | **Spark** | Feature lens — opportunity sizing for a single proposal (`opportunity-sizing.md`) |
+
+**Rule of thumb**: whole-business/entry strategy → Helm; competitor-relative → Compete;
+per-feature upside → Spark.
+
+---
+
 ## Low Priority — Rarely Confused
 
 ### Attest vs Judge
