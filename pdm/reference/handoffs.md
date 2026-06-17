@@ -79,6 +79,22 @@ PDM_TO_SHERPA_HANDOFF:
   reason: "Static WBS view produced; atomic execution decomposition is Sherpa's domain."
 ```
 
+### PDM_TO_ORBIT_HANDOFF
+```yaml
+PDM_TO_ORBIT_HANDOFF:
+  loop_goals:                       # each item = exactly one Orbit loop goal
+    - objective: "[single deliverable sized to one loop]"
+      plan_ref: "[spec §ref / issue # / WBS leaf id]"
+      gap_evidence:
+        planned: "[planning source proving intent]"
+        code_coverage: "[file:line built so far OR 'no code found' + search coverage]"
+      status: "[Not-Started | In-Progress + what exists]"
+      out_of_scope: "[adjacent work this loop must NOT touch, if known]"
+      candidate_acs: "[OPTIONAL reconciled signals only — NOT authored ACs; Orbit hardens these into 3-6 measurable ACs]"
+      verification_hint: "[observed test/command, if any]"
+  reason: "Plan items sized to loop granularity; goal.md authoring + AC hardening is Orbit's domain (pdm is read-only)."
+```
+
 ### PDM_TO_SCRIBE_HANDOFF
 ```yaml
 PDM_TO_SCRIBE_HANDOFF:
@@ -104,6 +120,7 @@ PDM_TO_CANVAS_HANDOFF:
 |------------------|----------|------------------|
 | Items need priority order | Rank | Score them yourself |
 | Epic needs execution steps | Sherpa | Decompose to atomic tasks yourself |
+| Loop-sized work package needs a runner | Orbit | Author the `goal.md` / ACs yourself |
 | Undocumented feature needs a spec | Scribe | Author the spec yourself |
 | Gap could be a new feature idea | Spark | Ideate features yourself |
 | Output needs a diagram | Canvas | Hand-draw beyond simple ASCII |

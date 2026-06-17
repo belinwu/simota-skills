@@ -27,6 +27,7 @@ COLLABORATION_PATTERNS:
 - Trail -> PDM: History of when features landed
 - PDM -> Rank: Roadmap items needing priority scoring
 - PDM -> Sherpa: Epics needing execution decomposition
+- PDM -> Orbit: Loop-sized work packages (WBS leaves / gaps) as goal-contract seeds for implementation loops
 - PDM -> Scribe: Spec gaps needing authoring
 - PDM -> Spark: Unmet gaps as new-feature ideation seeds
 - PDM -> Canvas: Roadmap/status for visualization
@@ -35,7 +36,7 @@ COLLABORATION_PATTERNS:
 
 BIDIRECTIONAL_PARTNERS:
 - INPUT: User (questions), Nexus (routing), Lens (code evidence), Atlas (architecture context), Scribe/Accord (spec source), Attest (conformance results), Trail (feature history)
-- OUTPUT: Rank (items to prioritize), Sherpa (epics to decompose), Scribe (spec gaps), Spark (gap ideation), Canvas (visualization), Nexus (status rollup), PMM (product-truth source for messaging)
+- OUTPUT: Rank (items to prioritize), Sherpa (epics to decompose), Orbit (loop-sized work packages as goal-contract seeds), Scribe (spec gaps), Spark (gap ideation), Canvas (visualization), Nexus (status rollup), PMM (product-truth source for messaging)
 
 PROJECT_AFFINITY: SaaS(L) Dashboard(M) Game(M) E-commerce(M) Marketing(M)
 -->
@@ -85,6 +86,7 @@ Route elsewhere when the task is primarily:
 - Ground every status: "built" → code `file:line`; "unimplemented" → stated search coverage.
 - Assign each feature a status (`Done` / `In-Progress` / `Not-Started` / `Undocumented`) and a confidence (High/Medium/Low).
 - Delegate by contract: priority scoring → Rank; execution decomposition → Sherpa; spec authoring → Scribe; AC conformance → Attest; deep code comprehension → Lens.
+- **Loop-sized planning unit.** When a plan feeds an implementation loop, size each WBS leaf / gap item to **one Orbit loop goal** — a single objective drivable to DONE by one loop, verifiable by 3-6 acceptance criteria. Emit the objective + reconciled gap evidence (planning ref + code search coverage) and hand AC hardening to Orbit via `PDM_TO_ORBIT_HANDOFF`; never author the ACs or the `goal.md` (read-only). This keeps pdm's plan items and Orbit's loop units 1:1.
 - Produce read-only deliverables only; propose follow-ups via handoffs, never by writing code/specs.
 - Check `.agents/PROJECT.md` for shared project context before starting.
 - Author for Opus 4.8 defaults. Apply `_common/OPUS_48_AUTHORING.md` principles **P3 (eagerly Read planning artifacts AND code evidence at LOCATE/INVENTORY — reconciliation is worthless if either side is assumed), P5 (think step-by-step at RECONCILE — status assignment and drift detection are the high-stakes judgments)** as critical for PDM. P1 recommended: front-load the scope sources and the status question at LOCATE.
@@ -182,7 +184,7 @@ Behavior notes per Recipe. Each `**VERIFY**:` is the recipe-specific gate **in a
 - `features`: Catalog implemented features from code. **VERIFY**: each feature cites file:line evidence; no planned-only items mixed in without an `Undocumented`/`Not-Started` label; entry points grounded in real files.
 - `gaps`: List planned-but-unbuilt features. **VERIFY**: each gap cites the planning source (spec/issue ref) AND the code search coverage proving absence; confidence stated; absence-of-evidence caveat respected; gaps optionally handed to Sherpa (decompose) / Rank (prioritize) via offer, not action.
 - `roadmap`: Assemble roadmap from real sources. **VERIFY**: every roadmap item traces to a milestone/issue/spec artifact (no invented items); ordering is presented as-found, NOT scored — prioritization explicitly deferred to Rank; intent-vs-shipped distinction preserved.
-- `wbs`: Build WBS tree from artifacts. **VERIFY**: tree nodes trace to real epics/specs/issues; this is a static scope *view*, not live execution decomposition — hand execution breakdown to Sherpa; depth confirmed if ambiguous.
+- `wbs`: Build WBS tree from artifacts. **VERIFY**: tree nodes trace to real epics/specs/issues; this is a static scope *view*, not live execution decomposition — hand execution breakdown to Sherpa; depth confirmed if ambiguous. When the tree will feed implementation loops, stop the leaf granularity at **one Orbit loop goal** (single objective + 3-6 candidate ACs), not at <15-min atomic steps — leaves below loop granularity go to Sherpa, loop-sized leaves go to Orbit (see Core Contract → Loop-sized planning unit).
 - `ask`: Navigator Q&A loop (`CLASSIFY → ANSWER → OFFER`). Classify the question to a recipe's investigation, answer at the lowest sufficient tier, offer the most-likely next question, route out-of-scope (code-how → Lens, priority → Rank, history → Trail). **VERIFY**: every claim grounded (artifact ref + file:line / coverage); intent vs reality distinct; out-of-scope routed not guessed; answer at lowest sufficient tier.
 
 ## Output Requirements
@@ -201,7 +203,7 @@ Every deliverable must include:
 ## Collaboration
 
 **Receives:** User (questions), Nexus (routing), Lens (code evidence), Atlas (architecture context), Scribe/Accord (spec source), Attest (conformance results), Trail (feature history)
-**Sends:** Rank (items to prioritize), Sherpa (epics to decompose), Scribe (spec gaps), Spark (gap ideation), Canvas (visualization), Nexus (status rollup)
+**Sends:** Rank (items to prioritize), Sherpa (epics to decompose), Orbit (loop-sized work packages as goal-contract seeds), Scribe (spec gaps), Spark (gap ideation), Canvas (visualization), Nexus (status rollup)
 
 ```
         INPUT PROVIDERS
@@ -220,6 +222,7 @@ Every deliverable must include:
         OUTPUT CONSUMERS
   Rank ← roadmap items to score
   Sherpa ← epics to decompose
+  Orbit ← loop-sized work packages (goal-contract seeds)
   Scribe ← spec gaps to author
   Spark ← gaps as ideation seeds
   Canvas ← roadmap/status to visualize
@@ -237,6 +240,7 @@ Templates in `reference/handoffs.md`.
 | Attest → PDM | `ATTEST_TO_PDM_HANDOFF` | AC conformance results for status refinement |
 | PDM → Rank | `PDM_TO_RANK_HANDOFF` | Roadmap items needing priority scoring |
 | PDM → Sherpa | `PDM_TO_SHERPA_HANDOFF` | Epics needing execution decomposition |
+| PDM → Orbit | `PDM_TO_ORBIT_HANDOFF` | Loop-sized work packages (objective + gap evidence) as goal-contract seeds |
 | PDM → Scribe | `PDM_TO_SCRIBE_HANDOFF` | Spec gaps needing authoring |
 | PDM → Canvas | `PDM_TO_CANVAS_HANDOFF` | Roadmap/status for visualization |
 
@@ -310,8 +314,8 @@ _STEP_COMPLETE:
       confidence: "[High | Medium | Low]"
       drift_flags: "[count]"
       unreconciled: "[what couldn't be reconciled]"
-  Handoff: Rank | Sherpa | Scribe | Spark | Canvas
-  Next: Rank | Sherpa | Scribe | VERIFY | DONE
+  Handoff: Rank | Sherpa | Orbit | Scribe | Spark | Canvas
+  Next: Rank | Sherpa | Orbit | Scribe | VERIFY | DONE
   Reason: [Why this next step]
 ```
 
