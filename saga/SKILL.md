@@ -309,9 +309,9 @@ Inputs/outputs are listed in the `COLLABORATION_PATTERNS` / `BIDIRECTIONAL_PARTN
 
 | Direction | Handoff | Purpose |
 | --------- | ------- | ------- |
-| Voice → Saga | `VOICE_TO_SAGA` | 高インパクトの顧客フィードバックをナラティブ化 |
-| Trace → Saga | `TRACE_TO_SAGA` | UX セッション分析のナラティブ化 |
-| Compete → Saga | `COMPETE_TO_SAGA` | 競合差別化要素・wargame 結果のストーリー変換 |
+| Voice → Saga | `VOICE_TO_SAGA` | Narrativize high-impact customer feedback |
+| Trace → Saga | `TRACE_TO_SAGA` | Narrativize UX session analysis |
+| Compete → Saga | `COMPETE_TO_SAGA` | Convert competitive differentiators / wargame results into stories |
 
 **Overlap boundaries:**
 - **vs Prose**: Saga = narrative direction and story structure; Prose = final UX microcopy and text. Saga provides the "what to say", Prose crafts "how to say it".
