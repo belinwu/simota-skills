@@ -116,6 +116,17 @@ Read: `reference/podium-recipe.md`.
 
 ---
 
+## converge
+
+**Quality-convergence loop** — the invocable entry point for the Generator-Evaluator pattern (`reference/evaluator-loop-protocol.md`). A Generator produces/revises; **independent** Evaluators score against a Rubric tied to a Sprint Contract; the loop runs until ACCEPT or a hard bound. Execution-control, not a task shape (exposed as a subcommand because it carries a Contract/Rubric/bounds args the Mode table can't). Two forms: `converge` (standalone) and `converge <recipe>` (inner recipe as Generator). **Mandatory termination bounds**: max_cycles (3) / token_budget / diminishing-returns ε / BLOCK escalation — no unbounded run. **Flatten rule**: wrapping a loop-recipe (kaizen/apex/summit) uses its *generator agents*, not its loop, so converge owns the single termination oracle (avoids loop-on-loop blowup + dueling oracles). 4-10 agents × cycles (cap 3). Distinct from `kaizen` (metric-PDCA on existing features) and `goal` (unattended setup).
+
+**Chain template:**
+`CONTRACT (Scribe/Accord author/accept Sprint Contract + Rubric) → LOOP [ GENERATE (inner recipe flattened per rule, or task agent) → EVALUATE ‖ (independent Evaluators: Radar/Judge/Echo/Palette/Attest/Voyager per rubric dim; generator excluded) → AGGREGATE (Magi: ACCEPT | REVISE(δ) | BLOCK) → GATE (ACCEPT exit / REVISE next cycle / Δ<ε or max → stop+report / BLOCK escalate) ] → DELIVER (convergence report: trajectory + exit reason)`
+
+Read: `reference/converge-recipe.md`, `reference/evaluator-loop-protocol.md`.
+
+---
+
 ## migrate
 
 **Change-completeness migration** — propagate a wholesale change across the codebase with a proven-complete guarantee (no omission). Cases: `arch` (layered→hexagonal, monolith→modular), `framework` (Express→Fastify, Vue2→Vue3), `middleware` (REST→gRPC, RabbitMQ→Kafka, store swap), `mock-to-prod` (stub/in-memory→real service). `case=lang` forwards to `transmute`. Double-loop: per-batch PLAN→EXECUTE→VERIFY inside an outer completeness loop closed by a **RESIDUE-GATE** (forward counter + independent loop-until-dry re-scan + `matrix` axis-coverage), then a **DECOMMISSION** phase that removes old code *gated on the completeness proof*. Strategy: strangler-fig (default) ‖ parallel-run ‖ big-bang. 6-20 agents. **Confirm whole-system arch / big-bang.**

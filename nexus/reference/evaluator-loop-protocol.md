@@ -2,6 +2,7 @@
 
 **Purpose:** Generator-Evaluator separation for active quality assurance, with a Sprint Contract as the acceptance spec and a Rubric as the scoring instrument.
 **Read when:** A task qualifies for Evaluator Loop and you need to set it up end-to-end (when to apply, what contract to write, what rubric to score against, how to spawn and iterate).
+**Invocable as:** `/nexus converge` — this file is the spec; `converge` is its invocable Recipe, adding mandatory termination bounds and the flatten rule for wrapping loop-recipes. See `reference/converge-recipe.md`.
 
 This file merges the former `evaluator-loop.md` (orchestration pattern), `sprint-contract.md` (acceptance spec format), and `rubric-system.md` (scoring instrument). They form one pipeline: **Contract → Generator → Evaluators(Rubric) → Aggregate → ACCEPT / REVISE / BLOCK**.
 

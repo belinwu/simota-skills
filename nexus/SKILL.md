@@ -142,6 +142,7 @@ Agent disambiguation → `reference/agent-disambiguation.md`
 | Refactor | `refactor` | Internal-only refactor, no external behavior change | `Radar?[safety-net] → Zen → Radar[verify-equivalence] → Guardian`<br>*Green-before / same-suite-same-result-after. Safety-net skip for tool-assisted pure rename/extract. +Atlas module boundaries, +Sherpa multi-file. Phase contract: SAFETY-NET→SCOPE-GUARD→REFACTOR→VERIFY-EQUIVALENCE→SHIP.* | `reference/routing-quick-start.md`, `reference/routing-matrix.md` |
 | Optimize | `optimize` | Performance-only improvement | `Bolt/Tuner[measure→target→optimize] → Radar[verify-speedup] → Guardian`<br>*Measure-first / prove-with-a-number / no-regression. +Schema DB, +Siege load-test, +Beacon prod SLO. Phase contract: MEASURE→TARGET→OPTIMIZE→VERIFY→ITERATE→SHIP.* | `reference/routing-quick-start.md`, `reference/routing-matrix.md` |
 | Kaizen | `kaizen` | Existing-feature continuous improvement (perf / UX / code-quality / feature-extension). **PDCA loop** vs quantified target; stops on target-met / diminishing-returns. 4-8 agents × cycles (cap 3) | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/inline-recipes.md` |
+| Converge | `converge` | **Quality-convergence loop** — invocable Generator-Evaluator iteration (Contract + Rubric) with mandatory termination bounds (max_cycles/budget/diminishing-returns/BLOCK). Generator never grades itself. `converge <recipe>` wraps an inner recipe as generator; **flattens** loop-recipes (kaizen/apex/summit). Execution-control, not task shape. 4-10 agents × cycles (cap 3). | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/converge-recipe.md`, `reference/evaluator-loop-protocol.md` |
 | Proactive | `proactive` | `/Nexus` with no arguments — project state scan | `Scan project → recommend` | `reference/proactive-mode.md` |
 | Apex | `apex` | Full-cycle auto-implementation: discovery → spec → parallel design → risk gate → loop → **AC-verify (attest) → ship**. Run-level budget ceiling + cross-phase resume. 8-25 agents. **Confirm before launch.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/apex-recipe.md`, `reference/apex-walkthrough.md` |
 | Charter | `charter` | **Repo-wide analysis → self-driving Charter incl. team design + checklists.** Document-first; stops at durable `docs/CHARTER.md` (no execution). Designs **multi-engine orchestration** (Claude Code plan/design + Codex CLI build loops) and §10 checklists (pre-flight / per-package DoD / progress tracker / final delivery). Pair with `enact` to run it. 5-15 agents. | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/charter-recipe.md` |
@@ -172,6 +173,7 @@ For natural-language input without an explicit subcommand. **Subcommand match al
 | `refactor`, `clean up`, `code smell` | `refactor` |
 | `optimize`, `slow`, `performance` | `optimize` |
 | `kaizen`, `improve`, `polish`, `enhance existing`, `refine` | `kaizen` |
+| `converge`, `iterate to rubric`, `generator-evaluator`, `quality loop`, `evaluator loop`, `iterate until accept` | `converge` |
 | `review`, `check`, `audit` | legacy quality review (`routing-matrix.md`) |
 | `brainstorm`, `riff`, `ideate`, `sounding board` | Riff direct (single-agent) |
 | `apex`, `auto-impl`, `full implementation`, `discovery to launch` | `apex` |
@@ -391,7 +393,7 @@ Read only the files that match the current decision point.
 | `reference/handoff-validation.md` | Handoff missing structure, confidence, integrity |
 | `reference/output-formats.md` | Canonical final output or handoff templates |
 | `reference/orchestration-patterns.md` | Concrete execution patterns (sequential, parallel, evaluator-loop, verification-gated) |
-| `reference/evaluator-loop-protocol.md` | Generator-Evaluator separation: Sprint Contract + Rubric + orchestration pattern |
+| `reference/evaluator-loop-protocol.md` | Generator-Evaluator separation: Sprint Contract + Rubric + orchestration pattern (the spec `converge` executes) |
 | `reference/loop-engineering-primitives.md` | Mapping the loop-engineering pattern onto Claude Code / Codex primitives (`/loop`, `/goal`, worktree, subagents, memory) with 2026-06 version detail — read when designing a `goal`/apex/summit loop or explaining which primitive implements which loop part |
 | `reference/context-strategy.md` | Decide how context flows between agents |
 | `reference/routing-learning.md` | Adapting routing from execution evidence |
@@ -410,6 +412,7 @@ Read only the files that match the current decision point.
 | `reference/apex-walkthrough.md` | Human-facing apex — Mermaid flowcharts, storyboards, failure paths |
 | `reference/{goal,acceptance,growth-acceptance,summit,transmute,venture,package,podium}-recipe.md` | Per-Recipe specs — phase contracts, chain templates, cost profiles |
 | `reference/migrate-recipe.md` | `/nexus migrate` — change-completeness double loop, RESIDUE-GATE proof, gated DECOMMISSION; `case=arch\|framework\|middleware\|mock-to-prod` |
+| `reference/converge-recipe.md` | `/nexus converge` — invocable Generator-Evaluator loop, termination bounds, flatten rule for wrapping loop-recipes |
 | `_common/PROOF_CARRYING.md` | `/nexus acceptance` Tier policy + G1-G10. **Mandatory before `acceptance`.** |
 | `_common/GROWTH_BRAND_PROOF.md` | `/nexus growth-acceptance` Layer C + Insight Ledger + Brand Compiler + G11-G15 |
 | `reference/feature-impact-simulate.md` | Feature impact prediction (Persona+Journey+Product v4) |
