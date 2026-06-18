@@ -5,7 +5,7 @@
 
 > **Scope is the safety model.** This policy operates **only within the current session + project**. It is **ephemeral** (resets at the session/project boundary) and **reversible** (every adjustment is per-spawn; nothing irreversible happens). Because no durable global file is written, **no approval gate is required** — this runs automatically in all modes. Durable, cross-project template rewrites are explicitly **out of scope** here; that path stays gated (offline `tune` → Darwin promotion → Guardian commit, see §6).
 
-> **Honest mechanism.** This is **evidence-accumulating, case-based adaptation** — not neural RL. The hub cannot train weights mid-session. "Reinforcement" means: a journaled within-session record of `context-features → directive-choice → outcome`, consulted to bias the next spawn's directive selection. Bounded heuristics over a vetted directive library, never free-form prompt invention.
+> **Honest mechanism.** This is **evidence-accumulating, case-based adaptation** — not neural RL. The hub cannot train weights mid-session. "Reinforcement" means: a journaled within-session record of `context-features → directive-choice → outcome`, consulted to bias the next spawn's directive selection. Bounded, **corrective (bidirectional)** heuristics over a vetted directive library, never free-form prompt invention — every adjustment maps to an existing structured directive field (envelope / effort / tool-use / thinking / which references), never raw prepended text.
 
 ---
 
@@ -17,13 +17,19 @@
 ③ ADAPTIVE ASSEMBLY — every EXECUTE step: base template ⊕ ① ⊕ ② → the spawn prompt
 ```
 
-Layer ③ is the only thing that touches a spawn; ① and ② are the inputs it reads.
+Layer ③ is the only thing that touches a spawn; ① and ② are the inputs it reads. Layer ① is built during **Orchestrator Detection** (before the first spawn) and cached; ② updates at each step boundary; ③ runs immediately before each `Agent(...)` spawn.
+
+### Applicability — when NOT to apply
+
+Profile assembly + ledger upkeep is meta-overhead; applying it to trivial work violates the minimum-chain principle (Core Rule #1; "40% of agentic projects fail on cost/complexity"). **Gate:**
+- **Skip** for a single-spawn or trivial run — use the base template directly (the Project Profile's hub-engine defaults still apply, since those are free and load-bearing for correctness; the Session Ledger does not spin up).
+- **Apply** when the chain has ≥ 3 spawns, runs a loop recipe (`converge`/`kaizen`/`apex`/`migrate`), or the same agent is spawned more than once — i.e. when there is enough repetition for within-session reinforcement to pay back its overhead.
 
 ---
 
 ## 2. Layer ① — Project Profile (per-session, built once)
 
-Assemble at the first spawn of the session and cache for the session. Sources and the directive defaults they imply:
+Assemble at Orchestrator Detection (before the first spawn) and cache for the session. Sources and the directive defaults they imply:
 
 | Source | Signal | Directive default it sets |
 |--------|--------|---------------------------|
@@ -40,22 +46,24 @@ The Project Profile is **read-only project context** — it does not modify any 
 
 ## 3. Layer ② — Session Ledger (per-session, accumulates)
 
-Held in working state for the session (optionally journaled, §5). After each spawn, record one row:
+Held in working state for the session — **bounded**: keep only the *last-good directive set per agent* plus a short rolling tail, never the full spawn history (it must not itself grow into the context it protects, Core Rule #6). Optionally journaled (§5). After each spawn, update that agent's row:
 
-`{ agent, recipe, directive_choices, _STEP_COMPLETE.status, output_len vs envelope, token_cost, user_correction? }`
+`{ agent, recipe, directive_choices, reward, output_len vs envelope, token_cost, correction? }`
 
-Within-session reinforcement signals → next-spawn adjustment:
+**Reward = the downstream objective signal, not self-report.** The primary reward is the **VERIFY result** for the step (tests/build/AC pass). `_STEP_COMPLETE.status` is only a *provisional* signal until VERIFY resolves — a self-reported `SUCCESS` that later fails VERIFY counts as a failure, never a win (Nexus warns that valid-schema/wrong-meaning output amplifies downstream; tuning on self-report would reinforce confident-but-wrong prompts).
+
+Within-session signals → next-spawn adjustment. **A directive only flips on a repeated signal (≥ 2 observations of the same class), never on a single outlier** (§7):
 
 | Observed this session | Adjustment to subsequent spawns |
 |-----------------------|----------------------------------|
-| Output overran its envelope | Tighten the envelope for that agent / similar tasks |
-| `_STEP_COMPLETE: BLOCKED \| FAILED` | Raise effort, add context delta, add a thinking directive next attempt |
-| Step succeeded cheaply and cleanly | Keep directives; consider trimming for token economy |
-| **User corrected the output** (style, scope, wrong assumption) | Fold the correction into the constraints of subsequent same-agent spawns this session |
+| Output repeatedly overran its envelope | Tighten the envelope for that agent / similar tasks |
+| Step failed VERIFY (or `BLOCKED`/`FAILED`) | Raise effort, add context delta, add a thinking directive next attempt |
+| Steps repeatedly passed VERIFY cheaply | Loosen — trim directives for token economy (corrective, bidirectional) |
+| **User issued an explicit correction turn** (style, scope, wrong assumption) | Map it to a **structured constraint** on subsequent same-agent spawns (envelope / tone / scope / forbidden-actions field) — never prepend the raw correction text. Detected only from an explicit user turn, not inferred. |
 | Token budget pressure rising | Trim which references are loaded; shrink envelopes; switch context-strategy toward `reset` |
 | Same agent ran before this session | Reuse its last-good directive set as the starting point |
 
-Reinforcement is **monotone within the session and forgotten after it** — last session's mistakes never silently persist into a fresh one.
+Adjustments are **corrective and bidirectional** (tighten or loosen), and **forgotten after the session** — last session's state never silently persists into a fresh one (warm-start §5 is the one opt-in exception).
 
 ---
 
@@ -72,7 +80,9 @@ spawn_prompt = base template (Agent Spawn Template)
 **Bounded to vetted ranges — the assembly is selection, not invention:**
 - Envelope length, effort tier, tool-use / thinking directives, and the reference subset are chosen from the libraries in `hub-authoring.md` / `OPUS_48_AUTHORING.md`. The policy **selects and dials within** those; it never authors a novel unsafe directive.
 - **Never deletes a behavior or safety rule, acceptance criterion, or output-contract field** (Core Rule #4 — preserve behavior before style). Adaptation only *adds/sizes* guidance; it cannot strip the spawn's required structure.
-- **Honors the hub-authoring protocol**: Opus 4.8 → the four directive fields; Fable 5 → lighter prompts, `high` effort, and the **no-reasoning-reproduction rule** (any "echo/show/transcribe your reasoning" wording is forbidden — it trips `refusal`).
+- **Honors the hub-authoring protocol**: Opus 4.8 → the four directive fields; Fable 5 → lighter prompts, `high` effort, and the **no-reasoning-reproduction rule** (any "echo/show/transcribe your reasoning" wording is forbidden — it trips `refusal`). Adjustments resolve through the **per-engine mapping** in `hub-authoring.md` — e.g. "raise effort" = a higher reasoning tier on Claude Code but `model_reasoning_effort` on Codex (the model never downgrades there), not a model swap.
+
+The tuning is **internal and invisible** — it shapes the spawn prompt but does **not** bypass the active Mode's confirmations (in `INTERACTIVE`/`GUIDED` the step still stops where the Mode requires; only the prompt *content* is adapted, not the gating).
 
 The result is a spawn prompt tuned to *this* project and *this* session's accumulated signal, every time.
 
@@ -101,8 +111,12 @@ This keeps the irreversible, all-spawns-affecting writes behind evidence + appro
 
 | Risk | Guard |
 |------|-------|
-| Overfitting to one task in the session | Adjustments are agent/task-class scoped, not global; a single outlier run does not flip a directive — require a repeated signal |
-| Adaptation masking a real problem | Session Ledger surfaces persistent BLOCKED/FAILED to the normal error-handling escalation, it does not just keep re-tuning |
+| Overfitting to one task in the session | Adjustments are agent/task-class scoped, not global; a directive flips only on a repeated signal (≥ 2 same-class observations, §3), never on a single outlier |
+| Reinforcing confident-but-wrong output | Reward is the downstream VERIFY result, not self-reported `_STEP_COMPLETE.status` (§3) |
+| Meta-overhead on trivial work | Applicability gate (§1): skip for single-spawn/trivial runs; apply only at ≥ 3 spawns / loop recipes / repeated agent |
+| Ledger growing into the context it protects | Bounded ledger (§3): last-good per agent + short tail, not full history |
+| Free-form prompt injection via user corrections | Corrections map to structured constraint fields, never raw prepended text (§3) |
+| Adaptation masking a real problem | Session Ledger surfaces persistent VERIFY-fail / BLOCKED / FAILED to the normal error-handling escalation, it does not just keep re-tuning |
 | Stripping required structure | §4 hard rule: never delete behavior/safety/AC/output-contract fields |
 | Cross-session contamination | Ephemeral by default; warm-start (§5) is opt-in and pre-seeds Layer ① only |
 | Unsafe directive on Fable 5 | §4 enforces the no-reasoning-reproduction rule from `hub-authoring.md` |
