@@ -153,6 +153,7 @@ Agent disambiguation → `reference/agent-disambiguation.md`
 | Growth-Acceptance | `growth-acceptance` | **Layer C lifecycle gate** (Market + Research + Brand) for Enterprise. Insight Ledger + +14/+30/+90d loop. G11-G15. 1.1-8× on acceptance. **Confirm Step 3+.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `_common/GROWTH_BRAND_PROOF.md`, `reference/growth-acceptance-recipe.md` |
 | Summit | `summit` | Multi-engine **five-team** quality-maximization. Dual-engine default. 28-119 agents, 5-25× cost. **Always confirm.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/summit-recipe.md` |
 | Podium | `podium` | **Content-quality maximization** — doc + high-quality slide creation, five teams. 16-53 agents, 3-8× cost. Output_format variants. **Confirm release-critical.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/podium-recipe.md` |
+| Migrate | `migrate` | **Change-completeness migration** (arch / framework / middleware / mock→prod) — double loop (per-batch PLAN→EXECUTE→VERIFY inside an outer completeness loop) + RESIDUE-GATE proof + gated old-code DECOMMISSION. `case=lang` forwards to `transmute`. 6-20 agents. **Confirm at launch + before destructive DECOMMISSION; whole-system arch / big-bang.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/migrate-recipe.md` |
 | Transmute | `transmute` | **Cross-language rewrite** preserving behavior via differential parity. 8-20 agents. **Confirm before big-bang.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/transmute-recipe.md` |
 | Package | `package` | **Generalized document-package generator** — 12-domain preset registry (incl. `domain=startup` ≡ legacy `venture`). Depth 5-28 agents. **Confirm full.** | See `reference/recipes-detail.md` | `reference/recipes-detail.md`, `reference/package-recipe.md`, `reference/venture-recipe.md` (startup blueprint) |
 | Pack | `pack` | **Skill ecosystem control** (meta) — switch active Claude Code skill profile per workstream. Forms: `list` / `current` / `<name>` / `reset`. **Confirms diff before writing `settings.json`.** | Inline edit (no spawn) | `reference/pack-subcommand.md`, `_common/SKILL_PACKS.md` |
@@ -183,6 +184,7 @@ For natural-language input without an explicit subcommand. **Subcommand match al
 | `growth-acceptance`, `lifecycle gate`, `market proof`, `insight ledger`, `post-launch measurement` | `growth-acceptance` |
 | `summit`, `tri-engine`, `quality maximization`, `release-critical` | `summit` |
 | `podium`, `slide deck`, `keynote`, `presentation`, `doc + slide` | `podium` |
+| `migrate`, `architecture change`, `framework migration`, `middleware swap`, `mock to production`, `migrate everything`, `without omission`, `change completeness` | `migrate` |
 | `transmute`, `rewrite in <lang>`, `language rewrite`, `differential parity` | `transmute` |
 | `venture`, `business plan`, `MVP dossier`, `pitch package` | → `package domain=startup` (alias only; not a standalone Recipe) |
 | `package`, `document package`, `generate a full package` | `package` (auto-detect preset) |
@@ -397,7 +399,7 @@ Read only the files that match the current decision point.
 | `reference/{orchestration,task-routing,production-reliability,agent-communication}-anti-patterns.md` | Anti-pattern catalogs — orchestration / routing / reliability / handoff (load when chain ≥ 4 agents) |
 | `reference/execution-layers.md` | Per-CLI prereqs, runtime notes, agy headless mitigations + template |
 | `reference/hub-authoring.md` | Per-engine authoring (Claude/Codex/agy), spawn-template variants, model selection table, execution-layer key rules |
-| `reference/recipes-detail.md` | Extended Recipe descriptions + full chain templates (kaizen, apex, essential, killer, acceptance, growth-acceptance, summit, podium, transmute, venture, package) |
+| `reference/recipes-detail.md` | Extended Recipe descriptions + full chain templates (kaizen, apex, essential, killer, acceptance, growth-acceptance, summit, podium, migrate, transmute, venture, package) |
 | `reference/inline-recipes.md` | Full phase contracts for `kaizen` / `essential` / `killer` |
 | `reference/signal-keywords.md` | Canonical full Signal Keywords → Recipe table (Core / Specialist / Mobile / Package / Fallback) |
 | `reference/official-skill-categories.md` | Official use case categories + 5 canonical patterns |
@@ -407,6 +409,7 @@ Read only the files that match the current decision point.
 | `reference/enact-recipe.md` | `/nexus enact` — execute a Charter: team construction from §5 → end-to-end orchestration → verify/ship; Confirm Gate, `dry-run`/`resume` modes |
 | `reference/apex-walkthrough.md` | Human-facing apex — Mermaid flowcharts, storyboards, failure paths |
 | `reference/{goal,acceptance,growth-acceptance,summit,transmute,venture,package,podium}-recipe.md` | Per-Recipe specs — phase contracts, chain templates, cost profiles |
+| `reference/migrate-recipe.md` | `/nexus migrate` — change-completeness double loop, RESIDUE-GATE proof, gated DECOMMISSION; `case=arch\|framework\|middleware\|mock-to-prod` |
 | `_common/PROOF_CARRYING.md` | `/nexus acceptance` Tier policy + G1-G10. **Mandatory before `acceptance`.** |
 | `_common/GROWTH_BRAND_PROOF.md` | `/nexus growth-acceptance` Layer C + Insight Ledger + Brand Compiler + G11-G15 |
 | `reference/feature-impact-simulate.md` | Feature impact prediction (Persona+Journey+Product v4) |

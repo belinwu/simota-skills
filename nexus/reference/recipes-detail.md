@@ -116,6 +116,17 @@ Read: `reference/podium-recipe.md`.
 
 ---
 
+## migrate
+
+**Change-completeness migration** — propagate a wholesale change across the codebase with a proven-complete guarantee (no omission). Cases: `arch` (layered→hexagonal, monolith→modular), `framework` (Express→Fastify, Vue2→Vue3), `middleware` (REST→gRPC, RabbitMQ→Kafka, store swap), `mock-to-prod` (stub/in-memory→real service). `case=lang` forwards to `transmute`. Double-loop: per-batch PLAN→EXECUTE→VERIFY inside an outer completeness loop closed by a **RESIDUE-GATE** (forward counter + independent loop-until-dry re-scan + `matrix` axis-coverage), then a **DECOMMISSION** phase that removes old code *gated on the completeness proof*. Strategy: strangler-fig (default) ‖ parallel-run ‖ big-bang. 6-20 agents. **Confirm whole-system arch / big-bang.**
+
+**Chain template:**
+`INVENTORY (Lens all sites ‖ Ripple blast radius → freeze baseline denominator) → STRATEGY (Magi risk gate + Sherpa batch split) → OUTER LOOP [ INNER LOOP: PLAN (Ripple) → EXECUTE (Atlas/Shift/Forge → Builder/Artisan +gateway/schema/stream) → VERIFY (Radar drift==0, fail→rollback batch) ; RESIDUE-GATE (counter complete + residue 2× zero + axes covered) ] → ATTEST (completeness report) → DECOMMISSION [GATE on ATTEST → Sweep detect → Ripple+Lens re-check refs==0 → Builder cut +Void → Radar green → Guardian separate PR]`
+
+Read: `reference/migrate-recipe.md`.
+
+---
+
 ## transmute
 
 **Cross-language rewrite** preserving behavior (TS→Rust, Go→Rust, Python→Go, JS→TS, …). Idiomatic re-expression verified by **differential parity** against golden oracle. Distinct from `PORTING` / `shift` (same-language migration / native-API modernization) / `refactor`. Strategy: big-bang ‖ strangler-fig ‖ FFI-incremental. 8-20 agents. **Confirm before big-bang.**

@@ -13,7 +13,8 @@ Use `transmute` for **language-pair crossings**: TS→Rust, Go→Rust, Python→
 | Not this | Route to | Why |
 |----------|----------|-----|
 | Web → iOS/Android native | `PORTING` (Port→Native) | Platform paradigm shift, not arbitrary language pair |
-| Same-language framework migration (Express→Fastify, Vue2→Vue3) | `shift` | Language unchanged |
+| Same-language framework migration (Express→Fastify, Vue2→Vue3) | `migrate case=framework` (drives `shift`) | Language unchanged; needs completeness sweep not parity oracle |
+| Arch / middleware / mock→prod sweep needing no-omission guarantee | `migrate` (case=arch/middleware/mock-to-prod) | Completeness via RESIDUE-GATE, no language crossing |
 | Dependency / deprecated-API modernization | `shift detect`/`modernize` | No language crossing |
 | Internal cleanup, same language | `refactor` / `kaizen` | No language crossing |
 | Cross-platform prototype (RN/Flutter/KMP) | `forge` | Prototype, not behavior-preserving rewrite |
