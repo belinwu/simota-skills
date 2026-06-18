@@ -82,7 +82,7 @@ spawn_prompt = base template (Agent Spawn Template)
 - **Never deletes a behavior or safety rule, acceptance criterion, or output-contract field** (Core Rule #4 — preserve behavior before style). Adaptation only *adds/sizes* guidance; it cannot strip the spawn's required structure.
 - **Honors the hub-authoring protocol**: Opus 4.8 → the four directive fields; Fable 5 → lighter prompts, `high` effort, and the **no-reasoning-reproduction rule** (any "echo/show/transcribe your reasoning" wording is forbidden — it trips `refusal`). Adjustments resolve through the **per-engine mapping** in `hub-authoring.md` — e.g. "raise effort" = a higher reasoning tier on Claude Code but `model_reasoning_effort` on Codex (the model never downgrades there), not a model swap.
 
-The tuning is **internal and invisible** — it shapes the spawn prompt but does **not** bypass the active Mode's confirmations (in `INTERACTIVE`/`GUIDED` the step still stops where the Mode requires; only the prompt *content* is adapted, not the gating).
+The tuning shapes the spawn prompt but does **not** bypass the active Mode's confirmations (in `INTERACTIVE`/`GUIDED` the step still stops where the Mode requires; only the prompt *content* is adapted, not the gating). It is **internal but never silent**: every adjustment that differs from the base template emits a **Tuning Trace** (§9) so the user can always see what was changed and why.
 
 The result is a spawn prompt tuned to *this* project and *this* session's accumulated signal, every time.
 
@@ -128,3 +128,25 @@ This keeps the irreversible, all-spawns-affecting writes behind evidence + appro
 - **`context-strategy.md`** — sibling: that decides *what context flows* between agents (reset / persist / hybrid); this decides *how the spawn directives adapt* to project+session signals. Used together at spawn time.
 - **`hub-authoring.md` / `OPUS_48_AUTHORING.md`** — the vetted directive library this policy selects from; the source of the P/F principles it must honor.
 - **LEARN / `routing-learning.md`** — LEARN adapts *routing* (which chain) across runs with durable safety; this adapts *spawn directives* within a session, ephemerally. Same evidence spirit, different target and scope.
+
+---
+
+## 9. Disclosure — Tuning Trace
+
+The tuning is internal but **never silent** — a tuned spawn is never quietly different from the base template (the "log what changed, no silent caps" principle). Whenever Layer ③ produces a directive that differs from the base, it emits one Tuning Trace entry.
+
+**Entry schema:**
+
+`{ step, agent, field, old → new, trigger, reward_basis }`
+
+- `field` — which directive changed (envelope / effort / tool-use / thinking / references / context-strategy).
+- `trigger` — the §3 signal that caused it (e.g. `repeated overlength ×2`, `VERIFY-fail`, `user correction`, `token pressure`).
+- `reward_basis` — the evidence the decision rests on (e.g. `VERIFY pass×3`), so the user can judge whether the adaptation was warranted.
+
+**Where it surfaces (delta-only — zero output when nothing was tuned, so it adds no noise):**
+1. **Inline in the Nexus Execution Report** — a tuned step's per-step line carries a compact one-liner, e.g.
+   `🎛 Forge: envelope 200→120w (repeated overlength) · effort high→med (VERIFY pass×3)`
+2. **`## Prompt Tuning` summary subsection in `DELIVER`** — the full per-spawn trace table, included **only when ≥ 1 spawn was tuned**; omitted entirely otherwise.
+3. **Journal (with warm-start §5)** — appended to `.agents/adaptive-prompt-policy.journal.md` for audit/resume; carries the trigger + reward_basis so a later session (or the user) can review *why* each tuning happened.
+
+This makes every internal adjustment **inspectable after the fact** without forcing a confirmation gate — the user sees what changed, the signal behind it, and the evidence, but the reversible per-spawn tuning still runs automatically.
