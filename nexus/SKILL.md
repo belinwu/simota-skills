@@ -271,6 +271,10 @@ Key rules (Codex lazy-hidden tools, agy headless `@<path>` + sentinel + `--print
 
 Model names are hub-engine-specific; role → tier mapping is stable. Full table (Claude Code sonnet/opus/haiku per tier ↔ Codex CLI always `gpt-5.5`, depth via `model_reasoning_effort`) → `reference/hub-authoring.md` § Model Selection. Cross-CLI cross-reference → `_common/CLI_COMPATIBILITY.md §4`.
 
+### Adaptive Prompt Policy
+
+Before each spawn, tailor the spawn prompt to the current **project + session** context — auto-tuned and self-reinforcing within the session, ephemeral and reversible (no durable global write, so it runs in all modes without confirmation). Compose `spawn_prompt = base template ⊕ Project Profile ⊕ Session Ledger`: the **Project Profile** sets directive defaults from project facts (`.agents/PROJECT.md`, repo stack, `CLAUDE.md`, hub engine), and the **Session Ledger** adjusts from this session's observed outcomes (overlength → tighten envelope; BLOCKED/FAILED → +context/+effort; user correction → fold into subsequent same-agent spawns; token pressure → trim references). Assembly only **selects/dials within the vetted directive ranges** of `hub-authoring.md` — it never invents unsafe directives and never deletes a behavior/safety rule, acceptance criterion, or output-contract field (Core Rule #4). Durable cross-project rewrites are out of scope (gated path only). Full spec → `reference/adaptive-prompt-policy.md`.
+
 ### Agent Spawn Template
 
 ```
@@ -396,6 +400,7 @@ Read only the files that match the current decision point.
 | `reference/evaluator-loop-protocol.md` | Generator-Evaluator separation: Sprint Contract + Rubric + orchestration pattern (the spec `converge` executes) |
 | `reference/loop-engineering-primitives.md` | Mapping the loop-engineering pattern onto Claude Code / Codex primitives (`/loop`, `/goal`, worktree, subagents, memory) with 2026-06 version detail — read when designing a `goal`/apex/summit loop or explaining which primitive implements which loop part |
 | `reference/context-strategy.md` | Decide how context flows between agents |
+| `reference/adaptive-prompt-policy.md` | Tailor each spawn prompt to project + session context (Context-Adaptive Spawn Tuning); ephemeral, reversible, no durable global write |
 | `reference/routing-learning.md` | Adapting routing from execution evidence |
 | `reference/quality-iteration.md` | Output needs post-delivery PDCA improvement |
 | `reference/{orchestration,task-routing,production-reliability,agent-communication}-anti-patterns.md` | Anti-pattern catalogs — orchestration / routing / reliability / handoff (load when chain ≥ 4 agents) |

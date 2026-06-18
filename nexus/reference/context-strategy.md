@@ -2,6 +2,7 @@
 
 **Purpose:** Guidelines for managing context windows across agent chains.
 **Read when:** You need to decide how context flows between agents in a chain.
+**Sibling:** `reference/adaptive-prompt-policy.md` decides *how spawn directives adapt* to project + session context; this file decides *what context flows* between agents. Used together at spawn time.
 
 ---
 
