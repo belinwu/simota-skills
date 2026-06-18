@@ -38,10 +38,10 @@ The bare evaluator-loop can run forever or devolve into "Agent Tennis" (Generato
 |-------|---------|---------------|
 | `max_cycles` | 3 | Hard ceiling — stop + report best-so-far. Raising > 3 needs confirm. |
 | `token_budget` | run-level | Stop + report when exhausted (shared pool, not per-cycle). |
-| diminishing-returns `ε` | rubric-dependent | If aggregate score gain `Δ < ε` between cycles, stop + report (further iteration not worth it). |
-| `BLOCK` escalation | — | If Aggregate verdict is BLOCK (un-fixable within scope, or Agent Tennis detected), stop + escalate to user. |
+| diminishing-returns | **weighted score Δ < 0.2 between cycles** (`evaluator-loop-protocol.md` termination table) | If the aggregate weighted rubric score improves by < 0.2 versus the prior cycle, stop + report (further iteration not worth it). |
+| `BLOCK` escalation | — | If Aggregate verdict is BLOCK (un-fixable within scope, or Agent Tennis), stop + escalate to user. Agent Tennis = Nexus core circuit-breaker definition: two agents disagreeing on the same point 3+ turns without progress. |
 
-**ACCEPT** (rubric quorum met) is the only *success* exit; the other three are *bounded* exits that still deliver the best result with an honest convergence report. No run is unbounded.
+**ACCEPT condition is the protocol's, not a new one:** `ACCEPT` iff **every scored rubric dimension ≥ 2** (`evaluator-loop-protocol.md` Score Scale / Aggregation). This is the only *success* exit; diminishing / max_cycles / budget / BLOCK are *bounded* exits that still deliver the best result with an honest convergence report. No run is unbounded.
 
 ---
 
@@ -53,12 +53,13 @@ CONTRACT ── Scribe/Accord[author the Sprint Contract (acceptance spec) + Rub
    ▼
 ┌─ LOOP (until ACCEPT | bound hit per §2) ───────────────────────────────────┐
 │  GENERATE   inner recipe (flattened per §4) OR task agent[produce / revise] │
-│  EVALUATE ∥ N independent Evaluators score vs Rubric                        │
+│  EVALUATE ∥ one independent Evaluator per scored rubric dimension           │
 │             ★ the Generator MUST NOT be an Evaluator (GAN separation)        │
-│  AGGREGATE  Magi[quorum → ACCEPT | REVISE(feedback δ) | BLOCK]               │
-│  GATE  ACCEPT → exit loop                                                    │
+│  AGGREGATE  Magi[all dims ≥ 2 → ACCEPT | any dim < 2 → REVISE(feedback δ)    │
+│             | any Evaluator BLOCK or persistent split → BLOCK]               │
+│  GATE  ACCEPT (all dims ≥ 2) → exit loop                                     │
 │        REVISE → carry feedback δ into next cycle's GENERATE                  │
-│        Δ<ε (diminishing) → stop + report ; max_cycles/budget → stop + report│
+│        Δweighted<0.2 (diminishing) → stop+report ; max_cycles/budget → stop  │
 │        BLOCK → stop + escalate                                              │
 └────────────────────────────────────────────────────────────────────────────┘
    ▼
@@ -67,7 +68,7 @@ DELIVER ── convergence report: cycles run, per-cycle score trajectory,
            final verdict + residual gaps
 ```
 
-**Default Evaluators by rubric dimension:** correctness/regression → `Radar`; code quality → `Judge`; UX/usability → `Echo`/`Palette`; spec conformance → `Attest`; E2E behavior → `Voyager`. Pick the subset the Rubric scores. Evaluators run concurrently (hub-spoke, no shared mutable state); the Generator of cycle N is excluded from cycle N's Evaluator set.
+**Evaluator topology = one Evaluator per scored rubric dimension** (not a voting panel — verdict aggregates by "all dimensions ≥ 2", per `evaluator-loop-protocol.md`). **Default dimension → Evaluator:** correctness/regression → `Radar`; code quality → `Judge`; UX/usability → `Echo`/`Palette`; spec conformance → `Attest`; E2E behavior → `Voyager`. Score only the dimensions the Rubric declares. Evaluators run concurrently (hub-spoke, no shared mutable state); the Generator of cycle N is excluded from cycle N's Evaluator set. **BLOCK aggregation:** any Evaluator returning BLOCK, or a dimension stuck in REVISE across cycles without score gain (Agent Tennis), escalates the whole run to BLOCK.
 
 **Checkpoint-resume:** persist the Contract, Rubric, and each cycle's score + feedback δ at the GATE boundary so an interrupted run resumes mid-convergence with its trajectory intact.
 
@@ -80,6 +81,10 @@ DELIVER ── convergence report: cycles run, per-cycle score trajectory,
 **Rule:**
 - **Inner recipe is non-loop** (`feature`, a single build, `transmute` per-module) → true wrapper: the whole inner recipe is the Generator each cycle.
 - **Inner recipe is itself a loop** (`kaizen` / `apex` / `summit`) → **flatten**: use the inner recipe's *generator agents*, not its loop. Converge owns the single outer loop and the sole termination contract.
+
+**Which agents flatten cleanly:**
+- `kaizen` → **well-defined**: its generator agents are `Bolt`/`Tuner`/`Palette`/etc. (the worked example below).
+- `apex` / `summit` → flattening means using only their **build/generation-phase** agents (apex's Builder/loop body; summit's execution-team generators), dropping their internal risk-gate/improvement loops. This is **advanced and rarely worth it** — wrapping summit (28-119 agents) in an outer loop multiplies an already-huge cost. Prefer running apex/summit standalone (they already converge internally) and reserve `converge <recipe>` for non-loop generators.
 
 **Worked example — `converge kaizen`:**
 - ❌ Do NOT run full kaizen (its own ≤3 PDCA cycles) inside each converge cycle.
@@ -96,10 +101,11 @@ This flatten rule is what makes "converge kaizen-like" coherent instead of a loo
 |---------|-----------|
 | Generator grades its own work (self-assessment bias) | Generator of cycle N excluded from cycle N's Evaluators (GAN separation, §3) |
 | Unbounded / forever loop | `max_cycles` + `token_budget` hard bounds (§2) |
-| Agent Tennis (disagree without progress) | diminishing-returns `Δ<ε` stop + BLOCK escalation (§2) |
+| Agent Tennis (disagree without progress) | diminishing-returns Δweighted<0.2 stop + BLOCK escalation via Nexus circuit-breaker (§2) |
+| **Inventing a fuzzy ACCEPT/stop oracle** | converge cites the protocol's concrete values verbatim (all dims ≥ 2; Δweighted < 0.2), never new vocabulary (§2, §3) |
 | **Loop-on-loop blowup when wrapping kaizen/apex/summit** | Flatten rule (§4): inner generator agents only, converge owns the single loop |
 | **Dueling termination oracles** (inner metric vs outer rubric) | Flatten: converge's rubric is the sole gate; inner Check demoted to pre-filter |
-| "Looks good" subjective acceptance | Rubric (0-3 graduated dims) replaces vibe; quorum required for ACCEPT |
+| "Looks good" subjective acceptance | Rubric (0-3 graduated dims) replaces vibe; all dimensions ≥ 2 required for ACCEPT |
 | Rubric drift mid-loop | Contract + Rubric frozen at CONTRACT phase; cited every cycle |
 
 ---
